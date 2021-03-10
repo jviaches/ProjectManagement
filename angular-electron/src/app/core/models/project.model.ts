@@ -1,15 +1,17 @@
+
 export interface Project {
     id: number;
     name: string;
     description: string;
-    statuses: Status[];
-    tags: Tag[];
+    avialableStatuses: Status[];
+    avialableTags: Tag[];
     tickets: Ticket[]
 }
 
 export interface Tag {
     id: number;
     name: string;
+    color: string;
 }
 
 export interface Ticket {
@@ -17,7 +19,7 @@ export interface Ticket {
     title: string;
     content: string;
     tags: Tag[];
-    status: Status;
+    statusId: number;
 }
 
 export interface Status {

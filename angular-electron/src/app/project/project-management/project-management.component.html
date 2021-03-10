@@ -12,83 +12,36 @@
           <button class='project-participants__add'>Add Participant</button>
         </div>
       </div>
+
+
       <div class='project-tasks'>
 
-        <div class="project-column">
-          <h2>To do</h2>
-          <div cdkDropList #todoList="cdkDropList" [cdkDropListData]="todo"
-            [cdkDropListConnectedTo]="[inProgressList, doneList]" class="example-list"
-            (cdkDropListDropped)="taskDrop($event)">
+        <div class="project-column" *ngFor="let status of project.avialableStatuses">
+          <h2>{{ status.name }}</h2>
 
-            <div class='task' *ngFor="let item of todo" cdkDrag cdkDropList (cdkDropListDropped)="tagDrop($event)">
-              <div class='task__tags'>
-                <span class='task__tag task__tag--design'>UI Design</span>
-                <button class='task__options'><i class="fas fa-ellipsis-h"></i></button>
+              <div cdkDropList class="example-list"
+                [attr.id]="'cdk-drop-list-' + status.id"  
+                [cdkDropListData]="sectionsTickets['cdk-drop-list-' + status.id]"
+                [cdkDropListConnectedTo]="sectiondIds" 
+                (cdkDropListDropped)="taskDrop($event)">
+    
+                <div *ngFor="let ticket of project.tickets">
+                <div class='task' *ngIf="ticket.statusId === status.id" cdkDrag cdkDropList (cdkDropListDropped)="tagDrop($event)">
+                  <div class='task__tags'>
+                    <span class='task__tag task__tag--design'>UI Design</span>
+                    <button class='task__options'><i class="fas fa-ellipsis-h"></i></button>
+                  </div>
+                  <p>{{ticket.title}}</p>
+                  <div class='task__stats'>
+                    <span><time datetime="2021-11-24T20:00:00"><i class="fas fa-flag"></i>Nov 24</time></span>
+                    <span><i class="fas fa-comment"></i>2</span>
+                    <span><i class="fas fa-paperclip"></i>5</span>
+                    <span class='task__owner'></span>
+                  </div>
+                </div>
               </div>
-              <p>{{item}}</p>
-              <div class='task__stats'>
-                <span><time datetime="2021-11-24T20:00:00"><i class="fas fa-flag"></i>Nov 24</time></span>
-                <span><i class="fas fa-comment"></i>2</span>
-                <span><i class="fas fa-paperclip"></i>5</span>
-                <span class='task__owner'></span>
-              </div>
-            </div>
-
           </div>
         </div>
-
-
-        <div class='project-column'>
-          <h2>In Progress</h2>
-
-          <div cdkDropList #inProgressList="cdkDropList" [cdkDropListData]="inProgress"
-            [cdkDropListConnectedTo]="[todoList, doneList]" class="example-list"
-            (cdkDropListDropped)="taskDrop($event)">
-
-            <div class='task' *ngFor="let item of inProgress" cdkDrag>
-              <div class='task__tags'><span class='task__tag task__tag--design'>UI Design</span><button
-                  class='task__options'><i class="fas fa-ellipsis-h"></i></button></div>
-              <p>{{item}}</p>
-              <div class='task__stats'>
-                <span><time datetime="2021-11-24T20:00:00"><i class="fas fa-flag"></i>Nov 24</time></span>
-                <span><i class="fas fa-comment"></i>2</span>
-                <span><i class="fas fa-paperclip"></i>5</span>
-                <span class='task__owner'></span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-        <div class='project-column'>
-          <h2>Done</h2>
-
-          <div cdkDropList #doneList="cdkDropList" [cdkDropListData]="done"
-            [cdkDropListConnectedTo]="[todoList, inProgressList]" class="example-list"
-            (cdkDropListDropped)="taskDrop($event)">
-
-            <div class='task' *ngFor="let item of done" cdkDrag>
-              <div class='task__tags'><span class='task__tag task__tag--design'>UI Design</span><button
-                  class='task__options'><i class="fas fa-ellipsis-h"></i></button></div>
-              <p>{{item}}</p>
-              <div class='task__stats'>
-                <span><time datetime="2021-11-24T20:00:00"><i class="fas fa-flag"></i>Nov 24</time></span>
-                <span><i class="fas fa-comment"></i>2</span>
-                <span><i class="fas fa-paperclip"></i>5</span>
-                <span class='task__owner'></span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="project-column">
-          <h2><span>&nbsp;</span></h2>
-          <div class='task' style=" border:3px dashed; border-width: thin; background-color:rgba(189, 180, 180, 0.1);">
-            <p>+ Add column</p>
-          </div>
-        </div>
-
-
       </div>
     </main>
     <aside class='task-details'>
@@ -106,7 +59,7 @@
 
           <mat-chip-list class="example-chip" cdkDropList (cdkDropListDropped)="taskDrop($event)">
             <mat-chip class="example-box" cdkDrag *ngFor="let tag of tags">
-              {{tag}}
+              {{tag.name}}
             </mat-chip>
           </mat-chip-list>
         </div>

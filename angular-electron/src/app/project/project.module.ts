@@ -12,5 +12,7 @@ import { ProjectListComponent } from './project-list/project-list.component';
 @NgModule({
   declarations: [ProjectManagementComponent, ProjectListComponent],
   imports: [BrowserAnimationsModule, CommonModule, SharedModule, MaterialModule],
+  exports: [ProjectListComponent],
+  providers: []
 })
 export class ProjectModule {}

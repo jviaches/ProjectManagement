@@ -1,7 +1,21 @@
-<div>
-  <h1 class="title">
-    {{ 'PAGES.HOME.TITLE' | translate }}
-  </h1>
+<div class="position:fixed; top:0px; left:0px; bottom:0px; right:0px; background: red;">
 
-  <a routerLink="/project">{{ 'PAGES.HOME.GO_TO_DETAIL' | translate }}</a>
+    <div class="column is-half is-offset-one-quarter ">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Project List</th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element"> <button mat-stroked-button color="primary">Load</button></td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
 </div>
