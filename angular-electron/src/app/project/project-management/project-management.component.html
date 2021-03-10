@@ -18,7 +18,6 @@
 
         <div class="project-column" *ngFor="let status of project.avialableStatuses">
           <h2>{{ status.name }}</h2>
-
               <div cdkDropList class="example-list"
                 [attr.id]="'cdk-drop-list-' + status.id"  
                 [cdkDropListData]="sectionsTickets['cdk-drop-list-' + status.id]"
@@ -27,9 +26,17 @@
     
                 <div *ngFor="let ticket of project.tickets">
                 <div class='task' *ngIf="ticket.statusId === status.id" cdkDrag cdkDropList (cdkDropListDropped)="tagDrop($event)">
-                  <div class='task__tags'>
-                    <span class='task__tag task__tag--design'>UI Design</span>
-                    <button class='task__options'><i class="fas fa-ellipsis-h"></i></button>
+                    <div class='task__tags'>
+                    <span></span>
+                  <button mat-icon-button [matMenuTriggerFor]="menu">
+                    <i class="fas fa-ellipsis-h"></i>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="deleteTicket(ticket.id)">
+                      <i class="far fa-trash-alt"></i>
+                      <span> Delete</span>
+                    </button>
+                  </mat-menu>
                   </div>
                   <p>{{ticket.title}}</p>
                   <div class='task__stats'>
@@ -38,7 +45,7 @@
                     <span><i class="fas fa-paperclip"></i>5</span>
                     <span class='task__owner'></span>
                   </div>
-                </div>
+                </div>                
               </div>
           </div>
         </div>

@@ -50,7 +50,7 @@ export class ProjectManagementComponent implements OnInit {
         },
         {
           id: 3,
-          title: 'Ticket #3',
+          title: 'Ticket #3 - extra extra extra long caption',
           content: 'some content...',
           statusId: 3,
           tags: []
@@ -135,5 +135,10 @@ export class ProjectManagementComponent implements OnInit {
     //     event.previousIndex,
     //     event.currentIndex);
     // }
+  }
+
+  deleteTicket(ticketId: number) {
+    const ticketIndex = this.project.tickets.findIndex(d => d.id === ticketId);
+    this.project.tickets.splice(ticketIndex, 1);
   }
 }
