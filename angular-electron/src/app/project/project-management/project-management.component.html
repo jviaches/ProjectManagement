@@ -20,14 +20,18 @@
             [cdkDropListData]="sectionsTickets['cdk-drop-list-' + status.id]" [cdkDropListConnectedTo]="sectiondIds"
             (cdkDropListDropped)="taskDrop($event)">
 
-            <div class='task' *ngFor="let ticket of sectionsTickets['cdk-drop-list-' + status.id]" cdkDrag
-              cdkDropList (cdkDropListDropped)="tagDrop($event)">
+            <div class='task' *ngFor="let ticket of sectionsTickets['cdk-drop-list-' + status.id]" cdkDrag cdkDropList
+              (cdkDropListDropped)="tagDrop($event)">
               <div class='task__tags'>
                 <span></span>
                 <button mat-icon-button [matMenuTriggerFor]="menu">
                   <i class="fas fa-ellipsis-h"></i>
                 </button>
                 <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="viewTicket(ticket)">
+                    <i class="far fa-clipboard"></i>
+                    <span> Details</span>
+                  </button>
                   <button mat-menu-item (click)="deleteTicket(ticket.id)">
                     <i class="far fa-trash-alt"></i>
                     <span> Delete</span>

@@ -10,10 +10,11 @@ import { ProjectManagementComponent } from './project-management/project-managem
 import { ProjectListComponent } from './project-list/project-list.component';
 
 import { TicketNewComponent } from '../ticket/ticket-create/ticket-create.component';
+import { TicketViewComponent } from '../ticket/ticket-view/ticket-view.component';
 import { QuillModule } from 'ngx-quill';
 
 @NgModule({
-  declarations: [ProjectManagementComponent, ProjectListComponent, TicketNewComponent],
+  declarations: [ProjectManagementComponent, ProjectListComponent, TicketNewComponent, TicketViewComponent],
   imports: [BrowserAnimationsModule, CommonModule, SharedModule, MaterialModule, QuillModule.forRoot()],
   exports: [ProjectListComponent],
   providers: []

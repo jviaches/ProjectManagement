@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Project, Ticket } from '../../core/models/project.model'
 import { NotificationService } from '../../core/services/notification.service';
 import { TicketNewComponent } from '../../ticket/ticket-create/ticket-create.component';
+import { TicketViewComponent } from '../../ticket/ticket-view/ticket-view.component';
 
 interface Dictionary<T> {
   [Key: string]: Ticket[];
@@ -103,6 +104,16 @@ export class ProjectManagementComponent implements OnInit {
     // }
   }
 
+  viewTicket(ticket: Ticket) {
+    this.notificationService.showModalComponent(TicketViewComponent, '', {ticket}).subscribe( result => {
+      if (result !== 'FAIL') {
+        const ticketIndex = this.project.tickets.findIndex(d => d.id === result.id);
+        this.project.tickets[ticketIndex].title = result.caption;
+        this.project.tickets[ticketIndex].content = result.text;
+      }
+    });
+  }
+
   deleteTicket(ticketId: number) {
     this.notificationService.showYesNoModalMessage().subscribe( result => {
       if (result === 'yes') {
@@ -120,7 +131,7 @@ export class ProjectManagementComponent implements OnInit {
           title: result.caption,
           content: result.text,
           tags: [],
-          statusId: 2
+          statusId: 1
         }
        
         this.project.tickets.push(ticket);

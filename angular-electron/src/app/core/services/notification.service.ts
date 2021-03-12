@@ -68,7 +68,6 @@ export class NotificationService {
         }
 
         dialogConfig.data.caption = textCaption;
-
         const dialogRef = this.dialog.open(component, dialogConfig);
 
         return dialogRef.afterClosed();
