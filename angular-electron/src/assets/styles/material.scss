@@ -31,3 +31,30 @@ $candy-app-theme: mat-light-theme(
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($candy-app-theme);
+
+
+
+.mat-card {
+  border-radius: 8px;
+  margin-bottom: 30px;
+
+  .mat-card-header .mat-card-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: normal;
+    color: #5b626b;
+  }
+}
+
+.mat-dialog-container {
+  text-align: center;
+  border-radius: 10px;
+
+  mat-dialog-content{
+    margin-bottom: 20px;
+  }
+}
+
+.mat-dialog-actions {
+  justify-content: center;
+}

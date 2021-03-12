@@ -17,13 +17,19 @@ import { AppComponent } from './app.component';
 import { ProjectModule } from './project/project.module';
 import { HomeComponent } from './home/home.component';
 
+
+import { ModalDialogComponent } from './modals/modal-dialog/modal-dialog.component'
+import { ModalYesNoDialogComponent } from './modals/yesno-modal-dialog/yesno-modal-dialog.component'
+
+import { NotificationService } from './core/services/notification.service'
+
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent],
+  declarations: [AppComponent, HomeComponent, ModalDialogComponent, ModalYesNoDialogComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -41,7 +47,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
       }
     })
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [NotificationService],
+  bootstrap: [AppComponent],
+  entryComponents: [ ModalDialogComponent, ModalYesNoDialogComponent]
 })
 export class AppModule {}

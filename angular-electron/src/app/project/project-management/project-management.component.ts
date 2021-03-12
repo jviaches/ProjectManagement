@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Router } from '@angular/router';
 import { Project, Ticket } from '../../core/models/project.model'
+import { NotificationService } from '../../core/services/notification.service';
+import { TicketNewComponent } from '../../ticket/ticket-create/ticket-create.component';
 
 interface Dictionary<T> {
   [Key: string]: Ticket[];
@@ -18,7 +20,7 @@ export class ProjectManagementComponent implements OnInit {
   public connectedSections:  Array<string> = [];
   public sectionsTickets: Dictionary<string> = {};
 
-  constructor(private router: Router) { 
+  constructor(private router: Router, private notificationService: NotificationService) { 
     this.project = {
       id: 1,
       name: 'Special Project',
@@ -58,25 +60,15 @@ export class ProjectManagementComponent implements OnInit {
       ]
     };
 
-    this.project.avialableStatuses.map(status => this.connectedSections.push('cdk-drop-list-' + status.id));
-    this.project.tickets.map(ticket => {
-      if (this.sectionsTickets['cdk-drop-list-' + ticket.id] === undefined) {
-        this.sectionsTickets['cdk-drop-list-' + ticket.id] = [];
-        this.sectionsTickets['cdk-drop-list-' + ticket.id].push(ticket);
-      } else {
-        this.sectionsTickets['cdk-drop-list-' + ticket.id].push(ticket);
-      }      
-    });
+    this.recalculateData();
   }
 
   ngOnInit(): void {
   }
-
   
   public get sectiondIds() : string[] {
     return Object.keys(this.sectionsTickets);
   }
-
   
   tags = [
     {id: 1, name:'Ui design'},
@@ -84,34 +76,8 @@ export class ProjectManagementComponent implements OnInit {
     {id: 3, name:'wont Fix'},
   ];
 
-  // todo = [
-  //   {id: 1, name:'Get to work'},
-  //   'Pick up groceries',
-  //   'Go home',
-  //   'Fall asleep'
-  // ];
-
-
-  // inProgress = [
-  //   'Task1',
-  //   'Task2',
-  //   'Task3',
-  //   'Task4'
-  // ];
-
-  // done = [
-  //   'Get up',
-  //   'Brush teeth',
-  //   'Take a shower',
-  //   'Check e-mail',
-  //   'Walk dog'
-  // ];
-
   taskDrop(event: CdkDragDrop<string[]>) {
-    //console.log('ticket dropped' + event);
-
     if (event.previousContainer === event.container) {
-      console.log(event.container.data);
        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       const ticketId = event.previousContainer.data[event.previousIndex]['id'];
@@ -138,7 +104,43 @@ export class ProjectManagementComponent implements OnInit {
   }
 
   deleteTicket(ticketId: number) {
-    const ticketIndex = this.project.tickets.findIndex(d => d.id === ticketId);
-    this.project.tickets.splice(ticketIndex, 1);
+    this.notificationService.showYesNoModalMessage().subscribe( result => {
+      if (result === 'yes') {
+        const ticketIndex = this.project.tickets.findIndex(d => d.id === ticketId);
+        this.project.tickets.splice(ticketIndex, 1);
+      }
+    });
+  }
+
+  createTicket() {
+    this.notificationService.showModalComponent(TicketNewComponent, '', {}).subscribe( result => {
+       if (result !== 'FAIL') {
+        const ticket: Ticket = {
+          id: 10,
+          title: result.caption,
+          content: result.text,
+          tags: [],
+          statusId: 2
+        }
+       
+        this.project.tickets.push(ticket);
+        this.recalculateData();
+       }
+    });
+  }
+
+  private recalculateData() {
+    this.connectedSections = [];
+    this.sectionsTickets = {};
+
+    this.project.avialableStatuses.map(status => this.connectedSections.push('cdk-drop-list-' + status.id));
+    this.project.tickets.map(ticket => {
+      if (this.sectionsTickets['cdk-drop-list-' + ticket.statusId] === undefined) {
+        this.sectionsTickets['cdk-drop-list-' + ticket.statusId] = [];
+        this.sectionsTickets['cdk-drop-list-' + ticket.statusId].push(ticket);
+      } else {
+        this.sectionsTickets['cdk-drop-list-' + ticket.statusId].push(ticket);
+      }      
+    });
   }
 }

@@ -1,0 +1,10 @@
+<div class="center">
+    <input [(ngModel)]='caption' class="input" type="text" placeholder="Caption" style="margin-bottom: 20px;">
+    <quill-editor id="editor" [styles]="editorStyle" [modules]="quillConfiguration"
+        (onContentChanged)="onContentChanged($event)" required></quill-editor>
+
+    <div style="margin-top: 20px;">
+        <button mat-raised-button (click)="createEvent()" style="margin-right: 10px;">Create</button>
+        <button mat-raised-button (click)="cancel()">Cancel</button>
+    </div>
+</div>
