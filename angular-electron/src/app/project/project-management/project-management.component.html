@@ -18,7 +18,7 @@
           <h2>{{ status.name }}</h2>
           <div cdkDropList class="example-list" [attr.id]="'cdk-drop-list-' + status.id"
             [cdkDropListData]="sectionsTickets['cdk-drop-list-' + status.id]" [cdkDropListConnectedTo]="sectiondIds"
-            (cdkDropListDropped)="taskDrop($event)" style="min-height: 100px; background-color: cornflowerblue;">
+            (cdkDropListDropped)="taskDrop($event)">
 
             <div class='task' *ngFor="let ticket of sectionsTickets['cdk-drop-list-' + status.id]" cdkDrag cdkDropList
               (cdkDropListDropped)="tagDrop($event)">
@@ -52,9 +52,9 @@
     </main>
     <aside class='task-details'>
       <div class='tag-progress'>
-        <h2><b>Project Progress - 30%</b></h2>
+        <h2><b>Project Progress - {{projectCopletionPecentage}}%</b></h2>
         <div class='tag-progress columns'>
-          <progress class="progress progress--copyright is-7" max="8" value="3">111</progress>
+          <progress class="progress progress--copyright is-7" max="100" value="{{projectCopletionPecentage}}"></progress>
         </div>
       </div>
 
@@ -74,7 +74,7 @@
       <div class='tag-progress'>
         <h2><b>Notes</b></h2>
         <div>
-          <textarea class="textarea is-small" placeholder="e.g. You can add some notes here"></textarea>
+          <textarea (keyup)="updateNotes($event)" class="textarea is-small" placeholder="e.g. You can add some notes here" [(ngModel)]="project.notes" ></textarea>
         </div>
       </div>
 

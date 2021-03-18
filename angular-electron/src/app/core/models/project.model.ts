@@ -2,7 +2,7 @@
 export interface Project {
     id: number;
     name: string;
-    description: string;
+    notes: string;
     avialableStatuses: Status[];
     avialableTags: Tag[];
     tickets: Ticket[]

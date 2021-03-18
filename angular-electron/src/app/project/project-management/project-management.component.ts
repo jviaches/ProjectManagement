@@ -27,7 +27,7 @@ export class ProjectManagementComponent implements OnInit {
     this.project = {
       id: 1,
       name: 'Special Project',
-      description: 'description..',
+      notes: 'notes..',
       avialableStatuses: [
         { id: 1, name: 'To Do' },
         { id: 2, name: 'In Progress' },
@@ -89,6 +89,13 @@ export class ProjectManagementComponent implements OnInit {
     return Object.keys(this.sectionsTickets);
   }
 
+  public get projectCopletionPecentage(): Number {
+    const allTickets = this.project.tickets.length;
+    const completedTickets = this.project.tickets.filter(ticket => ticket.statusId === 3).length;
+    
+    return Math.round(completedTickets / allTickets * 100);
+  }
+
   tags = [
     { id: 1, name: 'Ui design' },
     { id: 2, name: 'First Bug' },
@@ -97,7 +104,7 @@ export class ProjectManagementComponent implements OnInit {
 
   taskDrop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
-       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       const ticketId = event.previousContainer.data[event.previousIndex]['id'];
       const ticket = this.project.tickets.find(ticket => ticket.id === ticketId);
@@ -153,10 +160,10 @@ export class ProjectManagementComponent implements OnInit {
           tags: [],
           statusId: 1
         }
-       
+
         this.project.tickets.push(ticket);
         this.recalculateData();
-       }
+      }
     });
   }
 
@@ -166,16 +173,17 @@ export class ProjectManagementComponent implements OnInit {
 
     if (this.project.avialableStatuses.length > 0 && this.project.tickets.length > 0) {
       this.project.avialableStatuses.map(status => this.connectedSections.push('cdk-drop-list-' + status.id));
-      this.project.avialableStatuses.map(status => this.sectionsTickets['cdk-drop-list-'+ status.id] = []);
-      
+      this.project.avialableStatuses.map(status => this.sectionsTickets['cdk-drop-list-' + status.id] = []);
+
       this.project.tickets.map(ticket => {
-        // if (this.sectionsTickets['cdk-drop-list-' + ticket.statusId] === undefined) {
-        //   this.sectionsTickets['cdk-drop-list-' + ticket.statusId] = [];
-        //   this.sectionsTickets['cdk-drop-list-' + ticket.statusId].push(ticket);
-        // } else {
-          this.sectionsTickets['cdk-drop-list-' + ticket.statusId].push(ticket);
-        //}
+        this.sectionsTickets['cdk-drop-list-' + ticket.statusId].push(ticket);
       });
     }
+  }
+
+
+  updateNotes(event: KeyboardEvent) {
+    console.log(event.key);
+    this.electronService.saveProject(JSON.stringify(this.project));
   }
 }
