@@ -1,8 +1,12 @@
 {
   "PAGES": {
       "HOME": {
-          "TITLE": "App works !",
-          "GO_TO_DETAIL": "Go to Detail"
+          "NEW": "New",
+          "GO_TO_DETAIL": "Go to Detail",
+          "RECENT": "Recent",
+          "BROWSE": "Browse",
+          "HELP": "Help",
+          "ABOUT": "About"
       },
       "DETAIL": {
         "TITLE": "Detail page !",

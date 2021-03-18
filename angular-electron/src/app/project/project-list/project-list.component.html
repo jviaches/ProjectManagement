@@ -1,9 +1,8 @@
-<div class="position:fixed; top:0px; left:0px; bottom:0px; right:0px; background: red;">
+<!-- <div class="position:fixed; top:0px; left:0px; bottom:0px; right:0px; background: red;">
 
     <div class="column is-half is-offset-one-quarter ">
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
-        <!-- Name Column -->
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef> Project List</th>
           <td mat-cell *matCellDef="let element"> {{element.name}} </td>
@@ -18,4 +17,48 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
     </div>
+</div> -->
+
+<div class="main-menu open">
+  <div class="main-menu-form">
+  </div>
+  <div class="main-menu-content">
+    <ul class="main-menu-nav">
+      <li><a routerLink="/project">&nbsp; {{ 'PAGES.HOME.NEW' | translate }}</a></li>
+      <li><a href="#" (click)="loadProject()">&nbsp; {{ 'PAGES.HOME.RECENT' | translate }}</a></li>
+      <li><a href="#" (click)="loadProject()">&nbsp; {{ 'PAGES.HOME.BROWSE' | translate }}</a></li>
+      <li><a routerLink="/detail">&nbsp; {{ 'PAGES.HOME.HELP' | translate }}</a></li>
+      <li><a routerLink="/detail">&nbsp; {{ 'PAGES.HOME.ABOUT' | translate }}</a></li>
+    </ul>
+  </div>
+</div>
+
+
+<div class="main-content">
+  <div class="posts">
+    <ul>
+      <li>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat accusamus, iusto, maxime adipisci vitae
+          voluptas unde rerum, reiciendis ratione eum harum, natus quia eveniet vel ab dolore veritatis. Est illo
+          officia eos sed, dignissimos, quod exercitationem ipsum mollitia nulla beatae quo praesentium distinctio. Ipsa
+          magnam cupiditate quia ducimus dicta excepturi hic quam vitae incidunt amet vel repellendus pariatur facere
+          inventore saepe minus autem, cumque asperiores eveniet maiores. Sunt libero tenetur officia ipsa natus
+          perferendis, aperiam sed tempora quos, ad culpa. Aliquid aliquam officiis officia labore dignissimos sequi hic
+          omnis optio amet, ad culpa saepe, esse enim, ratione quis rem deserunt.</p>
+      </li>
+      <li>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat accusamus, iusto, maxime adipisci vitae
+          voluptas unde rerum, reiciendis ratione eum harum, natus quia eveniet vel ab dolore veritatis. Est illo
+          officia eos sed, dignissimos, quod exercitationem ipsum mollitia nulla beatae quo praesentium distinctio. Ipsa
+          magnam cupiditate quia ducimus dicta excepturi hic quam vitae incidunt amet vel repellendus pariatur facere
+          inventore saepe minus autem, cumque asperiores eveniet maiores. Sunt libero tenetur officia ipsa natus.</p>
+      </li>
+      <li>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat accusamus, iusto, maxime adipisci vitae
+          voluptas unde rerum, reiciendis ratione eum harum, natus quia eveniet vel ab dolore veritatis. Est illo
+          officia eos sed, dignissimos, quod exercitationem ipsum mollitia nulla beatae quo praesentium distinctio. Ipsa
+          magnam cupiditate quia ducimus dicta excepturi.</p>
+      </li>
+    </ul>
+  </div>
 </div>

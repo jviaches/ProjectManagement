@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ElectronService } from '../../core/services';
 
 export interface PeriodicElement {
   name: string;
@@ -28,11 +29,17 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class ProjectListComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private electronService: ElectronService) { }
 
   displayedColumns: string[] = ['name', 'actions'];
   dataSource = ELEMENT_DATA;
 
   ngOnInit(): void {
+  }
+
+  loadProject() {
+    this.electronService.loadProject().then(value => {
+      this.router.navigateByUrl('/project');
+    });
   }
 }

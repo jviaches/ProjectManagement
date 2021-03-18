@@ -1,34 +1,111 @@
-table {
-  width: 100%;
+// table {
+//   width: 100%;
+// }
+
+// tr td:first-child {
+//   width: 80%;
+// }
+
+// tr td:last-child {
+//   width: 20%;
+//   text-align: center;
+// }
+
+// th:last-child {
+//   text-align: center;
+// }
+
+// td.mat-cell {
+//   border-bottom-style: none;
+// }
+
+// .mat-elevation-z8 {
+//   box-shadow: none;
+// }
+
+// tr.mat-header-row {
+//   height: 30px;
+// }
+
+// th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
+//   padding: 0;
+//   border-bottom-width: 1px;
+//   border-bottom-style: none;
+// }
+
+
+
+
+
+
+ul {
+  list-style-type: none;
+}
+a {
+  text-decoration: none;
 }
 
-tr td:first-child {
-  width: 80%;
+/*main menu*/
+.main-menu {
+  float: left;
+  position: absolute;
+  min-height: 100%;
+  width: 500px;
 }
 
-tr td:last-child {
-  width: 20%;
-  text-align: center;
+.main-menu.open .main-menu-form:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 100%;
+  //background: #2980B9;
+  box-shadow: 0px 0px 6px 1px rgba(93, 173, 226, 0.7);
+}
+.main-menu-form {
+  position: absolute;
+  top: 20%;
+  left: 0;
+  width: 200px;
+  height: 25%;
+  // background: #283747;
 }
 
-th:last-child {
-  text-align: center;
+/*main menu content*/
+.main-menu-content {
+  position: relative;
+  padding: 35px 55px 35px 25px;
+  font: normal 16px/1.25 'Open Sans';
+}
+.main-menu.open .main-menu-content {
+  z-index: 1002;
+}
+.main-menu-logo h2 {
+  font-size: 28px;
+  opacity: 0;
 }
 
-td.mat-cell {
-  border-bottom-style: none;
+.main-menu-nav {
+  margin-top: 40%;
 }
 
-.mat-elevation-z8 {
-  box-shadow: none;
+.main-menu-nav a {
+  display: inline-block;
+  padding: 10px 15px;
+  font-size: 20px;
+  color: #5DADE2;
 }
 
-tr.mat-header-row {
-  height: 30px;
+.main-menu.open .main-menu-nav a:hover {
+  color: #3498DB;
 }
 
-th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
-  padding: 0;
-  border-bottom-width: 1px;
-  border-bottom-style: none;
+.main-content {
+  padding: 35px 55px 35px 250px;
+  padding-top: 10%;
+}
+
+.main-content .posts li {
+  margin: 10px 0;
 }

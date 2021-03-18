@@ -7,7 +7,7 @@
   <div class='app'>
     <main class='project'>
       <div class='project-info'>
-        <h1>Homepage Design</h1>
+        <h1>{{project.name}}</h1>
         <div class='project-participants'>
           <button class='project-participants__add' (click)="createTicket()">Add Participant</button>
         </div>
@@ -18,7 +18,7 @@
           <h2>{{ status.name }}</h2>
           <div cdkDropList class="example-list" [attr.id]="'cdk-drop-list-' + status.id"
             [cdkDropListData]="sectionsTickets['cdk-drop-list-' + status.id]" [cdkDropListConnectedTo]="sectiondIds"
-            (cdkDropListDropped)="taskDrop($event)">
+            (cdkDropListDropped)="taskDrop($event)" style="min-height: 100px; background-color: cornflowerblue;">
 
             <div class='task' *ngFor="let ticket of sectionsTickets['cdk-drop-list-' + status.id]" cdkDrag cdkDropList
               (cdkDropListDropped)="tagDrop($event)">

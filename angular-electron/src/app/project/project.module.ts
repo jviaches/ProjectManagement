@@ -12,10 +12,11 @@ import { ProjectListComponent } from './project-list/project-list.component';
 import { TicketNewComponent } from '../ticket/ticket-create/ticket-create.component';
 import { TicketViewComponent } from '../ticket/ticket-view/ticket-view.component';
 import { QuillModule } from 'ngx-quill';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [ProjectManagementComponent, ProjectListComponent, TicketNewComponent, TicketViewComponent],
-  imports: [BrowserAnimationsModule, CommonModule, SharedModule, MaterialModule, QuillModule.forRoot()],
+  imports: [BrowserAnimationsModule, CommonModule, SharedModule, MaterialModule, RouterModule, QuillModule.forRoot()],
   exports: [ProjectListComponent],
   providers: []
 })

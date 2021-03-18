@@ -5,6 +5,8 @@ import { Project, Ticket } from '../../core/models/project.model'
 import { NotificationService } from '../../core/services/notification.service';
 import { TicketNewComponent } from '../../ticket/ticket-create/ticket-create.component';
 import { TicketViewComponent } from '../../ticket/ticket-view/ticket-view.component';
+import { ElectronService } from '../../core/services';
+
 
 interface Dictionary<T> {
   [Key: string]: Ticket[];
@@ -18,63 +20,79 @@ interface Dictionary<T> {
 export class ProjectManagementComponent implements OnInit {
 
   public project: Project;
-  public connectedSections:  Array<string> = [];
+  public connectedSections: Array<string> = [];
   public sectionsTickets: Dictionary<string> = {};
 
-  constructor(private router: Router, private notificationService: NotificationService) { 
+  constructor(private electronService: ElectronService, private notificationService: NotificationService) {
     this.project = {
       id: 1,
       name: 'Special Project',
       description: 'description..',
       avialableStatuses: [
-        {id: 1, name: 'To Do'},
-        {id: 2, name: 'In Progress'},
-        {id: 3, name: 'Done'}
+        { id: 1, name: 'To Do' },
+        { id: 2, name: 'In Progress' },
+        { id: 3, name: 'Done' }
       ],
       avialableTags: [],
-      tickets: [
-        {
-          id: 1,
-          title: 'Ticket #1',
-          content: 'some content...',
-          statusId: 1,
-          tags: [
-            {id: 1, name: 'Infastructure', color: ''},
-            {id: 2, name: 'UI', color: ''},
-            {id: 3, name: 'Architectrure', color: ''},
-          ]
-        },
-        {
-          id: 2,
-          title: 'Ticket #2',
-          content: 'some content...',
-          statusId: 2,
-          tags: []
-        },
-        {
-          id: 3,
-          title: 'Ticket #3 - extra extra extra long caption',
-          content: 'some content...',
-          statusId: 3,
-          tags: []
-        }
-      ]
+      tickets: []
     };
 
-    this.recalculateData();
+    // this.project = {
+    //   id: 1,
+    //   name: 'Special Project',
+    //   description: 'description..',
+    //   avialableStatuses: [
+    //     {id: 1, name: 'To Do'},
+    //     {id: 2, name: 'In Progress'},
+    //     {id: 3, name: 'Done'}
+    //   ],
+    //   avialableTags: [],
+    //   tickets: [
+    //     {
+    //       id: 1,
+    //       title: 'Ticket #1',
+    //       content: 'some content...',
+    //       statusId: 1,
+    //       tags: [
+    //         {id: 1, name: 'Infastructure', color: ''},
+    //         {id: 2, name: 'UI', color: ''},
+    //         {id: 3, name: 'Architectrure', color: ''},
+    //       ]
+    //     },
+    //     {
+    //       id: 2,
+    //       title: 'Ticket #2',
+    //       content: 'some content...',
+    //       statusId: 2,
+    //       tags: []
+    //     },
+    //     {
+    //       id: 3,
+    //       title: 'Ticket #3 - extra extra extra long caption',
+    //       content: 'some content...',
+    //       statusId: 3,
+    //       tags: []
+    //     }
+    //   ]
+    // };
+
+    //this.recalculateData();
   }
 
   ngOnInit(): void {
+    this.project = this.electronService.project;
+    
+    this.recalculateData();
   }
-  
-  public get sectiondIds() : string[] {
+
+  public get sectiondIds(): string[] {
     return Object.keys(this.sectionsTickets);
   }
-  
+
   tags = [
-    {id: 1, name:'Ui design'},
-    {id: 2, name:'First Bug'},
-    {id: 3, name:'wont Fix'},
+    { id: 1, name: 'Ui design' },
+    { id: 2, name: 'First Bug' },
+    { id: 3, name: 'wont Fix' },
   ];
 
   taskDrop(event: CdkDragDrop<string[]>) {
@@ -89,6 +107,8 @@ export class ProjectManagementComponent implements OnInit {
 
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
     }
+
+    this.electronService.saveProject(JSON.stringify(this.project));
   }
 
   tagDrop(event: CdkDragDrop<string[]>) {
@@ -105,7 +125,7 @@ export class ProjectManagementComponent implements OnInit {
   }
 
   viewTicket(ticket: Ticket) {
-    this.notificationService.showModalComponent(TicketViewComponent, '', {ticket}).subscribe( result => {
+    this.notificationService.showModalComponent(TicketViewComponent, '', { ticket }).subscribe(result => {
       if (result !== 'FAIL') {
         const ticketIndex = this.project.tickets.findIndex(d => d.id === result.id);
         this.project.tickets[ticketIndex].title = result.caption;
@@ -115,7 +135,7 @@ export class ProjectManagementComponent implements OnInit {
   }
 
   deleteTicket(ticketId: number) {
-    this.notificationService.showYesNoModalMessage().subscribe( result => {
+    this.notificationService.showYesNoModalMessage().subscribe(result => {
       if (result === 'yes') {
         const ticketIndex = this.project.tickets.findIndex(d => d.id === ticketId);
         this.project.tickets.splice(ticketIndex, 1);
@@ -124,8 +144,8 @@ export class ProjectManagementComponent implements OnInit {
   }
 
   createTicket() {
-    this.notificationService.showModalComponent(TicketNewComponent, '', {}).subscribe( result => {
-       if (result !== 'FAIL') {
+    this.notificationService.showModalComponent(TicketNewComponent, '', {}).subscribe(result => {
+      if (result !== 'FAIL') {
         const ticket: Ticket = {
           id: 10,
           title: result.caption,
@@ -144,14 +164,18 @@ export class ProjectManagementComponent implements OnInit {
     this.connectedSections = [];
     this.sectionsTickets = {};
 
-    this.project.avialableStatuses.map(status => this.connectedSections.push('cdk-drop-list-' + status.id));
-    this.project.tickets.map(ticket => {
-      if (this.sectionsTickets['cdk-drop-list-' + ticket.statusId] === undefined) {
-        this.sectionsTickets['cdk-drop-list-' + ticket.statusId] = [];
-        this.sectionsTickets['cdk-drop-list-' + ticket.statusId].push(ticket);
-      } else {
-        this.sectionsTickets['cdk-drop-list-' + ticket.statusId].push(ticket);
-      }      
-    });
+    if (this.project.avialableStatuses.length > 0 && this.project.tickets.length > 0) {
+      this.project.avialableStatuses.map(status => this.connectedSections.push('cdk-drop-list-' + status.id));
+      this.project.avialableStatuses.map(status => this.sectionsTickets['cdk-drop-list-'+ status.id] = []);
+      
+      this.project.tickets.map(ticket => {
+        // if (this.sectionsTickets['cdk-drop-list-' + ticket.statusId] === undefined) {
+        //   this.sectionsTickets['cdk-drop-list-' + ticket.statusId] = [];
+        //   this.sectionsTickets['cdk-drop-list-' + ticket.statusId].push(ticket);
+        // } else {
+          this.sectionsTickets['cdk-drop-list-' + ticket.statusId].push(ticket);
+        //}
+      });
+    }
   }
 }
