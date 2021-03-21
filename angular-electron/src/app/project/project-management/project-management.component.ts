@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Router } from '@angular/router';
 import { Project, Ticket } from '../../core/models/project.model'
 import { NotificationService } from '../../core/services/notification.service';
-import { TicketNewComponent } from '../../ticket/ticket-create/ticket-create.component';
 import { TicketViewComponent } from '../../ticket/ticket-view/ticket-view.component';
 import { ElectronService } from '../../core/services';
-
 
 interface Dictionary<T> {
   [Key: string]: Ticket[];
@@ -19,70 +16,20 @@ interface Dictionary<T> {
 })
 export class ProjectManagementComponent implements OnInit {
 
-  public project: Project;
+  public project: Project = null;
   public connectedSections: Array<string> = [];
   public sectionsTickets: Dictionary<string> = {};
 
+  editProjectName: boolean = false;
+
   constructor(private electronService: ElectronService, private notificationService: NotificationService) {
-    this.project = {
-      id: 1,
-      name: 'Special Project',
-      notes: 'notes..',
-      avialableStatuses: [
-        { id: 1, name: 'To Do' },
-        { id: 2, name: 'In Progress' },
-        { id: 3, name: 'Done' }
-      ],
-      avialableTags: [],
-      tickets: []
-    };
-
-    // this.project = {
-    //   id: 1,
-    //   name: 'Special Project',
-    //   description: 'description..',
-    //   avialableStatuses: [
-    //     {id: 1, name: 'To Do'},
-    //     {id: 2, name: 'In Progress'},
-    //     {id: 3, name: 'Done'}
-    //   ],
-    //   avialableTags: [],
-    //   tickets: [
-    //     {
-    //       id: 1,
-    //       title: 'Ticket #1',
-    //       content: 'some content...',
-    //       statusId: 1,
-    //       tags: [
-    //         {id: 1, name: 'Infastructure', color: ''},
-    //         {id: 2, name: 'UI', color: ''},
-    //         {id: 3, name: 'Architectrure', color: ''},
-    //       ]
-    //     },
-    //     {
-    //       id: 2,
-    //       title: 'Ticket #2',
-    //       content: 'some content...',
-    //       statusId: 2,
-    //       tags: []
-    //     },
-    //     {
-    //       id: 3,
-    //       title: 'Ticket #3 - extra extra extra long caption',
-    //       content: 'some content...',
-    //       statusId: 3,
-    //       tags: []
-    //     }
-    //   ]
-    // };
-
-    //this.recalculateData();
   }
 
   ngOnInit(): void {
-    this.project = this.electronService.project;
-    
-    this.recalculateData();
+    this.electronService.project.subscribe(project => {
+      this.project = project;
+      this.recalculateData();
+    });
   }
 
   public get sectiondIds(): string[] {
@@ -90,9 +37,13 @@ export class ProjectManagementComponent implements OnInit {
   }
 
   public get projectCopletionPecentage(): Number {
+    if (this.project === null || this.project.tickets.length === 0) {
+      return 0;
+    }
+
     const allTickets = this.project.tickets.length;
     const completedTickets = this.project.tickets.filter(ticket => ticket.statusId === 3).length;
-    
+
     return Math.round(completedTickets / allTickets * 100);
   }
 
@@ -108,14 +59,15 @@ export class ProjectManagementComponent implements OnInit {
     } else {
       const ticketId = event.previousContainer.data[event.previousIndex]['id'];
       const ticket = this.project.tickets.find(ticket => ticket.id === ticketId);
-
       const statusId = event.container.id.split('cdk-drop-list-')[1];
       ticket.statusId = Number(statusId);
 
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
     }
 
-    this.electronService.saveProject(JSON.stringify(this.project));
+    if (this.electronService.autosave) {
+      this.electronService.saveProject(JSON.stringify(this.project));
+    }
   }
 
   tagDrop(event: CdkDragDrop<string[]>) {
@@ -142,32 +94,31 @@ export class ProjectManagementComponent implements OnInit {
   }
 
   deleteTicket(ticketId: number) {
-    this.notificationService.showYesNoModalMessage().subscribe(result => {
-      if (result === 'yes') {
-        const ticketIndex = this.project.tickets.findIndex(d => d.id === ticketId);
-        this.project.tickets.splice(ticketIndex, 1);
-      }
-    });
+    this.electronService.deleteTicket(ticketId);
   }
 
   createTicket() {
-    this.notificationService.showModalComponent(TicketNewComponent, '', {}).subscribe(result => {
-      if (result !== 'FAIL') {
-        const ticket: Ticket = {
-          id: 10,
-          title: result.caption,
-          content: result.text,
-          tags: [],
-          statusId: 1
-        }
+    this.electronService.createTicket();
+  }
 
-        this.project.tickets.push(ticket);
-        this.recalculateData();
-      }
-    });
+  updateNotes(event: KeyboardEvent) {
+    if (this.electronService.autosave) {
+      this.electronService.saveProject(JSON.stringify(this.project));
+    }
+  }
+
+  setProjectNameEditMode() {
+    if (this.editProjectName) {
+      this.electronService.updateProjectName(this.project.name);
+    }
+    this.editProjectName = !this.editProjectName;
   }
 
   private recalculateData() {
+    if (this.project === null) {
+      return;
+    }
+
     this.connectedSections = [];
     this.sectionsTickets = {};
 
@@ -179,11 +130,5 @@ export class ProjectManagementComponent implements OnInit {
         this.sectionsTickets['cdk-drop-list-' + ticket.statusId].push(ticket);
       });
     }
-  }
-
-
-  updateNotes(event: KeyboardEvent) {
-    console.log(event.key);
-    this.electronService.saveProject(JSON.stringify(this.project));
   }
 }

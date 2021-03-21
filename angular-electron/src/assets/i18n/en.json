@@ -6,7 +6,8 @@
           "RECENT": "Recent",
           "BROWSE": "Browse",
           "HELP": "Help",
-          "ABOUT": "About"
+          "ABOUT": "About",
+          "CLOSE": "Close"
       },
       "DETAIL": {
         "TITLE": "Detail page !",

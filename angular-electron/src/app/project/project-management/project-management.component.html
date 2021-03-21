@@ -4,10 +4,28 @@
   </h1> -->
 
   <!-- Working version of https://dribbble.com/shots/14552329--Exploration-Task-Management-Dashboard -->
-  <div class='app'>
+  <div class='app' *ngIf="project !== null">
     <main class='project'>
       <div class='project-info'>
-        <h1>{{project.name}}</h1>
+        <div style="display: flex;" *ngIf="!editProjectName">
+          <h1>{{project.name}}</h1>
+          <button class='project-participants__edit' (click)="setProjectNameEditMode()">
+            <i class="far fa-edit"></i>
+          </button>
+        </div>
+
+        <div *ngIf="editProjectName" style="display: flex;">
+          <form class="example-form">
+            <mat-form-field class="example-full-width">
+              <mat-label>Project Name</mat-label>
+              <input matInput placeholder="Ex. Pizza" name="projName" [(ngModel)]="project.name">
+            </mat-form-field>
+          </form>
+          <button class='project-participants__edit' (click)="setProjectNameEditMode()">
+            <i class="fas fa-save"></i>
+          </button>
+        </div>
+
         <div class='project-participants'>
           <button class='project-participants__add' (click)="createTicket()">Add Participant</button>
         </div>
@@ -16,7 +34,7 @@
       <div class='project-tasks'>
         <div class="project-column" *ngFor="let status of project.avialableStatuses">
           <h2>{{ status.name }}</h2>
-          <div cdkDropList class="example-list" [attr.id]="'cdk-drop-list-' + status.id"
+          <div cdkDropList class="example-list" [id]="'cdk-drop-list-' + status.id"
             [cdkDropListData]="sectionsTickets['cdk-drop-list-' + status.id]" [cdkDropListConnectedTo]="sectiondIds"
             (cdkDropListDropped)="taskDrop($event)">
 
@@ -40,10 +58,10 @@
               </div>
               <p>{{ticket.title}}</p>
               <div class='task__stats'>
-                <span><time datetime="2021-11-24T20:00:00"><i class="fas fa-flag"></i>Nov 24</time></span>
-                <span><i class="fas fa-comment"></i>2</span>
-                <span><i class="fas fa-paperclip"></i>5</span>
-                <span class='task__owner'></span>
+                <span><i class="fas fa-flag"></i>  {{ ticket.creationDate | date:'LLL dd' }}</span>
+                <!-- <span><i class="fas fa-comment"></i>2</span>
+                  <span><i class="fas fa-paperclip"></i>5</span>
+                  <span class='task__owner'></span> -->
               </div>
             </div>
           </div>
@@ -54,11 +72,12 @@
       <div class='tag-progress'>
         <h2><b>Project Progress - {{projectCopletionPecentage}}%</b></h2>
         <div class='tag-progress columns'>
-          <progress class="progress progress--copyright is-7" max="100" value="{{projectCopletionPecentage}}"></progress>
+          <progress class="progress progress--copyright is-7" max="100"
+            value="{{projectCopletionPecentage}}"></progress>
         </div>
       </div>
 
-      <div class='tag-progress'>
+      <!-- <div class='tag-progress'>
         <h2><b>Tags</b> (drag on ticket)</h2>
         <div>
           <input class="input is-small" type="text" placeholder="Add new tag.." style="margin-bottom: 16px;">
@@ -69,12 +88,13 @@
             </mat-chip>
           </mat-chip-list>
         </div>
-      </div>
+      </div> -->
 
       <div class='tag-progress'>
         <h2><b>Notes</b></h2>
         <div>
-          <textarea (keyup)="updateNotes($event)" class="textarea is-small" placeholder="e.g. You can add some notes here" [(ngModel)]="project.notes" ></textarea>
+          <textarea (keyup)="updateNotes($event)" class="textarea is-small"
+            placeholder="e.g. You can add some notes here" [(ngModel)]="project.notes"></textarea>
         </div>
       </div>
 

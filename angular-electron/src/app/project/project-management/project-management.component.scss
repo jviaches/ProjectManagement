@@ -61,3 +61,16 @@
   .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   }
+
+  .textarea {
+    min-height: 40em;
+  }
+
+  .example-form {
+    min-width: 670px;
+    // width: 100%;
+  }
+
+  .example-full-width {
+    width: 100%;
+  }

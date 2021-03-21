@@ -40,7 +40,7 @@ export class TicketViewComponent implements OnInit  {
   }
 
   onContentChanged = (event) => {
-    this.editorText = event.text;
+    this.editorText = event.html;
   }
 
   updateEvent() {

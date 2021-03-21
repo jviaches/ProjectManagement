@@ -1,10 +1,13 @@
-import { app, BrowserWindow, screen } from 'electron';
+import { app, BrowserWindow, Menu, screen } from 'electron';
 import * as path from 'path';
+import { mainModule } from 'process';
 import * as url from 'url';
+import { ElectronService } from './src/app/core/services/electron/electron.service';
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');
+
 
 function createWindow(): BrowserWindow {
 
@@ -21,9 +24,79 @@ function createWindow(): BrowserWindow {
       nodeIntegration: true,
       allowRunningInsecureContent: (serve) ? true : false,
       contextIsolation: false,  // false if you want to run 2e2 test with Spectron
-      enableRemoteModule : true // true if you want to run 2e2 test  with Spectron or use remote module in renderer context (ie. Angular)
+      enableRemoteModule: true // true if you want to run 2e2 test  with Spectron or use remote module in renderer context (ie. Angular)
     },
   });
+
+  var menu = Menu.buildFromTemplate([
+    {
+      label: 'File',
+      submenu: [
+        {
+          label: 'New',
+          click(item, focusedWindow) {
+            win.webContents.send('new-project', '');
+          },
+        },
+        {
+          label: 'Open',
+          click(item, focusedWindow) {
+            win.webContents.send('open-project', '');
+          },
+        },
+        { type: 'separator' },
+        {
+          label: 'Save',
+          click(item, focusedWindow) {
+            win.webContents.send('save-project', '');
+          },
+        },
+        {
+          label: 'Save As',
+          click(item, focusedWindow) {
+            win.webContents.send('save-as-project', '');
+          },
+        },
+        {
+          label: 'Autosave',
+          type: 'checkbox', checked: true,
+          click(item, focusedWindow) {
+            win.webContents.send('auto-save-project', item.checked);
+          },
+        },
+        { type: 'separator' },
+        {
+          label: 'Close', 
+          click(item, focusedWindow) {
+            win.webContents.send('close-project', item.checked);
+          },
+        },
+        { type: 'separator' },
+        {
+          label: 'Exit', 
+          click(item, focusedWindow) {
+            win.webContents.send('exit', item.checked);
+          },
+        }]
+    },
+    // {
+    //   label: 'Help',
+    //   submenu: [
+    //     {
+    //       label: 'Help',
+    //       click(item, focusedWindow) {
+    //       }
+    //     },
+    //     {
+    //       label: 'About',
+    //       click(item, focusedWindow) {
+    //         win.webContents.send('about', '');
+    //       }
+    //     }
+    //   ]
+    // }
+  ]);
+  Menu.setApplicationMenu(menu);
 
   if (serve) {
 

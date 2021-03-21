@@ -42,4 +42,8 @@ export class ProjectListComponent implements OnInit {
       this.router.navigateByUrl('/project');
     });
   }
+
+  closeProject() {
+    this.electronService.closeProject();
+  }
 }

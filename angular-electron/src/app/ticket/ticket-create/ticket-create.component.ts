@@ -1,4 +1,4 @@
-import {  Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { NotificationService} from '../../core/services/notification.service';
 
@@ -34,7 +34,7 @@ export class TicketNewComponent implements OnInit  {
   }
 
   onContentChanged = (event) => {
-    this.editorText = event.text;
+    this.editorText = event.html;
   }
 
   createEvent() {

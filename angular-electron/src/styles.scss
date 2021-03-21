@@ -30,6 +30,7 @@
 
 body {
   color:var(--text);
+  overflow: hidden; /* Hide scrollbars */
 }
 
 @mixin display {

@@ -35,6 +35,17 @@
         color: rgb(150, 150, 150);
       }
     }
+    &__edit {
+      width: 30px;
+      height: 30px;
+      display: inline-block;
+      border-radius: 100rem;
+    }
+    &__edit {
+      border: 1px none rgb(150, 150, 150);
+      cursor: pointer;
+      position: relative;
+    }
   }
 
   &-tasks {

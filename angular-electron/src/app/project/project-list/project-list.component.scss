@@ -50,7 +50,7 @@ a {
   float: left;
   position: absolute;
   min-height: 100%;
-  width: 500px;
+  width: 590px;
 }
 
 .main-menu.open .main-menu-form:after {
@@ -60,15 +60,15 @@ a {
   right: 0;
   width: 1px;
   height: 100%;
-  //background: #2980B9;
+  background-color: #ebf0f7;
   box-shadow: 0px 0px 6px 1px rgba(93, 173, 226, 0.7);
 }
 .main-menu-form {
   position: absolute;
   top: 20%;
   left: 0;
-  width: 200px;
-  height: 25%;
+  width: 300px;
+  height: 20%;
   // background: #283747;
 }
 
@@ -102,8 +102,8 @@ a {
 }
 
 .main-content {
-  padding: 35px 55px 35px 250px;
-  padding-top: 10%;
+  padding: 35px 55px 35px 350px;
+  padding-top: 15%;
 }
 
 .main-content .posts li {

@@ -1,6 +1,5 @@
 
 export interface Project {
-    id: number;
     name: string;
     notes: string;
     avialableStatuses: Status[];
@@ -20,6 +19,7 @@ export interface Ticket {
     content: string;
     tags: Tag[];
     statusId: number;
+    creationDate: Date;
 }
 
 export interface Status {

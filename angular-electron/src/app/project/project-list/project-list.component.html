@@ -25,10 +25,11 @@
   <div class="main-menu-content">
     <ul class="main-menu-nav">
       <li><a routerLink="/project">&nbsp; {{ 'PAGES.HOME.NEW' | translate }}</a></li>
-      <li><a href="#" (click)="loadProject()">&nbsp; {{ 'PAGES.HOME.RECENT' | translate }}</a></li>
+      <!-- <li><a href="#" (click)="loadProject()">&nbsp; {{ 'PAGES.HOME.RECENT' | translate }}</a></li> -->
       <li><a href="#" (click)="loadProject()">&nbsp; {{ 'PAGES.HOME.BROWSE' | translate }}</a></li>
-      <li><a routerLink="/detail">&nbsp; {{ 'PAGES.HOME.HELP' | translate }}</a></li>
-      <li><a routerLink="/detail">&nbsp; {{ 'PAGES.HOME.ABOUT' | translate }}</a></li>
+      <li><a href="#" (click)="closeProject()">&nbsp; {{ 'PAGES.HOME.CLOSE' | translate }}</a></li>
+      <!-- <li><a routerLink="/detail">&nbsp; {{ 'PAGES.HOME.HELP' | translate }}</a></li>
+      <li><a routerLink="/detail">&nbsp; {{ 'PAGES.HOME.ABOUT' | translate }}</a></li> -->
     </ul>
   </div>
 </div>
@@ -36,7 +37,20 @@
 
 <div class="main-content">
   <div class="posts">
-    <ul>
+    <article class="message">
+      <div class="message-body">
+        This software was created to help software tinkers, solopreneurs and other developers trying to
+        reach new horizons! <strong>Projscope</strong>, is free to use in both commercial and private projects and it is
+        constantly improving.
+        <ul>
+          <li>Website: <a href="projscope.com">projscope.com</a></li>
+          <li>Ver: <i>0.0.1</i></li>
+        </ul>
+        Please let us know what you think or would like to report bugs <a href="mailto:support@projscope.com">here</a>
+      </div>
+    </article>
+
+    <!-- <ul>
       <li>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat accusamus, iusto, maxime adipisci vitae
           voluptas unde rerum, reiciendis ratione eum harum, natus quia eveniet vel ab dolore veritatis. Est illo
@@ -59,6 +73,6 @@
           officia eos sed, dignissimos, quod exercitationem ipsum mollitia nulla beatae quo praesentium distinctio. Ipsa
           magnam cupiditate quia ducimus dicta excepturi.</p>
       </li>
-    </ul>
+    </ul> -->
   </div>
 </div>
