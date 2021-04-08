@@ -14,17 +14,18 @@ export class TicketNewComponent implements OnInit  {
   quillConfiguration = {
     toolbar: [
       ['bold', 'italic', 'underline', 'strike'],
-      ['blockquote', 'code-block'],
+      // ['blockquote', 'code-block'],
       [{ list: 'ordered' }, { list: 'bullet' }],
       [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      [{ color: [] }, { background: [] }],
-      ['link'],
-      ['clean'],
+      // [{ color: [] }, { background: [] }],
+      // ['link'],
+      // ['clean'],
     ],
   }
 
   editorStyle = {
-    height: '260px'
+    height: '260px',
+    width: '400px'
   };
 
   constructor(private notificationService: NotificationService, private dialogRef: MatDialogRef<TicketNewComponent>) {

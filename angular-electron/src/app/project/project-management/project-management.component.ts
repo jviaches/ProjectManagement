@@ -19,8 +19,25 @@ export class ProjectManagementComponent implements OnInit {
   public project: Project = null;
   public connectedSections: Array<string> = [];
   public sectionsTickets: Dictionary<string> = {};
+  public editProjectName: boolean = false;
 
-  editProjectName: boolean = false;
+  caption = '';
+  quillConfiguration = {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike'],
+      // ['blockquote', 'code-block'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+      // [{ color: [] }, { background: [] }],
+      // ['link'],
+      // ['clean'],
+    ],
+  }
+
+  editorStyle = {
+    height: '260px',
+    background: 'white'
+  };
 
   constructor(private electronService: ElectronService, private notificationService: NotificationService) {
   }
@@ -60,9 +77,14 @@ export class ProjectManagementComponent implements OnInit {
       const ticketId = event.previousContainer.data[event.previousIndex]['id'];
       const ticket = this.project.tickets.find(ticket => ticket.id === ticketId);
       const statusId = event.container.id.split('cdk-drop-list-')[1];
-      ticket.statusId = Number(statusId);
+
+      console.log('Moving ticket: ' + ticket);
+      console.log('Old status: ' + statusId);
+
+      ticket.statusId = Number(statusId);      
 
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+      console.log(this.project.tickets);
     }
 
     if (this.electronService.autosave) {
@@ -98,10 +120,11 @@ export class ProjectManagementComponent implements OnInit {
   }
 
   createTicket() {
-    this.electronService.createTicket();
+    this.electronService.createTicket();    
   }
 
-  updateNotes(event: KeyboardEvent) {
+  onContentChanged = (event) => {
+    this.project.notes = event.html;
     if (this.electronService.autosave) {
       this.electronService.saveProject(JSON.stringify(this.project));
     }

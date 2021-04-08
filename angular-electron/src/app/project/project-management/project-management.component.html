@@ -93,8 +93,11 @@
       <div class='tag-progress'>
         <h2><b>Notes</b></h2>
         <div>
-          <textarea (keyup)="updateNotes($event)" class="textarea is-small"
-            placeholder="e.g. You can add some notes here" [(ngModel)]="project.notes"></textarea>
+          <quill-editor id="editor" [styles]="editorStyle" [modules]="quillConfiguration"
+          (onContentChanged)="onContentChanged($event)" required [(ngModel)]="project.notes"></quill-editor>
+
+          <!-- <textarea (keyup)="updateNotes($event)" class="textarea is-small"
+            placeholder="e.g. You can add some notes here" [(ngModel)]="project.notes"></textarea> -->
         </div>
       </div>
 

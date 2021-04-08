@@ -2,14 +2,16 @@
     <h2 mat-dialog-title>Confirmation</h2>
 
     <mat-dialog-content>
-        <span>Are you sure ?</span>
+        <p>{{additionalMessage}}</p>
+        <p></p>
+        <p>Are you sure ?</p>
     </mat-dialog-content>
 
     <mat-dialog-actions>
-        <button class="mat-raised-button" (click)="yes()">
+        <button class="button is-outlined" (click)="yes()">
             Yes
         </button>
-        <button class="mat-raised-button" (click)="no()">
+        <button class="button is-outlined" (click)="no()">
             No
         </button>
     </mat-dialog-actions>

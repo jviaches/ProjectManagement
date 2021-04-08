@@ -31,14 +31,15 @@ export class NotificationService {
         const config = new MatSnackBarConfig();
         config.panelClass = ['snackBar-fail'];
         config.duration = 3000;
-        this.snackBar.open(text, null, config);
+        this.snackBar.open(text, null, config).afterDismissed();
     }
 
-    public showYesNoModalMessage(): Observable<any> {
+    public showYesNoModalMessage(textMessage: string): Observable<any> {
         const dialogConfig = new MatDialogConfig();
 
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
+        dialogConfig.data = { data: { message: textMessage } };
         const dialogRef = this.dialog.open(ModalYesNoDialogComponent, dialogConfig);
 
         return dialogRef.afterClosed();

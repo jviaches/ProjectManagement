@@ -1,12 +1,10 @@
-import { app, BrowserWindow, Menu, screen } from 'electron';
+import { app, dialog, BrowserWindow, Menu, screen, ipcRenderer, MenuItem } from 'electron';
 import * as path from 'path';
-import { mainModule } from 'process';
 import * as url from 'url';
-import { ElectronService } from './src/app/core/services/electron/electron.service';
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
-  serve = args.some(val => val === '--serve');
+serve = args.some(val => val === '--serve');
 
 
 function createWindow(): BrowserWindow {
@@ -26,6 +24,7 @@ function createWindow(): BrowserWindow {
       contextIsolation: false,  // false if you want to run 2e2 test with Spectron
       enableRemoteModule: true // true if you want to run 2e2 test  with Spectron or use remote module in renderer context (ie. Angular)
     },
+    icon: './src/assets/icons/favicon.ico'
   });
 
   var menu = Menu.buildFromTemplate([
@@ -47,19 +46,21 @@ function createWindow(): BrowserWindow {
         { type: 'separator' },
         {
           label: 'Save',
+          enabled: false,
           click(item, focusedWindow) {
             win.webContents.send('save-project', '');
           },
         },
         {
           label: 'Save As',
+          enabled: false,
           click(item, focusedWindow) {
             win.webContents.send('save-as-project', '');
           },
         },
         {
           label: 'Autosave',
-          type: 'checkbox', checked: true,
+          type: 'checkbox', checked: false,
           click(item, focusedWindow) {
             win.webContents.send('auto-save-project', item.checked);
           },
@@ -67,6 +68,7 @@ function createWindow(): BrowserWindow {
         { type: 'separator' },
         {
           label: 'Close', 
+          enabled: false,
           click(item, focusedWindow) {
             win.webContents.send('close-project', item.checked);
           },
@@ -121,6 +123,32 @@ function createWindow(): BrowserWindow {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     win = null;
+  });
+
+  win.webContents.on('ipc-message', (event, input, args) => {
+
+    if (input === 'close-project-enable') {
+      const closeMenu = Menu.getApplicationMenu().items[0].submenu.items.find(item => item.label === 'Close');
+      const saveMenu = Menu.getApplicationMenu().items[0].submenu.items.find(item => item.label === 'Save');
+      const saveAsMenu = Menu.getApplicationMenu().items[0].submenu.items.find(item => item.label === 'Save As');
+      
+      if (args === true) {
+        closeMenu.enabled = true;
+        saveMenu.enabled = true;
+        saveAsMenu.enabled = true;
+      } else {
+        closeMenu.enabled = false;
+        saveMenu.enabled = false;
+        saveAsMenu.enabled = false;
+      }
+
+      Menu.setApplicationMenu(menu);
+
+      // return dialog.showErrorBox(
+      //   input,
+      //   JSON.stringify(args)
+      // );
+    }
   });
 
   return win;

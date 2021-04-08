@@ -8,13 +8,12 @@ import { ProjectManagementComponent } from './project/project-management/project
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'project', component: ProjectManagementComponent },
-  { path: '**', component: PageNotFoundComponent
-  }
+  { path: '**', component: PageNotFoundComponent }
 ];
 
 @NgModule({
   imports: [
-    [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+    [RouterModule.forRoot(routes)], //, { relativeLinkResolution: 'corrected' })],
   ],
   exports: [RouterModule]
 })

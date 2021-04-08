@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DialogData } from '../modal-dialog/dialog-data';
 
 @Component({
   selector: 'app-yesno-modal-dialog',
@@ -11,8 +12,10 @@ export class ModalYesNoDialogComponent {
 
   public caption: 'Confirmation';
   public message: 'Are you sure ?';
+  public additionalMessage : '';
 
-  constructor(private dialogRef: MatDialogRef<ModalYesNoDialogComponent>) {
+  constructor(private dialogRef: MatDialogRef<ModalYesNoDialogComponent>, @Inject(MAT_DIALOG_DATA) { data }: DialogData) {
+    this.additionalMessage = data.message;
   }
 
   yes() {

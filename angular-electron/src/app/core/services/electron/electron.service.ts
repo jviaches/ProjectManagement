@@ -25,9 +25,10 @@ export class ElectronService {
   fs: typeof fs;
   dialog: typeof dialog;
 
-  project: BehaviorSubject<Project> = new BehaviorSubject(this.defaultProject);
+  project: BehaviorSubject<Project> = new BehaviorSubject(null);
   filePath: string = '';
-  autosave: boolean = true;
+  autosave: boolean = false;
+  lastTicketId: number = 1;
 
   get isElectron(): boolean {
     return !!(window && window.process && window.process.type);
@@ -48,7 +49,9 @@ export class ElectronService {
 
       this.ipcRenderer.on('new-project', (event, arg) => {
         this.ngZone.run(() => {
-          this.newProject();
+          this.newProject().then(value => {
+            this.redirectTo('/project', false);
+          });
         });
       });
 
@@ -61,6 +64,8 @@ export class ElectronService {
             this.notificationService.showActionConfirmationSuccess('Saved!');
           }
         });
+
+        this.ipcRenderer.send('close-project-enable', true)
       });
 
       this.ipcRenderer.on('save-as-project', (event, arg) => {
@@ -72,6 +77,7 @@ export class ElectronService {
             this.notificationService.showActionConfirmationSuccess('Saved!');
           }
         });
+        this.ipcRenderer.send('close-project-enable', true)
       });
 
       this.ipcRenderer.on('auto-save-project', (event, status) => {
@@ -79,12 +85,14 @@ export class ElectronService {
           this.notificationService.showActionConfirmationFail((status) ? ' Autosave enabled' : 'Autosave disabled');
           this.autosave = status;
         });
+        this.ipcRenderer.send('close-project-enable', true)
       });
 
       this.ipcRenderer.on('open-project', (event, arg) => {
         this.ngZone.run(() => {
           this.loadProject().then(value => {
-            this.redirectTo('/project');
+            this.ipcRenderer.send('close-project-enable', true)
+            this.redirectTo('/project', false);
           });
         });
       });
@@ -95,46 +103,45 @@ export class ElectronService {
         });
       });
 
-
       this.ipcRenderer.on('exit', (event, arg) => {
         this.ngZone.run(() => {
-          this.remote.getCurrentWindow().close();
+          this.notificationService.showYesNoModalMessage(this.dialogContent()).subscribe(response => {
+            if (response === 'yes') {
+              this.exitProgram();
+            }
+          });
         });
       });
-
-      // this.ipcRenderer.on('about', (event, arg) => {
-      //   this.ngZone.run(() => {
-      //     this.notificationService.showModalComponent(AboutComponent, 'About', '').subscribe();
-      //   });
-      // });
     }
   }
 
-  newProject() {
-    const project = {
-      name: 'Special Project',
-      notes: 'notes..',
-      avialableStatuses: [
-        { id: 1, name: 'To Do' },
-        { id: 2, name: 'In Progress' },
-        { id: 3, name: 'Done' }
-      ],
-      avialableTags: [],
-      tickets: [
-        {
-          id: 1,
-          title: 'Ticket #1',
-          content: 'some content...',
-          statusId: 1,
-          tags: [],
-          creationDate: new Date()
-        }
-      ]
-    };
+  exitProgram() {
+    this.project = new BehaviorSubject(null);
+    this.remote.getCurrentWindow().close();
+  }
 
-    this.project.next(project);
-    this.setPageTitle();
-    this.redirectTo('/project');
+  newProject() {
+    return new Promise<Project>((resolve) => {
+      if (this.project.value === null) {
+       
+        this.ipcRenderer.send('close-project-enable', true)
+
+        this.setPageTitle();
+        this.project.next(this.defaultProject);
+        this.setLastTicketId(this.defaultProject);
+        resolve(this.project.value);
+      } else {
+        this.notificationService.showYesNoModalMessage(this.dialogContent()).subscribe(response => {
+          if (response === 'yes') {
+            this.ipcRenderer.send('close-project-enable', true)
+            this.project.next(this.defaultProject);
+            this.setPageTitle();
+            this.setLastTicketId(this.defaultProject);
+            resolve(this.project.value);
+          }
+        });
+      }
+    });
   }
 
   updateProjectName(projName: string) {
@@ -143,26 +150,19 @@ export class ElectronService {
   }
 
   closeProject() {
-    console.log('closing: ' + this.filePath);
+    this.notificationService.showYesNoModalMessage(this.dialogContent()).subscribe(response => {
 
-    if (this.filePath !== '') {
-      this.notificationService.showYesNoModalMessage().subscribe(response => {
-        if (response === 'yes') {
-          this.filePath = '';
-          this.redirectTo('/');
-        }
-      });
-    } else {
-      this.filePath = '';
-      this.redirectTo('/');
-    }
+      if (response === 'yes') {
+        this.ipcRenderer.send('close-project-enable', false);
+        this.project = new BehaviorSubject(null);
+        this.filePath = '';
+        this.setLastTicketId(null);
+        this.redirectTo('/', false);
+      }
+    });
   }
 
   saveProject(content: any) {
-    console.log(this.filePath);
-    console.log(content);
-
-
     if (this.filePath === '') {
       this.saveAsProject(content);
     } else {
@@ -173,8 +173,6 @@ export class ElectronService {
           console.log(err);
           return;
         }
-
-        // alert("The file has been succesfully saved");
       });
     }
     this.setPageTitle();
@@ -202,8 +200,8 @@ export class ElectronService {
         return;
       }
 
+      this.ipcRenderer.send('close-project-enable', true);
       this.setPageTitle();
-      // alert("The file has been succesfully saved");
     });
   }
 
@@ -211,7 +209,7 @@ export class ElectronService {
     return new Promise<Project>((resolve) => {
 
       if (this.filePath !== '') {
-        this.notificationService.showYesNoModalMessage().subscribe(response => {
+        this.notificationService.showYesNoModalMessage('').subscribe(response => {
           if (response === 'no') {
             resolve(this.project.value);
           } else {
@@ -230,6 +228,7 @@ export class ElectronService {
 
               this.filePath = file[0];
               this.setPageTitle();
+              this.setLastTicketId(JSON.parse(data));
               this.project.next(JSON.parse(data));
               resolve(this.project.value);
             });
@@ -252,6 +251,7 @@ export class ElectronService {
 
             this.filePath = file[0];
             this.setPageTitle();
+            this.setLastTicketId(JSON.parse(data));
             this.project.next(JSON.parse(data));
             resolve(this.project.value);
           });
@@ -264,7 +264,7 @@ export class ElectronService {
     this.notificationService.showModalComponent(TicketNewComponent, '', {}).subscribe(result => {
       if (result !== 'FAIL') {
         const ticket: Ticket = {
-          id: 10,
+          id: this.getNextTicketId(),
           title: result.caption,
           content: result.text,
           tags: [],
@@ -280,25 +280,29 @@ export class ElectronService {
   }
 
   deleteTicket(ticketId: number) {
-    this.notificationService.showYesNoModalMessage().subscribe(result => {
+    this.notificationService.showYesNoModalMessage('').subscribe(result => {
       if (result === 'yes') {
         const ticketIndex = this.project.value.tickets.findIndex(d => d.id === ticketId);
         this.project.value.tickets.splice(ticketIndex, 1);
 
+        this.setLastTicketId(this.project.value);
         this.project.next(this.project.value);
       }
     });
   }
 
-  redirectTo(uri: string) {
-    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() =>
-      this.router.navigate([uri]));
+  redirectTo(uri: string, fromHomePage: boolean) {
+    if (fromHomePage) {
+      this.router.navigateByUrl(uri);
+    } else {
+      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() =>
+        this.router.navigate([uri]));
+    }
   }
-
 
   public get defaultProject(): Project {
     const project = {
-      name: 'Special Project',
+      name: 'Project Name',
       notes: 'notes..',
       avialableStatuses: [
         { id: 1, name: 'To Do' },
@@ -327,5 +331,24 @@ export class ElectronService {
     } else {
       this.titleService.setTitle(ElectronService.PAGE_TITLE + ' - ' + this.filePath);
     }
+  }
+
+  dialogContent(): string {
+    return this.filePath === '' ? 'Project is not saved!' : ''
+  }
+
+  getNextTicketId(): number {
+    this.lastTicketId += 1;
+    return this.lastTicketId;
+  }
+
+  setLastTicketId(project: Project) {
+    if (!project) {
+      this.lastTicketId = 1;
+    } else {
+      const maxTicketId = Math.max(...project.tickets.map(ticket => ticket.id));
+      this.lastTicketId = maxTicketId;   
+    }
+    console.log( this.lastTicketId);
   }
 }

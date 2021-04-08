@@ -19,17 +19,15 @@
     </div>
 </div> -->
 
-<div class="main-menu open">
+<!-- <div class="main-menu open">
   <div class="main-menu-form">
   </div>
   <div class="main-menu-content">
+
     <ul class="main-menu-nav">
-      <li><a routerLink="/project">&nbsp; {{ 'PAGES.HOME.NEW' | translate }}</a></li>
-      <!-- <li><a href="#" (click)="loadProject()">&nbsp; {{ 'PAGES.HOME.RECENT' | translate }}</a></li> -->
-      <li><a href="#" (click)="loadProject()">&nbsp; {{ 'PAGES.HOME.BROWSE' | translate }}</a></li>
-      <li><a href="#" (click)="closeProject()">&nbsp; {{ 'PAGES.HOME.CLOSE' | translate }}</a></li>
-      <!-- <li><a routerLink="/detail">&nbsp; {{ 'PAGES.HOME.HELP' | translate }}</a></li>
-      <li><a routerLink="/detail">&nbsp; {{ 'PAGES.HOME.ABOUT' | translate }}</a></li> -->
+      <button class="button is-info is-inverted"  (click)="newProject()">{{ 'PAGES.HOME.NEW' | translate }}</button>
+      <button class="button is-info is-inverted"  (click)="loadProject()">{{ 'PAGES.HOME.LOAD' | translate }}</button>
+
     </ul>
   </div>
 </div>
@@ -37,42 +35,62 @@
 
 <div class="main-content">
   <div class="posts">
-    <article class="message">
-      <div class="message-body">
-        This software was created to help software tinkers, solopreneurs and other developers trying to
-        reach new horizons! <strong>Projscope</strong>, is free to use in both commercial and private projects and it is
-        constantly improving.
-        <ul>
-          <li>Website: <a href="projscope.com">projscope.com</a></li>
-          <li>Ver: <i>0.0.1</i></li>
-        </ul>
-        Please let us know what you think or would like to report bugs <a href="mailto:support@projscope.com">here</a>
-      </div>
-    </article>
-
-    <!-- <ul>
-      <li>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat accusamus, iusto, maxime adipisci vitae
-          voluptas unde rerum, reiciendis ratione eum harum, natus quia eveniet vel ab dolore veritatis. Est illo
-          officia eos sed, dignissimos, quod exercitationem ipsum mollitia nulla beatae quo praesentium distinctio. Ipsa
-          magnam cupiditate quia ducimus dicta excepturi hic quam vitae incidunt amet vel repellendus pariatur facere
-          inventore saepe minus autem, cumque asperiores eveniet maiores. Sunt libero tenetur officia ipsa natus
-          perferendis, aperiam sed tempora quos, ad culpa. Aliquid aliquam officiis officia labore dignissimos sequi hic
-          omnis optio amet, ad culpa saepe, esse enim, ratione quis rem deserunt.</p>
-      </li>
-      <li>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat accusamus, iusto, maxime adipisci vitae
-          voluptas unde rerum, reiciendis ratione eum harum, natus quia eveniet vel ab dolore veritatis. Est illo
-          officia eos sed, dignissimos, quod exercitationem ipsum mollitia nulla beatae quo praesentium distinctio. Ipsa
-          magnam cupiditate quia ducimus dicta excepturi hic quam vitae incidunt amet vel repellendus pariatur facere
-          inventore saepe minus autem, cumque asperiores eveniet maiores. Sunt libero tenetur officia ipsa natus.</p>
-      </li>
-      <li>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat accusamus, iusto, maxime adipisci vitae
-          voluptas unde rerum, reiciendis ratione eum harum, natus quia eveniet vel ab dolore veritatis. Est illo
-          officia eos sed, dignissimos, quod exercitationem ipsum mollitia nulla beatae quo praesentium distinctio. Ipsa
-          magnam cupiditate quia ducimus dicta excepturi.</p>
-      </li>
-    </ul> -->
+    
+    <div class="notification is-info is-light">
+      This software was created to help software tinkers, solopreneurs and other developers trying to
+      reach new horizons! <strong>Projscope</strong>, is free to use in both commercial and private projects and it is
+      constantly improving.
+      <ul>
+        <li>Website: <a href="projscope.com">projscope.com</a></li>
+        <li>Ver: <i>0.0.1</i></li>
+      </ul>
+      Please let us know what you think or would like to report bugs <a href="mailto:support@projscope.com">here</a>
+    </div>
   </div>
-</div>
+</div> -->
+
+<!-- 
+<div class="empty">
+  <div class="container">
+    <div class="notification is-primary">
+      This container is <strong>centered</strong> on desktop and larger viewports.
+    </div>
+  </div>
+</div> -->
+
+
+
+<section class="centerall">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-half">
+        <figure style="display: flex; justify-content: space-between;">
+          <a routerLink="." class="btn" (click)="newProject()">
+            <i class="fa fa-file"></i>
+          </a>
+          <a routerLink="." class="btn" (click)="loadProject()">
+            <i class="fa fa-folder-open"></i>
+          </a>
+          <a routerLink="." class="btn">
+            <i class="fa fa-power-off" (click)="exitProject()"></i>
+          </a>
+        </figure>
+
+        <br/>
+        <br/>
+
+        <article class="message is-dark">
+          <div class="message-body">
+            <br />
+            <span><strong>Website:</strong> www.projscope.com</span>
+            <br />
+            <span><strong>Support:</strong> support@projscope.com</span>
+            <br />
+            <span><strong>Version:</strong> 0.0.1a</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </div>
+</section>
