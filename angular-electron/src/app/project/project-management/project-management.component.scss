@@ -74,3 +74,8 @@
   .example-full-width {
     width: 100%;
   }
+
+  .section-title { 
+    display: flex; 
+    justify-content: space-between;
+  }

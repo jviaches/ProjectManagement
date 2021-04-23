@@ -154,4 +154,8 @@ export class ProjectManagementComponent implements OnInit {
       });
     }
   }
+
+  sectionId(id: string): Number {
+      return this.sectionsTickets['cdk-drop-list-' + id] ? this.sectionsTickets['cdk-drop-list-' + id].length : 0;
+  }
 }

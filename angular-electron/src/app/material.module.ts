@@ -28,6 +28,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @NgModule({
   imports: [
@@ -60,7 +61,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatButtonToggleModule,
     MatCheckboxModule,
     MatProgressBarModule,
-    DragDropModule
+    DragDropModule,
+    MatBadgeModule
   ],
   exports: [
     MatCardModule,
@@ -92,7 +94,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatButtonToggleModule,
     MatCheckboxModule,
     MatProgressBarModule,
-    DragDropModule
+    DragDropModule,
+    MatBadgeModule
   ],
   providers: [
     MatDatepickerModule, MatDialogModule

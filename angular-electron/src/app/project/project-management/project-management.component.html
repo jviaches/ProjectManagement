@@ -1,8 +1,4 @@
 <div>
-  <!-- <h1 class="title">
-    {{ 'PAGES.HOME.TITLE' | translate }}
-  </h1> -->
-
   <!-- Working version of https://dribbble.com/shots/14552329--Exploration-Task-Management-Dashboard -->
   <div class='app' *ngIf="project !== null">
     <main class='project'>
@@ -33,13 +29,22 @@
 
       <div class='project-tasks'>
         <div class="project-column" *ngFor="let status of project.avialableStatuses">
-          <h2>{{ status.name }}</h2>
+          <div class="section-title">
+            <div>
+              <span matBadge="{{sectionId(status.id)}}" matBadgeOverlap="true">
+                {{ status.name }}
+              </span>
+            </div>
+          </div>
           <div cdkDropList class="example-list" [id]="'cdk-drop-list-' + status.id"
-            [cdkDropListData]="sectionsTickets['cdk-drop-list-' + status.id]" [cdkDropListConnectedTo]="sectiondIds"
+            [cdkDropListData]="sectionsTickets['cdk-drop-list-' + status.id]" 
+            [cdkDropListConnectedTo]="sectiondIds"
             (cdkDropListDropped)="taskDrop($event)">
 
-            <div class='task' *ngFor="let ticket of sectionsTickets['cdk-drop-list-' + status.id]" cdkDrag cdkDropList
-              (cdkDropListDropped)="tagDrop($event)">
+            <div class='task' *ngFor="let ticket of sectionsTickets['cdk-drop-list-' + status.id]" 
+                 cdkDrag cdkDropList 
+                 (cdkDropListDropped)="tagDrop($event)" 
+                 (dblclick)="viewTicket(ticket)"> 
               <div class='task__tags'>
                 <span></span>
                 <button mat-icon-button [matMenuTriggerFor]="menu">
