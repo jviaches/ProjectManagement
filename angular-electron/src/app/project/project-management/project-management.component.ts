@@ -4,6 +4,8 @@ import { Project, Ticket } from '../../core/models/project.model'
 import { NotificationService } from '../../core/services/notification.service';
 import { TicketViewComponent } from '../../ticket/ticket-view/ticket-view.component';
 import { ElectronService } from '../../core/services';
+import { Priority, PriorityColor } from '../../core/models/priority.model';
+import { UtilsService } from '../../core/services/utils.service';
 
 interface Dictionary<T> {
   [Key: string]: Ticket[];
@@ -39,7 +41,12 @@ export class ProjectManagementComponent implements OnInit {
     background: 'white'
   };
 
-  constructor(private electronService: ElectronService, private notificationService: NotificationService) {
+  constructor(private electronService: ElectronService, 
+              private notificationService: NotificationService,
+              public utilsService: UtilsService) {
+
+                console.log(utilsService.priorityColors);
+                
   }
 
   ngOnInit(): void {
@@ -111,6 +118,7 @@ export class ProjectManagementComponent implements OnInit {
         const ticketIndex = this.project.tickets.findIndex(d => d.id === result.id);
         this.project.tickets[ticketIndex].title = result.caption;
         this.project.tickets[ticketIndex].content = result.text;
+        this.project.tickets[ticketIndex].priority = result.priority;
       }
     });
   }
@@ -157,5 +165,27 @@ export class ProjectManagementComponent implements OnInit {
 
   sectionId(id: string): Number {
       return this.sectionsTickets['cdk-drop-list-' + id] ? this.sectionsTickets['cdk-drop-list-' + id].length : 0;
+  }
+
+  ticketPriority(ticket: Ticket) {
+    return ticket ? ticket.priority : '';
+  }
+
+  setTicketColor(priority: Priority) {
+    if (priority == Priority.Minor) {
+      return PriorityColor.Minor;
+    }
+
+    if (priority == Priority.Normal) {
+      return  PriorityColor.Normal;
+    }
+
+    if (priority == Priority.High) {
+      return  PriorityColor.High;
+    }
+
+    if (priority == Priority.Critical) {
+      return  PriorityColor.Critical;
+    }
   }
 }

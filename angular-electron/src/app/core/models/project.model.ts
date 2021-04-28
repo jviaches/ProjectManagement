@@ -1,3 +1,4 @@
+import { Priority } from "./priority.model";
 
 export interface Project {
     name: string;
@@ -13,10 +14,11 @@ export interface Tag {
     color: string;
 }
 
-export interface Ticket {
+export class Ticket {
     id: number;
-    title: string;
-    content: string;
+    title: string = '';
+    content: string = '';
+    priority: Priority;
     tags: Tag[];
     statusId: number;
     creationDate: Date;

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { NotificationService} from '../../core/services/notification.service';
+import { UtilsService } from '../../core/services/utils.service';
 
 @Component({
   selector: 'app-ticket-new',
@@ -10,6 +11,7 @@ import { NotificationService} from '../../core/services/notification.service';
 export class TicketNewComponent implements OnInit  {
 
   caption = '';
+  selectedValue = '';
   editorText: '';
   quillConfiguration = {
     toolbar: [
@@ -28,7 +30,9 @@ export class TicketNewComponent implements OnInit  {
     width: '400px'
   };
 
-  constructor(private notificationService: NotificationService, private dialogRef: MatDialogRef<TicketNewComponent>) {
+  constructor(private notificationService: NotificationService, 
+              private dialogRef: MatDialogRef<TicketNewComponent>,
+              public utilsService: UtilsService) {
   }
 
   ngOnInit() {
@@ -42,7 +46,7 @@ export class TicketNewComponent implements OnInit  {
     if (this.caption.trim().length === 0) {
       this.notificationService.showActionConfirmationFail('Action cancelled. Nothing was created.');
     } else {
-      this.dialogRef.close({caption: this.caption, text:this.editorText });
+      this.dialogRef.close({caption: this.caption, text:this.editorText, priority: this.selectedValue });
     }
   }
 

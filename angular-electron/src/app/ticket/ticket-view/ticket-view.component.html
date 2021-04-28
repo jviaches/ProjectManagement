@@ -1,5 +1,16 @@
 <div class="center">
-    <input [(ngModel)]='caption' class="input" type="text" placeholder="Caption" style="margin-bottom: 20px;">
+    <input [(ngModel)]='caption' class="input" type="text" placeholder="Caption" style="margin-bottom: 5px;">
+    <form>
+        <mat-form-field appearance="legacy" style="width: 100%;">
+          <mat-label>Priority</mat-label>
+          <mat-select [(ngModel)]="selectedValue" name="priority">
+            <mat-option *ngFor="let priority of utilsService.priorities" [value]="priority.value">
+              {{priority.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+    </form>
+
     <quill-editor id="editor" [styles]="editorStyle" [modules]="quillConfiguration" [(ngModel)]="editorText"
         (onContentChanged)="onContentChanged($event)" required></quill-editor>
 

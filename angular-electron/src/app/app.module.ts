@@ -22,6 +22,7 @@ import { ModalDialogComponent } from './modals/modal-dialog/modal-dialog.compone
 import { ModalYesNoDialogComponent } from './modals/yesno-modal-dialog/yesno-modal-dialog.component'
 
 import { NotificationService } from './core/services/notification.service'
+import { UtilsService } from './core/services/utils.service'
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -47,7 +48,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
       }
     })
   ],
-  providers: [NotificationService, Title],
+  providers: [NotificationService, Title, UtilsService],
   bootstrap: [AppComponent],
   entryComponents: [ ModalDialogComponent, ModalYesNoDialogComponent]
 })

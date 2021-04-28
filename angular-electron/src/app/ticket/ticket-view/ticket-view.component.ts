@@ -2,7 +2,7 @@ import {  Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Ticket } from '../../core/models/project.model';
 import { NotificationService} from '../../core/services/notification.service';
-import { DialogData } from '../../modals/modal-dialog/dialog-data';
+import { UtilsService } from '../../core/services/utils.service';
 
 @Component({
   selector: 'app-ticket-view',
@@ -12,6 +12,7 @@ import { DialogData } from '../../modals/modal-dialog/dialog-data';
 export class TicketViewComponent implements OnInit  {
 
   ticket: Ticket;
+  selectedValue: any;
   caption = '';
   editorText = '';
   quillConfiguration = {
@@ -30,11 +31,15 @@ export class TicketViewComponent implements OnInit  {
     height: '260px'
   };
 
-  constructor(private notificationService: NotificationService, private dialogRef: MatDialogRef<TicketViewComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
+  constructor(private notificationService: NotificationService, 
+              private dialogRef: MatDialogRef<TicketViewComponent>, 
+              @Inject(MAT_DIALOG_DATA) public data: any,
+              public utilsService: UtilsService) {
   }
 
   ngOnInit() {
     this.ticket = this.data.ticket;
+    this.selectedValue = this.ticket.priority.valueOf();
     this.caption = this.ticket.title;
     this.editorText = this.ticket.content;
   }
@@ -47,7 +52,7 @@ export class TicketViewComponent implements OnInit  {
     if (this.caption.trim().length === 0) {
       this.notificationService.showActionConfirmationFail('Action cancelled. Nothing was created.');
     } else {
-      this.dialogRef.close({id: this.ticket.id, caption: this.caption, text:this.editorText });
+      this.dialogRef.close({id: this.ticket.id, caption: this.caption, text:this.editorText, priority: this.selectedValue });
     }
   }
 

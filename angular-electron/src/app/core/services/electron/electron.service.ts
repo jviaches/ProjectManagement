@@ -60,6 +60,8 @@ export class ElectronService {
           if (this.project === null) {
             this.notificationService.showActionConfirmationFail('No active project!');
           } else {
+            console.log(this.project.value);
+            
             this.saveProject(JSON.stringify(this.project.value));
             this.notificationService.showActionConfirmationSuccess('Saved!');
           }
@@ -267,6 +269,7 @@ export class ElectronService {
           id: this.getNextTicketId(),
           title: result.caption,
           content: result.text,
+          priority: result.priority,
           tags: [],
           statusId: 1,
           creationDate: new Date()
@@ -315,6 +318,7 @@ export class ElectronService {
           id: 1,
           title: 'Ticket #1',
           content: 'some content...',
+          priority: 1,
           statusId: 1,
           tags: [],
           creationDate: new Date()

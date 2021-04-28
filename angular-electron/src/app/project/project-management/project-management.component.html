@@ -44,7 +44,9 @@
             <div class='task' *ngFor="let ticket of sectionsTickets['cdk-drop-list-' + status.id]" 
                  cdkDrag cdkDropList 
                  (cdkDropListDropped)="tagDrop($event)" 
-                 (dblclick)="viewTicket(ticket)"> 
+                 (dblclick)="viewTicket(ticket)"
+                 [style.border-color]="setTicketColor(ticket.priority)"
+                 > 
               <div class='task__tags'>
                 <span></span>
                 <button mat-icon-button [matMenuTriggerFor]="menu">
@@ -96,13 +98,18 @@
       </div> -->
 
       <div class='tag-progress'>
+        <h2><b>Priority agenda</b> </h2>
+        <div style="width: 100%;" *ngFor="let color of utilsService.priorityColors | keyvalue">
+          <span class="priority" [style.background-color]="color.key" style="margin-right: 5px;"></span>
+          <span>{{color.value}}</span>
+        </div>
+      </div>
+
+      <div class='tag-progress'>
         <h2><b>Notes</b></h2>
         <div>
           <quill-editor id="editor" [styles]="editorStyle" [modules]="quillConfiguration"
           (onContentChanged)="onContentChanged($event)" required [(ngModel)]="project.notes"></quill-editor>
-
-          <!-- <textarea (keyup)="updateNotes($event)" class="textarea is-small"
-            placeholder="e.g. You can add some notes here" [(ngModel)]="project.notes"></textarea> -->
         </div>
       </div>
 
