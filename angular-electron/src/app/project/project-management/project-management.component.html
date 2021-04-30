@@ -36,7 +36,7 @@
               </span>
             </div>
           </div>
-          <div cdkDropList class="example-list" [id]="'cdk-drop-list-' + status.id"
+          <div cdkDropList class="section" [id]="'cdk-drop-list-' + status.id"
             [cdkDropListData]="sectionsTickets['cdk-drop-list-' + status.id]" 
             [cdkDropListConnectedTo]="sectiondIds"
             (cdkDropListDropped)="taskDrop($event)">

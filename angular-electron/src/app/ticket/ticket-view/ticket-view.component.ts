@@ -35,6 +35,9 @@ export class TicketViewComponent implements OnInit  {
               private dialogRef: MatDialogRef<TicketViewComponent>, 
               @Inject(MAT_DIALOG_DATA) public data: any,
               public utilsService: UtilsService) {
+
+              console.log(this.utilsService.getColorByPriority('Minor'));
+              
   }
 
   ngOnInit() {

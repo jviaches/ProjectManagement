@@ -23,4 +23,10 @@ import { Priority, PriorityColor, PriorityItem } from '../models/priority.model'
       [PriorityColor.High, 'High'],
       [PriorityColor.Critical, 'Critical'],
     ]);
+
+    getColorByPriority(priority: string): string  {
+      console.log(this.priorityColors);
+
+      return [...this.priorityColors].find(([key, val]) => val == priority)[0]
+    }
 }

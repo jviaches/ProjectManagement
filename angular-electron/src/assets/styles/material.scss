@@ -32,8 +32,6 @@ $candy-app-theme: mat-light-theme(
 // that you are using.
 @include angular-material-theme($candy-app-theme);
 
-
-
 .mat-card {
   border-radius: 8px;
   margin-bottom: 30px;
@@ -50,11 +48,15 @@ $candy-app-theme: mat-light-theme(
   text-align: center;
   border-radius: 10px;
 
-  mat-dialog-content{
+  mat-dialog-content {
     margin-bottom: 20px;
   }
 }
 
 .mat-dialog-actions {
   justify-content: center;
+}
+
+.mat-badge-content {
+  background-color: var(--purple);
 }

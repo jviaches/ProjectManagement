@@ -4,15 +4,10 @@
         <mat-form-field appearance="legacy" style="width: 100%;">
           <mat-label>Priority</mat-label>
           <mat-select [(ngModel)]="selectedValue" name="priority">
-            <mat-option *ngFor="let priority of utilsService.priorities" [value]="priority.value">
-              <div>{{utilsService.priorityColors[0]}}</div>
-              {{priority.viewValue}}
-
-              <!-- <div style="width: 100%;" *ngFor="let color of utilsService.priorityColors | keyvalue">
-                <span class="priority" [style.background-color]="color.key" style="margin-right: 5px;"></span>
-                <span>{{color.value}}</span>
-              </div> -->
-
+            <mat-option *ngFor="let priority of utilsService.priorities" [value]="priority.value"
+                        [ngStyle]="{'border-color': this.utilsService.getColorByPriority(priority.viewValue)}"
+                        class="task-priority">
+                <div>{{priority.viewValue}}</div>
             </mat-option>
           </mat-select>
         </mat-form-field>

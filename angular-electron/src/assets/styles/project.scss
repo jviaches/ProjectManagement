@@ -76,12 +76,12 @@
 .task {
   cursor: move;
   background-color: var(--white);
-  padding: 0 1rem 1rem 1rem;;
+  padding: 0 1rem 1rem 1rem;
   border-radius: 5px;
   width: 100%;
   box-shadow: rgba(99, 99, 99, 0.1) 0px 2px 8px 0px;
   margin-bottom: 1rem;
-  
+
   border-left: 3px solid transparent;
   border-width: thin;
   border-left-color: transparent;
@@ -270,7 +270,13 @@
   }
 }
 
-
 button:focus {
   outline: none;
+}
+
+.task-priority {
+  border-left: 3px solid transparent;
+  border-width: thin;
+  border-left-color: transparent;
+  border-left-width: 5px;
 }
