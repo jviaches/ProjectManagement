@@ -88,9 +88,9 @@
   border-left-width: 5px;
 
   &:hover {
-    border-color: var(--purple) !important;
+    //background-color:var(--white);
     border-width: thin;
-    border: 1px dashed transparent;
+    border-left-width: 5px;
   }
 
   p {

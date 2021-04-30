@@ -1,6 +1,7 @@
 import { Priority } from "./priority.model";
 
 export interface Project {
+    version: number;
     name: string;
     notes: string;
     avialableStatuses: Status[];
@@ -19,7 +20,7 @@ export class Ticket {
     title: string = '';
     content: string = '';
     priority: Priority;
-    tags: Tag[];
+    tags: Tag[] = [];
     statusId: number;
     creationDate: Date;
 }

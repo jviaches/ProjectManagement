@@ -5,7 +5,14 @@
           <mat-label>Priority</mat-label>
           <mat-select [(ngModel)]="selectedValue" name="priority">
             <mat-option *ngFor="let priority of utilsService.priorities" [value]="priority.value">
+              <div>{{utilsService.priorityColors[0]}}</div>
               {{priority.viewValue}}
+
+              <!-- <div style="width: 100%;" *ngFor="let color of utilsService.priorityColors | keyvalue">
+                <span class="priority" [style.background-color]="color.key" style="margin-right: 5px;"></span>
+                <span>{{color.value}}</span>
+              </div> -->
+
             </mat-option>
           </mat-select>
         </mat-form-field>

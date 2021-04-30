@@ -42,11 +42,18 @@
             (cdkDropListDropped)="taskDrop($event)">
 
             <div class='task' *ngFor="let ticket of sectionsTickets['cdk-drop-list-' + status.id]" 
-                 cdkDrag cdkDropList 
-                 (cdkDropListDropped)="tagDrop($event)" 
+                 cdkDrag 
+
+                 [id]="ticket.id"
+                 cdkDropList 
+                 [cdkDropListData]="ticket.tags" 
+                 [cdkDropListConnectedTo]="tagsList"
+                 (cdkDropListDropped)="tagDrop($event)"       
+
                  (dblclick)="viewTicket(ticket)"
                  [style.border-color]="setTicketColor(ticket.priority)"
                  > 
+
               <div class='task__tags'>
                 <span></span>
                 <button mat-icon-button [matMenuTriggerFor]="menu">
@@ -89,7 +96,7 @@
         <div>
           <input class="input is-small" type="text" placeholder="Add new tag.." style="margin-bottom: 16px;">
 
-          <mat-chip-list class="example-chip" cdkDropList (cdkDropListDropped)="taskDrop($event)">
+          <mat-chip-list class="example-chip" [id]="tagsList" cdkDropList (cdkDropListDropped)="tagDrop($event)">
             <mat-chip class="example-box" cdkDrag *ngFor="let tag of tags">
               {{tag.name}}
             </mat-chip>

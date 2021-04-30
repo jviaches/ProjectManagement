@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Project, Ticket } from '../../core/models/project.model'
+import { Project, Tag, Ticket } from '../../core/models/project.model'
 import { NotificationService } from '../../core/services/notification.service';
 import { TicketViewComponent } from '../../ticket/ticket-view/ticket-view.component';
 import { ElectronService } from '../../core/services';
@@ -43,10 +43,7 @@ export class ProjectManagementComponent implements OnInit {
 
   constructor(private electronService: ElectronService, 
               private notificationService: NotificationService,
-              public utilsService: UtilsService) {
-
-                console.log(utilsService.priorityColors);
-                
+              public utilsService: UtilsService) {               
   }
 
   ngOnInit(): void {
@@ -71,10 +68,10 @@ export class ProjectManagementComponent implements OnInit {
     return Math.round(completedTickets / allTickets * 100);
   }
 
-  tags = [
-    { id: 1, name: 'Ui design' },
-    { id: 2, name: 'First Bug' },
-    { id: 3, name: 'wont Fix' },
+  tags: Tag[] = [
+    { id: 1, name: 'Ui design', color: 'blue' },
+    { id: 2, name: 'First Bug', color: 'red' },
+    { id: 3, name: 'wont Fix', color: 'yellow' },
   ];
 
   taskDrop(event: CdkDragDrop<string[]>) {
@@ -85,14 +82,12 @@ export class ProjectManagementComponent implements OnInit {
       const ticket = this.project.tickets.find(ticket => ticket.id === ticketId);
       const statusId = event.container.id.split('cdk-drop-list-')[1];
 
-      console.log('Moving ticket: ' + ticket);
-      console.log('Old status: ' + statusId);
-
       ticket.statusId = Number(statusId);      
 
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
-      console.log(this.project.tickets);
     }
+
+    this.electronService.setDataChange();
 
     if (this.electronService.autosave) {
       this.electronService.saveProject(JSON.stringify(this.project));
@@ -102,29 +97,37 @@ export class ProjectManagementComponent implements OnInit {
   tagDrop(event: CdkDragDrop<string[]>) {
     console.log('tag `' + event.item.element.nativeElement.textContent + `' + dropped on ` + event.container.id);
 
-    // if (event.previousContainer === event.container) {
-    //   moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    // } else {
-    //   transferArrayItem(event.previousContainer.data,
-    //     event.container.data,
-    //     event.previousIndex,
-    //     event.currentIndex);
-    // }
-  }
+    // transferArrayItem(event.previousContainer.data,
+    //      event.container.data,
+    //      event.previousIndex,
+    //      event.currentIndex);
+   }
 
   viewTicket(ticket: Ticket) {
     this.notificationService.showModalComponent(TicketViewComponent, '', { ticket }).subscribe(result => {
       if (result !== 'FAIL') {
         const ticketIndex = this.project.tickets.findIndex(d => d.id === result.id);
-        this.project.tickets[ticketIndex].title = result.caption;
-        this.project.tickets[ticketIndex].content = result.text;
-        this.project.tickets[ticketIndex].priority = result.priority;
+
+        if (this.project.tickets[ticketIndex].title !== result.caption) {
+          this.project.tickets[ticketIndex].title = result.caption;
+          this.electronService.setDataChange();
+        }
+
+        if (this.project.tickets[ticketIndex].content !== result.text) {
+          this.project.tickets[ticketIndex].content = result.text;
+          this.electronService.setDataChange();
+        }
+ 
+        if (this.project.tickets[ticketIndex].priority !== result.priority) {
+          this.project.tickets[ticketIndex].priority = result.priority;
+          this.electronService.setDataChange();
+        }
       }
     });
   }
 
   deleteTicket(ticketId: number) {
-    this.electronService.deleteTicket(ticketId);
+    this.electronService.deleteTicket(ticketId);    
   }
 
   createTicket() {
@@ -133,6 +136,8 @@ export class ProjectManagementComponent implements OnInit {
 
   onContentChanged = (event) => {
     this.project.notes = event.html;
+    this.electronService.setDataChange();
+
     if (this.electronService.autosave) {
       this.electronService.saveProject(JSON.stringify(this.project));
     }

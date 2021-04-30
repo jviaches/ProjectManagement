@@ -8,6 +8,8 @@ import { Priority, PriorityColor, PriorityItem } from '../models/priority.model'
   })
   export class UtilsService {
 
+
+
     priorities: PriorityItem[] = [
         {value: Priority.Minor.valueOf(), viewValue: Priority[0]},
         {value: Priority.Normal.valueOf(), viewValue: Priority[1]},
