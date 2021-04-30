@@ -24,13 +24,16 @@ import { ModalYesNoDialogComponent } from './modals/yesno-modal-dialog/yesno-mod
 import { NotificationService } from './core/services/notification.service'
 import { UtilsService } from './core/services/utils.service'
 
+import { AboutComponent } from './about/about.component';
+
+
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, ModalDialogComponent, ModalYesNoDialogComponent],
+  declarations: [AppComponent, HomeComponent, AboutComponent, ModalDialogComponent, ModalYesNoDialogComponent],
   imports: [
     BrowserModule,
     FormsModule,

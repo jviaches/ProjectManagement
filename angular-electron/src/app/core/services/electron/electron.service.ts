@@ -12,6 +12,7 @@ import { Router } from "@angular/router";
 import { BehaviorSubject } from "rxjs";
 import { TicketNewComponent } from "../../../ticket/ticket-create/ticket-create.component";
 import { Title } from "@angular/platform-browser";
+import { AboutComponent } from "../../../about/about.component";
 
 @Injectable({
   providedIn: "root",
@@ -135,6 +136,12 @@ export class ElectronService {
                 this.exitProgram();
               }
             });
+        });
+      });
+
+      this.ipcRenderer.on("about", (event, arg) => {
+        this.ngZone.run(() => {
+          this.notificationService.showModalComponent(AboutComponent,'About','');
         });
       });
     }
@@ -298,7 +305,6 @@ export class ElectronService {
               this.setPageTitle(false);
               this.setLastTicketId(JSON.parse(decryptedContent));
               this.project.next(JSON.parse(decryptedContent));
-
             } catch (error) {
               this.notificationService.showModalMessage(
                 "Error",

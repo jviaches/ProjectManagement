@@ -1,14 +1,20 @@
-import { app, dialog, BrowserWindow, Menu, screen, ipcRenderer, MenuItem } from 'electron';
-import * as path from 'path';
-import * as url from 'url';
+import {
+  app,
+  dialog,
+  BrowserWindow,
+  Menu,
+  screen,
+  ipcRenderer,
+  MenuItem,
+} from "electron";
+import * as path from "path";
+import * as url from "url";
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
-serve = args.some(val => val === '--serve');
-
+  serve = args.some((val) => val === "--serve");
 
 function createWindow(): BrowserWindow {
-
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
 
@@ -20,118 +26,120 @@ function createWindow(): BrowserWindow {
     height: size.height,
     webPreferences: {
       nodeIntegration: true,
-      allowRunningInsecureContent: (serve) ? true : false,
-      contextIsolation: false,  // false if you want to run 2e2 test with Spectron
-      enableRemoteModule: true // true if you want to run 2e2 test  with Spectron or use remote module in renderer context (ie. Angular)
+      allowRunningInsecureContent: serve ? true : false,
+      contextIsolation: false, // false if you want to run 2e2 test with Spectron
+      enableRemoteModule: true, // true if you want to run 2e2 test  with Spectron or use remote module in renderer context (ie. Angular)
     },
-    icon: './src/assets/icons/favicon.ico'
+    icon: "./src/assets/icons/favicon.ico",
   });
 
   var menu = Menu.buildFromTemplate([
     {
-      label: 'File',
+      label: "File",
       submenu: [
         {
-          label: 'New',
+          label: "New",
           click(item, focusedWindow) {
-            win.webContents.send('new-project', '');
+            win.webContents.send("new-project", "");
           },
         },
         {
-          label: 'Open',
+          label: "Open",
           click(item, focusedWindow) {
-            win.webContents.send('open-project', '');
+            win.webContents.send("open-project", "");
           },
         },
-        { type: 'separator' },
+        { type: "separator" },
         {
-          label: 'Save',
+          label: "Save",
           enabled: false,
           click(item, focusedWindow) {
-            win.webContents.send('save-project', '');
+            win.webContents.send("save-project", "");
           },
         },
         {
-          label: 'Save As',
+          label: "Save As",
           enabled: false,
           click(item, focusedWindow) {
-            win.webContents.send('save-as-project', '');
+            win.webContents.send("save-as-project", "");
           },
         },
         {
-          label: 'Autosave',
-          type: 'checkbox', checked: false,
+          label: "Autosave",
+          type: "checkbox",
+          checked: false,
           click(item, focusedWindow) {
-            win.webContents.send('auto-save-project', item.checked);
+            win.webContents.send("auto-save-project", item.checked);
           },
         },
-        { type: 'separator' },
+        { type: "separator" },
         {
-          label: 'Close', 
+          label: "Close",
           enabled: false,
           click(item, focusedWindow) {
-            win.webContents.send('close-project', item.checked);
+            win.webContents.send("close-project", item.checked);
           },
         },
-        { type: 'separator' },
+        { type: "separator" },
         {
-          label: 'Exit', 
+          label: "Exit",
           click(item, focusedWindow) {
-            win.webContents.send('exit', item.checked);
+            win.webContents.send("exit", item.checked);
           },
-        }]
+        },
+      ],
     },
-    // {
-    //   label: 'Help',
-    //   submenu: [
-    //     {
-    //       label: 'Help',
-    //       click(item, focusedWindow) {
-    //       }
-    //     },
-    //     {
-    //       label: 'About',
-    //       click(item, focusedWindow) {
-    //         win.webContents.send('about', '');
-    //       }
-    //     }
-    //   ]
-    // }
+    {
+      label: "Help",
+      submenu: [
+        {
+          label: "About",
+          click(item, focusedWindow) {
+            win.webContents.send("about", "");
+          },
+        },
+      ],
+    },
   ]);
   Menu.setApplicationMenu(menu);
 
   if (serve) {
-
     win.webContents.openDevTools();
 
-    require('electron-reload')(__dirname, {
-      electron: require(`${__dirname}/node_modules/electron`)
+    require("electron-reload")(__dirname, {
+      electron: require(`${__dirname}/node_modules/electron`),
     });
-    win.loadURL('http://localhost:4200');
-
+    win.loadURL("http://localhost:4200");
   } else {
-    win.loadURL(url.format({
-      pathname: path.join(__dirname, 'dist/index.html'),
-      protocol: 'file:',
-      slashes: true
-    }));
+    win.loadURL(
+      url.format({
+        pathname: path.join(__dirname, "dist/index.html"),
+        protocol: "file:",
+        slashes: true,
+      })
+    );
   }
 
   // Emitted when the window is closed.
-  win.on('closed', () => {
+  win.on("closed", () => {
     // Dereference the window object, usually you would store window
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     win = null;
   });
 
-  win.webContents.on('ipc-message', (event, input, args) => {
+  win.webContents.on("ipc-message", (event, input, args) => {
+    if (input === "close-project-enable") {
+      const closeMenu = Menu.getApplicationMenu().items[0].submenu.items.find(
+        (item) => item.label === "Close"
+      );
+      const saveMenu = Menu.getApplicationMenu().items[0].submenu.items.find(
+        (item) => item.label === "Save"
+      );
+      const saveAsMenu = Menu.getApplicationMenu().items[0].submenu.items.find(
+        (item) => item.label === "Save As"
+      );
 
-    if (input === 'close-project-enable') {
-      const closeMenu = Menu.getApplicationMenu().items[0].submenu.items.find(item => item.label === 'Close');
-      const saveMenu = Menu.getApplicationMenu().items[0].submenu.items.find(item => item.label === 'Save');
-      const saveAsMenu = Menu.getApplicationMenu().items[0].submenu.items.find(item => item.label === 'Save As');
-      
       if (args === true) {
         closeMenu.enabled = true;
         saveMenu.enabled = true;
@@ -159,25 +167,24 @@ try {
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
   // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
-  app.on('ready', () => setTimeout(createWindow, 400));
+  app.on("ready", () => setTimeout(createWindow, 400));
 
   // Quit when all windows are closed.
-  app.on('window-all-closed', () => {
+  app.on("window-all-closed", () => {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== 'darwin') {
+    if (process.platform !== "darwin") {
       app.quit();
     }
   });
 
-  app.on('activate', () => {
+  app.on("activate", () => {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (win === null) {
       createWindow();
     }
   });
-
 } catch (e) {
   // Catch Error
   // throw e;
