@@ -76,7 +76,9 @@ export class ProjectManagementComponent implements OnInit {
 
   taskDrop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
+      console.log(event.container.data);
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      console.log(event.container.data);
     } else {
       const ticketId = event.previousContainer.data[event.previousIndex]['id'];
       const ticket = this.project.tickets.find(ticket => ticket.id === ticketId);
@@ -84,7 +86,9 @@ export class ProjectManagementComponent implements OnInit {
 
       ticket.statusId = Number(statusId);      
 
+      console.log(event.container.data);
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+      console.log(event.container.data);
     }
 
     this.electronService.setDataChange();

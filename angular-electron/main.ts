@@ -122,11 +122,12 @@ function createWindow(): BrowserWindow {
   }
 
   // Emitted when the window is closed.
-  win.on("close", (e) => {
+  win.on("close", e => {
     if (win) {
       e.preventDefault();
       win.webContents.send("exit", null);
     }
+
   });
 
   win.once("ready-to-show", () => {
