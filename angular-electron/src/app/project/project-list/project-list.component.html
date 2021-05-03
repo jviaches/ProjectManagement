@@ -65,30 +65,32 @@
     <div class="columns is-centered">
       <div class="column is-half">
         <figure style="display: flex; justify-content: space-between;">
-          <a routerLink="." class="btn" (click)="newProject()">
+          <a routerLink="." class="btn" (click)="newProject()" tabindex="-1">
             <i class="fa fa-file"></i>
           </a>
-          <a routerLink="." class="btn" (click)="loadProject()">
+          <a routerLink="." class="btn" (click)="loadProject()" tabindex="-1">
             <i class="fa fa-folder-open"></i>
           </a>
           <a routerLink="." class="btn">
-            <i class="fa fa-power-off" (click)="exitProject()"></i>
+            <i class="fa fa-power-off" (click)="exitProject()" tabindex="-1"></i>
           </a>
         </figure>
 
-        <br/>
+        <!--<br/>
         <br/>
 
-        <article class="message is-dark">
-          <div class="message-body">
-            <br />
-            <span><strong>Website:</strong> www.projscope.com</span>
-            <br />
-            <span><strong>Support:</strong> support@projscope.com</span>
-            <br />
-            <span><strong>Version:</strong> 1.0</span>
+         <article class="message is-dark">
+          <div class="message-body columns">
+            <div class="column">
+              <img src="../../assets/icons/favicon.192x192.png" />
+            </div>
+            <div class="column">
+              <span><strong>Website:</strong> www.projscope.com</span>
+              <span><strong>Support:</strong> support@projscope.com</span>
+              <span><strong>Version:</strong> 1.0</span>
+            </div>
           </div>
-        </article>
+        </article> -->
 
       </div>
     </div>
