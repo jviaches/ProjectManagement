@@ -98,15 +98,15 @@ export class ElectronService {
         this.ipcRenderer.send("close-project-enable", true);
       });
 
-      this.ipcRenderer.on("auto-save-project", (event, status) => {
-        this.ngZone.run(() => {
-          this.notificationService.showActionConfirmationFail(
-            status ? " Autosave enabled" : "Autosave disabled"
-          );
-          this.autosave = status;
-        });
-        this.ipcRenderer.send("close-project-enable", true);
-      });
+      // this.ipcRenderer.on("auto-save-project", (event, status) => {
+      //   this.ngZone.run(() => {
+      //     this.notificationService.showActionConfirmationFail(
+      //       status ? " Autosave enabled" : "Autosave disabled"
+      //     );
+      //     this.autosave = status;
+      //   });
+      //   this.ipcRenderer.send("close-project-enable", true);
+      // });
 
       this.ipcRenderer.on("open-project", (event, arg) => {
         this.ngZone.run(() => {
@@ -129,13 +129,7 @@ export class ElectronService {
 
       this.ipcRenderer.on("exit", (event, arg) => {
         this.ngZone.run(() => {
-          this.notificationService
-            .showYesNoModalMessage(this.dialogContent())
-            .subscribe((response) => {
-              if (response === "yes") {
                 this.exitProgram();
-              }
-            });
         });
       });
 
@@ -149,7 +143,14 @@ export class ElectronService {
 
   exitProgram() {
     this.project = new BehaviorSubject(null);
-    this.remote.getCurrentWindow().close();
+    //this.remote.getCurrentWindow().close();
+    this.notificationService
+    .showYesNoModalMessage(this.dialogContent())
+    .subscribe((response) => {
+      if (response === "yes") {
+        this.ipcRenderer.send("app-close", null);
+      }
+    });
   }
 
   newProject() {
@@ -183,6 +184,7 @@ export class ElectronService {
   }
 
   updateProjectName(projName: string) {
+    this.setDataChange();
     this.project.value.name = projName;
     this.project.next(this.project.value);
   }

@@ -4,16 +4,17 @@ import {
   BrowserWindow,
   Menu,
   screen,
-  ipcRenderer,
+  ipcMain,
   MenuItem,
 } from "electron";
 import * as path from "path";
 import * as url from "url";
+import { autoUpdater } from "electron-updater";
+
+//const { autoUpdater } = require('electron-updater');
 
 let win: BrowserWindow = null;
-const args = process.argv.slice(1),
-  serve = args.some((val) => val === "--serve");
-
+const args = process.argv.slice(1), serve = args.some((val) => val === "--serve");
 function createWindow(): BrowserWindow {
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
@@ -64,14 +65,14 @@ function createWindow(): BrowserWindow {
             win.webContents.send("save-as-project", "");
           },
         },
-        {
-          label: "Autosave",
-          type: "checkbox",
-          checked: false,
-          click(item, focusedWindow) {
-            win.webContents.send("auto-save-project", item.checked);
-          },
-        },
+        // {
+        //   label: "Autosave",
+        //   type: "checkbox",
+        //   checked: false,
+        //   click(item, focusedWindow) {
+        //     win.webContents.send("auto-save-project", item.checked);
+        //   },
+        // },
         { type: "separator" },
         {
           label: "Close",
@@ -121,14 +122,40 @@ function createWindow(): BrowserWindow {
   }
 
   // Emitted when the window is closed.
-  win.on("closed", () => {
-    // Dereference the window object, usually you would store window
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    win = null;
+  win.on("close", (e) => {
+    if (win) {
+      e.preventDefault();
+      win.webContents.send("exit", null);
+    }
+  });
+
+  win.once("ready-to-show", () => {
+    autoUpdater.checkForUpdatesAndNotify();
+  });
+
+
+  ipcMain.on('app_version', (event) => {
+    event.sender.send('app_version', { version: app.getVersion() });
+  });
+
+  autoUpdater.on("update-available", () => {
+    win.webContents.send("update_available");
+  });
+
+  autoUpdater.on('update-downloaded', () => {
+    win.webContents.send('update_downloaded');
+  });
+
+  ipcMain.on('restart_app', () => {
+    autoUpdater.quitAndInstall();
   });
 
   win.webContents.on("ipc-message", (event, input, args) => {
+    if (input === "app-close") {
+      // bypass all listeners
+      app.exit(0);
+    }
+
     if (input === "close-project-enable") {
       const closeMenu = Menu.getApplicationMenu().items[0].submenu.items.find(
         (item) => item.label === "Close"

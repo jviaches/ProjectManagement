@@ -1,60 +1,76 @@
 <div>
   <!-- Working version of https://dribbble.com/shots/14552329--Exploration-Task-Management-Dashboard -->
-  <div class='app' *ngIf="project !== null">
-    <main class='project'>
-      <div class='project-info'>
-        <div style="display: flex;" *ngIf="!editProjectName">
-          <h1>{{project.name}}</h1>
-          <button class='project-participants__edit' (click)="setProjectNameEditMode()">
+  <div class="app" *ngIf="project !== null">
+    <main class="project">
+      <div class="project-info">
+        <div style="display: flex" *ngIf="!editProjectName">
+          <h1>{{ project.name }}</h1>
+          <button
+            class="project-participants__edit"
+            (click)="setProjectNameEditMode()"
+          >
             <i class="far fa-edit"></i>
           </button>
         </div>
 
-        <div *ngIf="editProjectName" style="display: flex;">
+        <div *ngIf="editProjectName" style="display: flex">
           <form class="example-form">
             <mat-form-field class="example-full-width">
               <mat-label>Project Name</mat-label>
-              <input matInput placeholder="Ex. Pizza" name="projName" [(ngModel)]="project.name">
+              <input
+                matInput
+                placeholder="Ex. Pizza"
+                name="projName"
+                [(ngModel)]="project.name"
+              />
             </mat-form-field>
           </form>
-          <button class='project-participants__edit' (click)="setProjectNameEditMode()">
+          <button
+            class="project-participants__edit"
+            (click)="setProjectNameEditMode()"
+          >
             <i class="fas fa-save"></i>
           </button>
         </div>
 
-        <div class='project-participants'>
-          <button class='project-participants__add' (click)="createTicket()">Add Participant</button>
+        <div class="project-participants">
+          <button class="project-participants__add" (click)="createTicket()">
+            Add Participant
+          </button>
         </div>
       </div>
 
-      <div class='project-tasks'>
-        <div class="project-column" *ngFor="let status of project.avialableStatuses">
+      <div class="project-tasks">
+        <div
+          class="project-column"
+          *ngFor="let status of project.avialableStatuses"
+        >
           <div class="section-title">
             <div>
-              <span matBadge="{{sectionId(status.id)}}" matBadgeOverlap="true">
+              <span
+                matBadge="{{ sectionId(status.id) }}"
+                matBadgeOverlap="true"
+              >
                 {{ status.name }}
               </span>
             </div>
           </div>
-          <div cdkDropList class="section" [id]="'cdk-drop-list-' + status.id"
-            [cdkDropListData]="sectionsTickets['cdk-drop-list-' + status.id]" 
+          <div
+            cdkDropList
+            class="section"
+            [id]="'cdk-drop-list-' + status.id"
+            [cdkDropListData]="sectionsTickets['cdk-drop-list-' + status.id]"
             [cdkDropListConnectedTo]="sectiondIds"
-            (cdkDropListDropped)="taskDrop($event)">
-
-            <div class='task' *ngFor="let ticket of sectionsTickets['cdk-drop-list-' + status.id]" 
-                 cdkDrag 
-
-                 [id]="ticket.id"
-                 cdkDropList 
-                 [cdkDropListData]="ticket.tags" 
-                 [cdkDropListConnectedTo]="tagsList"
-                 (cdkDropListDropped)="tagDrop($event)"       
-
-                 (dblclick)="viewTicket(ticket)"
-                 [style.border-color]="setTicketColor(ticket.priority)"
-                 > 
-
-              <div class='task__tags'>
+            (cdkDropListDropped)="taskDrop($event)"
+          >
+            <div
+              class="task"
+              *ngFor="let ticket of sectionsTickets['cdk-drop-list-' + status.id]"
+              cdkDrag
+              (dblclick)="viewTicket(ticket)"
+              [style.border-color]="setTicketColor(ticket.priority)"
+            >
+              <div class="task__tags">
                 <span></span>
                 <button mat-icon-button [matMenuTriggerFor]="menu">
                   <i class="fas fa-ellipsis-h"></i>
@@ -70,9 +86,12 @@
                   </button>
                 </mat-menu>
               </div>
-              <p>{{ticket.title}}</p>
-              <div class='task__stats'>
-                <span><i class="fas fa-flag"></i>  {{ ticket.creationDate | date:'LLL dd' }}</span>
+              <p>{{ ticket.title }}</p>
+              <div class="task__stats">
+                <span
+                  ><i class="fas fa-flag"></i>
+                  {{ ticket.creationDate | date: "LLL dd" }}</span
+                >
                 <!-- <span><i class="fas fa-comment"></i>2</span>
                   <span><i class="fas fa-paperclip"></i>5</span>
                   <span class='task__owner'></span> -->
@@ -82,12 +101,17 @@
         </div>
       </div>
     </main>
-    <aside class='task-details'>
-      <div class='tag-progress'>
-        <h2><b>Project Progress - {{projectCopletionPecentage}}%</b></h2>
-        <div class='tag-progress columns'>
-          <progress class="progress progress--copyright is-7" max="100"
-            value="{{projectCopletionPecentage}}"></progress>
+    <aside class="task-details">
+      <div class="tag-progress">
+        <h2>
+          <b>Project Progress - {{ projectCopletionPecentage }}%</b>
+        </h2>
+        <div class="tag-progress columns">
+          <progress
+            class="progress progress--copyright is-7"
+            max="100"
+            value="{{ projectCopletionPecentage }}"
+          ></progress>
         </div>
       </div>
 
@@ -104,22 +128,36 @@
         </div>
       </div> -->
 
-      <div class='tag-progress'>
-        <h2><b>Priority agenda</b> </h2>
-        <div style="width: 100%;" *ngFor="let color of utilsService.priorityColors | keyvalue">
-          <span class="priority" [style.background-color]="color.key" style="margin-right: 5px;"></span>
-          <span>{{color.value}}</span>
+      <div>
+        <h2><b>Priority agenda</b></h2>
+        <div style="display: flex; flex-wrap: wrap;">
+          <div
+            style="flex: 50%; width: 100%;"
+            *ngFor="let color of utilsService.priorityColors | keyvalue"
+          >
+            <span
+              class="priority"
+              [style.background-color]="color.key"
+              style="margin-right: 5px"
+            ></span>
+            <span>{{ color.value }}</span>
+          </div>
         </div>
       </div>
 
-      <div class='tag-progress'>
+      <div class="tag-progress">
         <h2><b>Notes</b></h2>
         <div>
-          <quill-editor id="editor" [styles]="editorStyle" [modules]="quillConfiguration"
-          (onContentChanged)="onContentChanged($event)" required [(ngModel)]="project.notes"></quill-editor>
+          <quill-editor
+            id="editor"
+            [styles]="editorStyle"
+            [modules]="quillConfiguration"
+            (onContentChanged)="onContentChanged($event)"
+            required
+            [(ngModel)]="project.notes"
+          ></quill-editor>
         </div>
       </div>
-
     </aside>
   </div>
   <!-- <a routerLink="/detail">{{ 'PAGES.HOME.GO_TO_DETAIL' | translate }}</a> -->
