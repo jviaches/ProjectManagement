@@ -63,7 +63,7 @@ export class ProjectManagementComponent implements OnInit {
     }
 
     const allTickets = this.project.tickets.length;
-    const completedTickets = this.project.tickets.filter(ticket => ticket.statusId === 3).length;
+    const completedTickets = this.project.tickets.filter(ticket => ticket.statusId === this.project.avialableStatuses.length).length;
 
     return Math.round(completedTickets / allTickets * 100);
   }

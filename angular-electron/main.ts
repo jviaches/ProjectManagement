@@ -123,7 +123,7 @@ function createWindow(): BrowserWindow {
 
   // Emitted when the window is closed.
   win.on("close", e => {
-    if (win) {
+    if (win) {      
       e.preventDefault();
       win.webContents.send("exit", null);
     }
@@ -131,25 +131,50 @@ function createWindow(): BrowserWindow {
   });
 
   win.once("ready-to-show", () => {
-    autoUpdater.checkForUpdatesAndNotify();
-  });
-
-
-  ipcMain.on('app_version', (event) => {
-    event.sender.send('app_version', { version: app.getVersion() });
-  });
-
-  autoUpdater.on("update-available", () => {
-    win.webContents.send("update_available");
-  });
-
-  autoUpdater.on('update-downloaded', () => {
-    win.webContents.send('update_downloaded');
+    setInterval(() => {
+      autoUpdater.checkForUpdates()
+    }, 60000)
   });
 
   ipcMain.on('restart_app', () => {
+    app.removeAllListeners("window-all-closed");
+    app.removeAllListeners("exit");
+    app.removeAllListeners("close");
+    
     autoUpdater.quitAndInstall();
+    app.relaunch();
+    app.exit(0);
   });
+
+
+  autoUpdater.on('checking-for-update', () => {
+    //Start checking for new version
+    //Here you can remind users that they are looking for a new version
+    //win.webContents.send("checking-for-update", "");
+  });
+
+  autoUpdater.on('update-available', (info) => {
+    //New version detected
+    //Remind users that a new version has been found
+    //win.webContents.send("update-available", "");
+  });
+
+  autoUpdater.on('update-not-available', (info) => {
+    //No new version detected
+    //Remind the user that the current version is the latest version and does not need to be updated
+    //win.webContents.send('update-not-available', "");
+  });
+
+  autoUpdater.on('error', (err) => {
+    //Automatic upgrade encountered an error
+    //Execute the original upgrade logic
+    //win.webContents.send("update-error", "");
+  });
+
+  autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
+    win.webContents.send("update-downloaded", releaseNotes, releaseName);
+  })
+
 
   win.webContents.on("ipc-message", (event, input, args) => {
     if (input === "app-close") {
@@ -196,9 +221,16 @@ try {
   // Some APIs can only be used after this event occurs.
   // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
   app.on("ready", () => setTimeout(createWindow, 400));
+  // app.on("ready", () => {
+  //   setTimeout(createWindow, 400)
+  //   autoUpdater.autoDownload = false;
+  //   setTimeout(autoUpdater.checkForUpdates, 1000);
+  // });
 
   // Quit when all windows are closed.
   app.on("window-all-closed", () => {
+
+    app.removeAllListeners();
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== "darwin") {

@@ -1,7 +1,7 @@
 import { Priority } from "./priority.model";
 
 export interface Project {
-    version: number;
+    version: string;
     name: string;
     notes: string;
     avialableStatuses: Status[];

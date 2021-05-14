@@ -22,8 +22,13 @@
   "win": {
     "icon": "dist/assets/icons",
     "target": [
-      "portable"
-    ]
+      {
+          "target": "nsis",
+          "arch": [
+              "x64",
+              "ia32"
+          ]
+      }]
   },
   "mac": {
     "icon": "dist/assets/icons",

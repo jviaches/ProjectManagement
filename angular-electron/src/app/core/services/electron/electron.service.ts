@@ -7,6 +7,7 @@ import * as childProcess from "child_process";
 import * as fs from "fs";
 
 import { Project, Ticket } from "../../models/project.model";
+import { ProgramUpdate } from "../../models/update.model";
 import { NotificationService } from "../notification.service";
 import { Router } from "@angular/router";
 import { BehaviorSubject } from "rxjs";
@@ -31,11 +32,12 @@ export class ElectronService {
   dialog: typeof dialog;
 
   project: BehaviorSubject<Project> = new BehaviorSubject(null);
+  systemUpdateMessage: BehaviorSubject<ProgramUpdate> = new BehaviorSubject(null);
   filePath: string = "";
   dataChangeDetected = false;
   autosave: boolean = false;
   lastTicketId: number = 1;
-  version = 0.1; // TODO: move it later to setting file
+  version = '1.0.0'; // TODO: move it later to setting file
 
   get isElectron(): boolean {
     return !!(window && window.process && window.process.type);
@@ -59,6 +61,14 @@ export class ElectronService {
       this.fs = window.require("fs");
       this.dialog = this.remote.dialog;
 
+
+      const newUpdate= {
+        releaseNotes: null,
+        releaseName: ''
+      };
+      this.systemUpdateMessage.next(newUpdate);
+
+
       this.ipcRenderer.on("new-project", (event, arg) => {
         this.ngZone.run(() => {
           this.newProject().then((value) => {
@@ -74,8 +84,6 @@ export class ElectronService {
               "No active project!"
             );
           } else {
-            console.log(this.project.value);
-
             this.saveProject(JSON.stringify(this.project.value));
             this.notificationService.showActionConfirmationSuccess("Saved!");
           }
@@ -129,29 +137,69 @@ export class ElectronService {
 
       this.ipcRenderer.on("exit", (event, arg) => {
         this.ngZone.run(() => {
-                this.exitProgram();
+          this.exitProgram();
         });
       });
 
       this.ipcRenderer.on("about", (event, arg) => {
         this.ngZone.run(() => {
-          this.notificationService.showModalComponent(AboutComponent,'About','');
+         this.notificationService.showModalComponent(AboutComponent,'About','');
         });
       });
+
+
+      // this.ipcRenderer.on('checking-for-update', () => {
+      //   //this.ipcRenderer.removeAllListeners('checking-for-update');
+      //   this.notificationService.showActionConfirmationSuccess('checking-for-update..');
+      // });
+
+      this.ipcRenderer.on('update-available', () => {
+         //this.ipcRenderer.removeAllListeners('update-available');
+         //this.notificationService.showActionConfirmationSuccess('update-available..');
+      });
+
+      // this.ipcRenderer.on('update-not-available', () => {
+      //   //this.ipcRenderer.removeAllListeners('update-not-available');
+      //   this.notificationService.showActionConfirmationSuccess('update-not-available..');
+      // });
+
+      // this.ipcRenderer.on('update-error', () => {
+      //   //this.ipcRenderer.removeAllListeners('update-error');
+      //   this.notificationService.showActionConfirmationSuccess('update-error..');
+      // });
+
+      this.ipcRenderer.on("update-downloaded", (releaseNotes, releaseName) => {
+
+        const newUpdate= {
+          releaseNotes: releaseNotes,
+          releaseName: releaseName
+        };
+        this.systemUpdateMessage.next(newUpdate);
+      });
+
+      // this.ipcRenderer.send('app_version');
+      // this.ipcRenderer.on('app_version', (event, arg) => {
+      //   this.ipcRenderer.removeAllListeners('app_version');
+      //   this.notificationService.showActionConfirmationSuccess('app_ver: ' + arg.version)
+      // });
+  
+      // this.ipcRenderer.on('update_available', () => {
+      //   this.ipcRenderer.removeAllListeners('update_available');
+      //   this.notificationService.showActionConfirmationSuccess('A new update is available. Downloading now...');
+      // });
     }
   }
 
   exitProgram() {
     this.project = new BehaviorSubject(null);
-    //this.remote.getCurrentWindow().close();
-    this.notificationService
-    .showYesNoModalMessage(this.dialogContent())
-    .subscribe((response) => {
-      if (response === "yes") {
-        this.ipcRenderer.send("app-close", null);
-      }
-    });
-  }
+      this.notificationService
+      .showYesNoModalMessage(this.dialogContent())
+      .subscribe((response) => {
+        if (response === "yes") {
+          this.ipcRenderer.send("app-close", null);
+        }
+      });
+    }
 
   newProject() {
     return new Promise<Project>((resolve) => {
@@ -376,9 +424,10 @@ export class ElectronService {
       name: "Project Name",
       notes: "notes..",
       avialableStatuses: [
-        { id: 1, name: "To Do" },
-        { id: 2, name: "In Progress" },
-        { id: 3, name: "Done" },
+        { id: 1, name: "Backlog" },
+        { id: 2, name: "To Do" },
+        { id: 3, name: "In Progress" },
+        { id: 4, name: "Done" },
       ],
       avialableTags: [],
       tickets: [
