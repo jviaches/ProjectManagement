@@ -19,7 +19,6 @@
               <mat-label>Project Name</mat-label>
               <input
                 matInput
-                placeholder="Ex. Pizza"
                 name="projName"
                 [(ngModel)]="project.name"
               />
@@ -34,7 +33,7 @@
         </div>
 
         <div class="project-participants">
-          <button class="project-participants__add" (click)="createTicket()">
+          <button class="project-participants__add" (click)="createTask()">
             Add Participant
           </button>
         </div>
@@ -43,32 +42,32 @@
       <div class="project-tasks">
         <div
           class="project-column"
-          *ngFor="let status of project.avialableStatuses"
+          *ngFor="let section of project.sections"
         >
           <div class="section-title">
             <div>
               <span
-                matBadge="{{ sectionId(status.id) }}"
+                matBadge="{{ sectionId(section.orderIndex) }}"
                 matBadgeOverlap="true"
               >
-                {{ status.name }}
+                {{ section.name }}
               </span>
             </div>
           </div>
           <div
             cdkDropList
             class="section"
-            [id]="'cdk-drop-list-' + status.id"
-            [cdkDropListData]="sectionsTickets['cdk-drop-list-' + status.id]"
+            [id]="'cdk-drop-list-' + section.orderIndex"
+            [cdkDropListData]="sectionsTasks['cdk-drop-list-' + section.orderIndex]"
             [cdkDropListConnectedTo]="sectiondIds"
             (cdkDropListDropped)="taskDrop($event)"
           >
             <div
               class="task"
-              *ngFor="let ticket of sectionsTickets['cdk-drop-list-' + status.id]"
+              *ngFor="let task of sectionsTasks['cdk-drop-list-' + section.orderIndex]"
               cdkDrag
-              (dblclick)="viewTicket(ticket)"
-              [style.border-color]="setTicketColor(ticket.priority)"
+              (dblclick)="viewTask(task)"
+              [style.border-color]="setTaskColor(task.priority)"
             >
               <div class="task__tags">
                 <span></span>
@@ -76,21 +75,21 @@
                   <i class="fas fa-ellipsis-h"></i>
                 </button>
                 <mat-menu #menu="matMenu">
-                  <button mat-menu-item (click)="viewTicket(ticket)">
+                  <button mat-menu-item (click)="viewTask(task)">
                     <i class="far fa-clipboard"></i>
                     <span> Details</span>
                   </button>
-                  <button mat-menu-item (click)="deleteTicket(ticket.id)">
+                  <button mat-menu-item (click)="deleteTask(task.id, section.orderIndex)">
                     <i class="far fa-trash-alt"></i>
                     <span> Delete</span>
                   </button>
                 </mat-menu>
               </div>
-              <p>{{ ticket.title }}</p>
+              <p>{{ task.title }}</p>
               <div class="task__stats">
                 <span
                   ><i class="fas fa-flag"></i>
-                  {{ ticket.creationDate | date: "LLL dd" }}</span
+                  {{ task.creationDate | date: "LLL dd" }}</span
                 >
                 <!-- <span><i class="fas fa-comment"></i>2</span>
                   <span><i class="fas fa-paperclip"></i>5</span>
@@ -116,7 +115,7 @@
       </div>
 
       <!-- <div class='tag-progress'>
-        <h2><b>Tags</b> (drag on ticket)</h2>
+        <h2><b>Tags</b> (drag on task)</h2>
         <div>
           <input class="input is-small" type="text" placeholder="Add new tag.." style="margin-bottom: 16px;">
 

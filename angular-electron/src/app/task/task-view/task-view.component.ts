@@ -1,17 +1,17 @@
 import {  Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Ticket } from '../../core/models/project.model';
+import { Task } from '../../core/models/project.model';
 import { NotificationService} from '../../core/services/notification.service';
 import { UtilsService } from '../../core/services/utils.service';
 
 @Component({
-  selector: 'app-ticket-view',
-  templateUrl: './ticket-view.component.html',
-  styleUrls: ['./ticket-view.component.scss']
+  selector: 'app-task-view',
+  templateUrl: './task-view.component.html',
+  styleUrls: ['./task-view.component.scss']
 })
-export class TicketViewComponent implements OnInit  {
+export class TaskViewComponent implements OnInit  {
 
-  ticket: Ticket;
+  task: Task;
   selectedValue: any;
   caption = '';
   editorText = '';
@@ -32,7 +32,7 @@ export class TicketViewComponent implements OnInit  {
   };
 
   constructor(private notificationService: NotificationService, 
-              private dialogRef: MatDialogRef<TicketViewComponent>, 
+              private dialogRef: MatDialogRef<TaskViewComponent>, 
               @Inject(MAT_DIALOG_DATA) public data: any,
               public utilsService: UtilsService) {
 
@@ -41,10 +41,10 @@ export class TicketViewComponent implements OnInit  {
   }
 
   ngOnInit() {
-    this.ticket = this.data.ticket;
-    this.selectedValue = this.ticket.priority.valueOf();
-    this.caption = this.ticket.title;
-    this.editorText = this.ticket.content;
+    this.task = this.data.task;
+    this.selectedValue = this.task.priority.valueOf();
+    this.caption = this.task.title;
+    this.editorText = this.task.content;
   }
 
   onContentChanged = (event) => {
@@ -55,11 +55,11 @@ export class TicketViewComponent implements OnInit  {
     if (this.caption.trim().length === 0) {
       this.notificationService.showActionConfirmationFail('Action cancelled. Nothing was created.');
     } else {
-      this.dialogRef.close({id: this.ticket.id, caption: this.caption, text:this.editorText, priority: this.selectedValue });
+      this.dialogRef.close({id: this.task.id, caption: this.caption, text:this.editorText, priority: this.selectedValue });
     }
   }
 
   cancel() {
-    this.dialogRef.close('FAIL');
+    this.dialogRef.close('CANCEL');
   }
 }

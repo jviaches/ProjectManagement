@@ -132,8 +132,10 @@ function createWindow(): BrowserWindow {
 
   win.once("ready-to-show", () => {
     setInterval(() => {
-      autoUpdater.checkForUpdates()
-    }, 60000)
+      autoUpdater.checkForUpdates().catch( ()=> {
+
+      });
+    }, 10009*60*60*24) // once a day
   });
 
   ipcMain.on('restart_app', () => {

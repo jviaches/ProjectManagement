@@ -6,14 +6,15 @@ import { ipcRenderer, webFrame, remote, dialog } from "electron";
 import * as childProcess from "child_process";
 import * as fs from "fs";
 
-import { Project, Ticket } from "../../models/project.model";
+import { Project, Task } from "../../models/project.model";
 import { ProgramUpdate } from "../../models/update.model";
 import { NotificationService } from "../notification.service";
 import { Router } from "@angular/router";
 import { BehaviorSubject } from "rxjs";
-import { TicketNewComponent } from "../../../ticket/ticket-create/ticket-create.component";
+import { TaskNewComponent } from "../../../task/task-create/task-create.component";
 import { Title } from "@angular/platform-browser";
 import { AboutComponent } from "../../../about/about.component";
+import { rejects } from "node:assert";
 
 @Injectable({
   providedIn: "root",
@@ -36,7 +37,7 @@ export class ElectronService {
   filePath: string = "";
   dataChangeDetected = false;
   autosave: boolean = false;
-  lastTicketId: number = 1;
+  lastTaskId: number = 1;
   version = '1.0.0'; // TODO: move it later to setting file
 
   get isElectron(): boolean {
@@ -210,7 +211,7 @@ export class ElectronService {
         this.setPageTitle(false);
 
         this.project.next(this.defaultProject);
-        this.setLastTicketId(this.defaultProject);
+        this.setLastTaskId(this.defaultProject);
         resolve(this.project.value);
       } else {
         this.notificationService
@@ -223,7 +224,7 @@ export class ElectronService {
               this.filePath = "";
               this.setPageTitle(false);
 
-              this.setLastTicketId(this.defaultProject);
+              this.setLastTaskId(this.defaultProject);
               resolve(this.project.value);
             }
           });
@@ -255,7 +256,7 @@ export class ElectronService {
     this.dataChangeDetected = false;
 
     this.setPageTitle(false);
-    this.setLastTicketId(null);
+    this.setLastTaskId(null);
     this.redirectTo("/", false);
   }
 
@@ -278,6 +279,8 @@ export class ElectronService {
   }
 
   saveAsProject(content: any) {
+    console.log(content);
+    
     var encryptedContent = this.encrypt(content);
 
     var filepath = this.dialog.showSaveDialogSync(null, {
@@ -326,7 +329,7 @@ export class ElectronService {
 
                   this.filePath = file[0];
                   this.setPageTitle(false);
-                  this.setLastTicketId(JSON.parse(decryptedContent));
+                  this.setLastTaskId(JSON.parse(decryptedContent));
 
                   this.project.next(JSON.parse(decryptedContent));
                 } catch (error) {
@@ -334,8 +337,7 @@ export class ElectronService {
                     "Error",
                     "Incorrect or corrupted projscope file!"
                   );
-
-                  resolve(null);
+                  Promise.reject('Error');
                 }
                 resolve(this.project.value);
               });
@@ -353,7 +355,7 @@ export class ElectronService {
               const decryptedContent = this.decrypt(data);
               this.filePath = file[0];
               this.setPageTitle(false);
-              this.setLastTicketId(JSON.parse(decryptedContent));
+              this.setLastTaskId(JSON.parse(decryptedContent));
               this.project.next(JSON.parse(decryptedContent));
             } catch (error) {
               this.notificationService.showModalMessage(
@@ -361,7 +363,7 @@ export class ElectronService {
                 "Incorrect or corrupted projscope file!"
               );
 
-              resolve(null);
+              Promise.reject('Error');
             }
 
             resolve(this.project.value);
@@ -371,37 +373,36 @@ export class ElectronService {
     });
   }
 
-  createTicket() {
+  createTask() {
     this.notificationService
-      .showModalComponent(TicketNewComponent, "", {})
+      .showModalComponent(TaskNewComponent, "", {})
       .subscribe((result) => {
         if (result !== "FAIL") {
-          const ticket: Ticket = {
-            id: this.getNextTicketId(),
+          const task: Task = {
+            id: this.getNextTaskId(),
             title: result.caption,
             content: result.text,
             priority: result.priority,
             tags: [],
-            statusId: 1,
+            orderIndex: 1,
             creationDate: new Date(),
           };
 
           this.setDataChange();
-          this.project.value.tickets.push(ticket);
+          this.project.value.sections[0].tasks.push(task);
           this.project.next(this.project.value);
         }
       });
   }
 
-  deleteTicket(ticketId: number) {
+  deleteTask(taskId: number, sectionIndex: number) {
     this.notificationService.showYesNoModalMessage("").subscribe((result) => {
       if (result === "yes") {
-        const ticketIndex = this.project.value.tickets.findIndex(
-          (d) => d.id === ticketId
-        );
-        this.project.value.tickets.splice(ticketIndex, 1);
 
-        this.setLastTicketId(this.project.value);
+        const taskIndex = this.project.value.sections[sectionIndex-1].tasks.findIndex((task) => task.id === taskId );
+        this.project.value.sections[sectionIndex-1].tasks.splice(taskIndex, 1);
+
+        this.setLastTaskId(this.project.value);
         this.setDataChange();
         this.project.next(this.project.value);
       }
@@ -423,24 +424,13 @@ export class ElectronService {
       version: this.version,
       name: "Project Name",
       notes: "notes..",
-      avialableStatuses: [
-        { id: 1, name: "Backlog" },
-        { id: 2, name: "To Do" },
-        { id: 3, name: "In Progress" },
-        { id: 4, name: "Done" },
+      sections: [
+        { orderIndex: 1, name: "Backlog", tasks: [] },
+        { orderIndex: 2, name: "To Do", tasks: [] },
+        { orderIndex: 3, name: "In Progress", tasks: [] },
+        { orderIndex: 4, name: "Done", tasks: [] },
       ],
-      avialableTags: [],
-      tickets: [
-        {
-          id: 1,
-          title: "Ticket #1",
-          content: "some content...",
-          priority: 1,
-          statusId: 1,
-          tags: [],
-          creationDate: new Date(),
-        },
-      ],
+      tags: [],
     };
 
     return project;
@@ -473,19 +463,25 @@ export class ElectronService {
       : "";
   }
 
-  getNextTicketId(): number {
-    this.lastTicketId += 1;
-    return this.lastTicketId;
+  getNextTaskId(): number {
+    this.lastTaskId += 1;
+    return this.lastTaskId;
   }
 
-  setLastTicketId(project: Project) {
+  setLastTaskId(project: Project) {
     if (!project) {
-      this.lastTicketId = 1;
+      this.lastTaskId = 1;
     } else {
-      const maxTicketId = Math.max(
-        ...project.tickets.map((ticket) => ticket.id)
-      );
-      this.lastTicketId = maxTicketId;
+      let maxTaskId = 1;
+      
+      project.sections.forEach(section => {
+        const localMaxId = Math.max(...section.tasks.map((task) => task.id))
+        if (localMaxId > maxTaskId ) {
+          maxTaskId = localMaxId;
+        }
+      });
+
+      this.lastTaskId = maxTaskId;
     }
   }
 

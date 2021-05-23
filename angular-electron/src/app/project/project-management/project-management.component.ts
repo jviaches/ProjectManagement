@@ -1,96 +1,131 @@
-import { Component, OnInit } from '@angular/core';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Project, Tag, Ticket } from '../../core/models/project.model'
-import { NotificationService } from '../../core/services/notification.service';
-import { TicketViewComponent } from '../../ticket/ticket-view/ticket-view.component';
-import { ElectronService } from '../../core/services';
-import { Priority, PriorityColor } from '../../core/models/priority.model';
-import { UtilsService } from '../../core/services/utils.service';
+import { Component, OnInit } from "@angular/core";
+import {
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem,
+} from "@angular/cdk/drag-drop";
+import { Project, Tag, Task } from "../../core/models/project.model";
+import { NotificationService } from "../../core/services/notification.service";
+import { TaskViewComponent } from "../../task/task-view/task-view.component";
+import { ElectronService } from "../../core/services";
+import { Priority, PriorityColor } from "../../core/models/priority.model";
+import { UtilsService } from "../../core/services/utils.service";
 
 interface Dictionary<T> {
-  [Key: string]: Ticket[];
+  [Key: string]: Task[];
 }
 
 @Component({
-  selector: 'app-project-management',
-  templateUrl: './project-management.component.html',
-  styleUrls: ['./project-management.component.scss']
+  selector: "app-project-management",
+  templateUrl: "./project-management.component.html",
+  styleUrls: ["./project-management.component.scss"],
 })
 export class ProjectManagementComponent implements OnInit {
-
   public project: Project = null;
   public connectedSections: Array<string> = [];
-  public sectionsTickets: Dictionary<string> = {};
+  public sectionsTasks: Dictionary<string> = {};
   public editProjectName: boolean = false;
 
-  caption = '';
+  caption = "";
   quillConfiguration = {
     toolbar: [
-      ['bold', 'italic', 'underline', 'strike'],
+      ["bold", "italic", "underline", "strike"],
       // ['blockquote', 'code-block'],
-      [{ list: 'ordered' }, { list: 'bullet' }],
+      [{ list: "ordered" }, { list: "bullet" }],
       [{ header: [1, 2, 3, 4, 5, 6, false] }],
       // [{ color: [] }, { background: [] }],
       // ['link'],
       // ['clean'],
     ],
-  }
-
-  editorStyle = {
-    height: '260px',
-    background: 'white'
   };
 
-  constructor(private electronService: ElectronService, 
-              private notificationService: NotificationService,
-              public utilsService: UtilsService) {               
-  }
+  editorStyle = {
+    height: "260px",
+    background: "white",
+  };
+
+  constructor(
+    private electronService: ElectronService,
+    private notificationService: NotificationService,
+    public utilsService: UtilsService
+  ) {}
 
   ngOnInit(): void {
-    this.electronService.project.subscribe(project => {
-      this.project = project;
-      this.recalculateData();
-    });
+    this.electronService.project.subscribe((project) => {
+        this.project = project;
+        this.recalculateData();
+      },
+      (error) => {}
+    );
   }
 
   public get sectiondIds(): string[] {
-    return Object.keys(this.sectionsTickets);
+    return Object.keys(this.sectionsTasks);
   }
 
   public get projectCopletionPecentage(): Number {
-    if (this.project === null || this.project.tickets.length === 0) {
+    let taskAmount = 0;
+    this.project.sections.map((a) => (taskAmount += a.tasks.length));
+
+    if (this.project === null || taskAmount === 0) {
       return 0;
     }
 
-    const allTickets = this.project.tickets.length;
-    const completedTickets = this.project.tickets.filter(ticket => ticket.statusId === this.project.avialableStatuses.length).length;
+    const lastSection = this.project.sections[this.project.sections.length - 1];
 
-    return Math.round(completedTickets / allTickets * 100);
+    return Math.round((lastSection.tasks.length / taskAmount) * 100);
   }
 
   tags: Tag[] = [
-    { id: 1, name: 'Ui design', color: 'blue' },
-    { id: 2, name: 'First Bug', color: 'red' },
-    { id: 3, name: 'wont Fix', color: 'yellow' },
+    { id: 1, name: "Ui design", color: "blue" },
+    { id: 2, name: "First Bug", color: "red" },
+    { id: 3, name: "Wont Fix", color: "yellow" },
   ];
 
   taskDrop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
-      console.log(event.container.data);
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      console.log(event.container.data);
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+      const startIndex = "cdk-drop-list-".length;
+      const sectionOrderId = event.container.id.substring(startIndex, event.container.id.length);
+
+      let sectionTasks: Task[] = [];
+      event.container.data.map((str, index) =>
+        sectionTasks.push(JSON.parse(JSON.stringify(str)))
+      );
+      this.project.sections[Number(sectionOrderId) - 1].tasks = sectionTasks;
     } else {
-      const ticketId = event.previousContainer.data[event.previousIndex]['id'];
-      const ticket = this.project.tickets.find(ticket => ticket.id === ticketId);
-      const statusId = event.container.id.split('cdk-drop-list-')[1];
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
 
-      ticket.statusId = Number(statusId);      
+      // remove task from old section
+      const prevSectionId = Number(event.previousContainer.id.replace("cdk-drop-list-", ""));
+      const movedTask: Task = <Task>(event.container.data[event.currentIndex] as unknown);
 
-      console.log(event.container.data);
-      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
-      console.log(event.container.data);
+      const taskIndex = this.project.sections[Number(prevSectionId) - 1].tasks.indexOf(movedTask); 
+      if (taskIndex !== -1) {
+        this.project.sections[Number(prevSectionId) - 1].tasks.splice(taskIndex, 1);
+      }
+
+      // add task to new section
+      const startIndex = "cdk-drop-list-".length;
+      const sectionOrderId = event.container.id.substring(startIndex, event.container.id.length);
+
+      let sectionTasks: Task[] = [];
+      event.container.data.map((str, index) =>
+        sectionTasks.push(JSON.parse(JSON.stringify(str)))
+      );
+      this.project.sections[Number(sectionOrderId) - 1].tasks = sectionTasks;
     }
 
+    this.recalculateData();
     this.electronService.setDataChange();
 
     if (this.electronService.autosave) {
@@ -99,43 +134,61 @@ export class ProjectManagementComponent implements OnInit {
   }
 
   tagDrop(event: CdkDragDrop<string[]>) {
-    console.log('tag `' + event.item.element.nativeElement.textContent + `' + dropped on ` + event.container.id);
+    // console.log(
+    //   "tag `" +
+    //     event.item.element.nativeElement.textContent +
+    //     `' + dropped on ` +
+    //     event.container.id
+    // );
 
     // transferArrayItem(event.previousContainer.data,
     //      event.container.data,
     //      event.previousIndex,
     //      event.currentIndex);
-   }
-
-  viewTicket(ticket: Ticket) {
-    this.notificationService.showModalComponent(TicketViewComponent, '', { ticket }).subscribe(result => {
-      if (result !== 'FAIL') {
-        const ticketIndex = this.project.tickets.findIndex(d => d.id === result.id);
-
-        if (this.project.tickets[ticketIndex].title !== result.caption) {
-          this.project.tickets[ticketIndex].title = result.caption;
-          this.electronService.setDataChange();
-        }
-
-        if (this.project.tickets[ticketIndex].content !== result.text) {
-          this.project.tickets[ticketIndex].content = result.text;
-          this.electronService.setDataChange();
-        }
- 
-        if (this.project.tickets[ticketIndex].priority !== result.priority) {
-          this.project.tickets[ticketIndex].priority = result.priority;
-          this.electronService.setDataChange();
-        }
-      }
-    });
   }
 
-  deleteTicket(ticketId: number) {
-    this.electronService.deleteTicket(ticketId);    
+  viewTask(task: Task) {
+    this.notificationService
+      .showModalComponent(TaskViewComponent, "", { task })
+      .subscribe((result) => {
+        if (result !== "CANCEL") {
+          const viewedTask = this.getTaskById(task.id);
+
+          for (let index = 0; index < this.project.sections.length; index++) {
+            const element = this.project.sections[index];
+            const indexResult = element.tasks.findIndex((task) => task.id === viewedTask.id );
+
+            if (indexResult !== -1) {
+              // task found
+
+              if (this.project.sections[index].tasks[indexResult].title !== result.caption) {
+                this.project.sections[index].tasks[indexResult].title = result.caption;
+                this.electronService.setDataChange();
+              }
+
+              if (this.project.sections[index].tasks[indexResult].content !== result.text) {
+                this.project.sections[index].tasks[indexResult].content = result.text;
+                this.electronService.setDataChange();
+              }
+
+              if (this.project.sections[index].tasks[indexResult].priority !== result.priority) {
+                this.project.sections[index].tasks[indexResult].priority = result.priority;
+                this.electronService.setDataChange();
+              }
+
+              break;
+            }
+          }
+        }
+      });
   }
 
-  createTicket() {
-    this.electronService.createTicket();    
+  deleteTask(taskId: number, sectionIndex: number) {
+    this.electronService.deleteTask(taskId, sectionIndex);
+  }
+
+  createTask() {
+    this.electronService.createTask();
   }
 
   onContentChanged = (event) => {
@@ -145,7 +198,7 @@ export class ProjectManagementComponent implements OnInit {
     if (this.electronService.autosave) {
       this.electronService.saveProject(JSON.stringify(this.project));
     }
-  }
+  };
 
   setProjectNameEditMode() {
     if (this.editProjectName) {
@@ -160,41 +213,65 @@ export class ProjectManagementComponent implements OnInit {
     }
 
     this.connectedSections = [];
-    this.sectionsTickets = {};
+    this.sectionsTasks = {};
 
-    if (this.project.avialableStatuses.length > 0 && this.project.tickets.length > 0) {
-      this.project.avialableStatuses.map(status => this.connectedSections.push('cdk-drop-list-' + status.id));
-      this.project.avialableStatuses.map(status => this.sectionsTickets['cdk-drop-list-' + status.id] = []);
+    if (this.project.sections.length > 0) {
+      this.project.sections.map((section) =>
+        this.connectedSections.push("cdk-drop-list-" + section.orderIndex)
+      );
+      this.project.sections.map((section) =>
+          (this.sectionsTasks["cdk-drop-list-" + section.orderIndex] = [])
+      );
 
-      this.project.tickets.map(ticket => {
-        this.sectionsTickets['cdk-drop-list-' + ticket.statusId].push(ticket);
+      this.project.sections.forEach((section) => {
+        section.tasks.forEach((task) => {
+          this.sectionsTasks["cdk-drop-list-" + section.orderIndex].push(task);
+        });
       });
     }
   }
 
   sectionId(id: string): Number {
-      return this.sectionsTickets['cdk-drop-list-' + id] ? this.sectionsTickets['cdk-drop-list-' + id].length : 0;
+    return this.sectionsTasks["cdk-drop-list-" + id]
+      ? this.sectionsTasks["cdk-drop-list-" + id].length
+      : 0;
   }
 
-  ticketPriority(ticket: Ticket) {
-    return ticket ? ticket.priority : '';
+  taskPriority(task: Task) {
+    return task ? task.priority : "";
   }
 
-  setTicketColor(priority: Priority) {
+  setTaskColor(priority: Priority) {
     if (priority == Priority.Minor) {
       return PriorityColor.Minor;
     }
 
     if (priority == Priority.Normal) {
-      return  PriorityColor.Normal;
+      return PriorityColor.Normal;
     }
 
     if (priority == Priority.High) {
-      return  PriorityColor.High;
+      return PriorityColor.High;
     }
 
     if (priority == Priority.Critical) {
-      return  PriorityColor.Critical;
+      return PriorityColor.Critical;
     }
+  }
+
+  private getTaskById(taskId: number): Task {
+    let foundTask = null;
+
+    for (let index = 0; index < this.project.sections.length; index++) {
+      const element = this.project.sections[index];
+      const indexResult = element.tasks.findIndex((task) => task.id === taskId);
+      if (indexResult !== -1) {
+        // task found
+        foundTask = this.project.sections[index].tasks[indexResult];
+        break;
+      }
+    }
+
+    return foundTask;
   }
 }

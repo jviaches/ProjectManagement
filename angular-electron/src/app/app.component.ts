@@ -19,23 +19,17 @@ export class AppComponent implements OnInit{
     this.translate.setDefaultLang("en");
     //console.log('AppConfig', AppConfig);
 
-    console.log(electronService.isElectron);
-
     if (electronService.isElectron) {
       // console.log(process.env);
       // console.log('Run in electron');
       // console.log('Electron ipcRenderer', this.electronService.ipcRenderer);
       // console.log('NodeJS childProcess', this.electronService.childProcess);
-
-
     } else {
       console.log("Run in browser");
     }
   }
   ngOnInit(): void {
     this.electronService.systemUpdateMessage.subscribe((update) => {
-      console.log(update);
-      
       if (update.releaseName !== '') {
         this.updateName = update.releaseName;
         document.getElementById("notification").classList.remove("hidden");

@@ -4,9 +4,14 @@ export interface Project {
     version: string;
     name: string;
     notes: string;
-    avialableStatuses: Status[];
-    avialableTags: Tag[];
-    tickets: Ticket[]
+    sections: Section[];
+    tags: Tag[];    
+}
+
+export interface Section {
+    orderIndex: number;
+    name: string;
+    tasks: Task[]
 }
 
 export interface Tag {
@@ -15,17 +20,13 @@ export interface Tag {
     color: string;
 }
 
-export class Ticket {
+export class Task {
     id: number;
     title: string = '';
     content: string = '';
     priority: Priority;
     tags: Tag[] = [];
-    statusId: number;
+    orderIndex: number;
     creationDate: Date;
 }
 
-export interface Status {
-    id: number;
-    name: string;
-}

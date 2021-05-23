@@ -4,11 +4,11 @@ import { NotificationService} from '../../core/services/notification.service';
 import { UtilsService } from '../../core/services/utils.service';
 
 @Component({
-  selector: 'app-ticket-new',
-  templateUrl: './ticket-create.component.html',
-  styleUrls: ['./ticket-create.component.scss']
+  selector: 'app-task-new',
+  templateUrl: './task-create.component.html',
+  styleUrls: ['./task-create.component.scss']
 })
-export class TicketNewComponent implements OnInit  {
+export class TaskNewComponent implements OnInit  {
 
   caption = '';
   selectedValue = '';
@@ -31,7 +31,7 @@ export class TicketNewComponent implements OnInit  {
   };
 
   constructor(private notificationService: NotificationService, 
-              private dialogRef: MatDialogRef<TicketNewComponent>,
+              private dialogRef: MatDialogRef<TaskNewComponent>,
               public utilsService: UtilsService) {
   }
 
