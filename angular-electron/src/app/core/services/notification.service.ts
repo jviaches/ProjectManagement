@@ -10,28 +10,29 @@ import { ModalYesNoDialogComponent } from '../../modals/yesno-modal-dialog/yesno
 })
 export class NotificationService {
 
+    snackConfig: MatSnackBarConfig;
+
     constructor(private snackBar: MatSnackBar, private dialog: MatDialog) {
+        this.snackConfig = {
+            duration: 3000,
+            horizontalPosition: 'right',
+            verticalPosition: 'bottom'
+          };
     }
 
     public showActionConfirmationSuccess(text: string) {
-        const config = new MatSnackBarConfig();
-        config.panelClass = ['snackBar-success'];
-        config.duration = 3000;
-        this.snackBar.open(text, null, config);
+        this.snackConfig.panelClass = ['snackBar-success-style'];
+        this.snackBar.open(text, null, this.snackConfig);
     }
 
     public showActionConfirmationWarning(text: string) {
-        const config = new MatSnackBarConfig();
-        config.panelClass = ['snackBar-warning'];
-        config.duration = 3000;
-        this.snackBar.open(text, null, config);
+        this.snackConfig.panelClass = ['snackBar-warning-style'];
+        this.snackBar.open(text, null, this.snackConfig);
     }
 
     public showActionConfirmationFail(text: string) {
-        const config = new MatSnackBarConfig();
-        config.panelClass = ['snackBar-fail'];
-        config.duration = 3000;
-        this.snackBar.open(text, null, config).afterDismissed();
+        this.snackConfig.panelClass = ['snackBar-fail-style'];
+        this.snackBar.open(text, null, this.snackConfig).afterDismissed();
     }
 
     public showYesNoModalMessage(textMessage: string): Observable<any> {

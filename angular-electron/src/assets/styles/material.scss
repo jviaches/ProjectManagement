@@ -60,3 +60,18 @@ $candy-app-theme: mat-light-theme(
 .mat-badge-content {
   background-color: var(--purple);
 }
+
+.snackBar-success-style {
+  background-color:#F4F9FC;
+  color:black;
+}
+
+.snackBar-warning-style {
+  background-color:#F4F9FC;
+  color:peru;
+}
+
+.snackBar-fail-style {
+  background-color:#F4F9FC;
+  color:red;
+}

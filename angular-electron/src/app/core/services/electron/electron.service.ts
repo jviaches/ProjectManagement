@@ -86,7 +86,7 @@ export class ElectronService {
             );
           } else {
             this.saveProject(JSON.stringify(this.project.value));
-            this.notificationService.showActionConfirmationSuccess("Saved!");
+            this.notificationService.showActionConfirmationSuccess("Project has been saved.");
           }
         });
 
@@ -101,7 +101,7 @@ export class ElectronService {
             );
           } else {
             this.saveAsProject(JSON.stringify(this.project.value));
-            this.notificationService.showActionConfirmationSuccess("Saved!");
+            this.notificationService.showActionConfirmationSuccess("Project has been saved.");
           }
         });
         this.ipcRenderer.send("close-project-enable", true);
