@@ -1,16 +1,17 @@
  language: node_js
-node_js: "9.11.1"
+# node_js: "9.11.1"
 
 before_install:
   - cd angular-electron
+  - npm install -g @angular/cli
 
-cache:
-  directories:
-    - node_modules
-    - angular-electron/node_modules
-    - $HOME/.cache/electron
-    - $HOME/.cache/electron-builder
-    - $HOME/.npm/_prebuilds
+# cache:
+  # directories:
+    # - node_modules
+    # - angular-electron/node_modules
+    # - $HOME/.cache/electron
+    # - $HOME/.cache/electron-builder
+    # - $HOME/.npm/_prebuilds
 
 env:
   global:
