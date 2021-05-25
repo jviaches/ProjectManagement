@@ -3,12 +3,13 @@
 
 before_install:
   - cd angular-electron
+  - npm install node-sass
   - npm install -g @angular/cli
 
-# cache:
-  # directories:
-    # - node_modules
-    # - angular-electron/node_modules
+ cache:
+   directories:
+     - node_modules
+     - angular-electron/node_modules
     # - $HOME/.cache/electron
     # - $HOME/.cache/electron-builder
     # - $HOME/.npm/_prebuilds
