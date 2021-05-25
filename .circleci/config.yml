@@ -1,7 +1,5 @@
 version: 2
 jobs: 
-  build:
-    working_directory: ~/angular-electron
   build_windows:
     docker:
       - image: electronuserland/builder:wine
@@ -33,3 +31,6 @@ workflows:
     jobs:
       - build_windows
       - build_macos
+      
+ build:
+    working_directory: ~/angular-electron
