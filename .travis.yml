@@ -33,6 +33,7 @@ install:
        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
        brew install node;
        npm install;
+       npm install fsevents
        npm install -g @angular/cli;
      fi
 script:
