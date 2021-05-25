@@ -6,7 +6,7 @@ jobs:
       - image: electronuserland/builder:wine
     steps:
       - checkout
-      - run: cd folder-name && npm install;
+      - run: cd angular-electron && npm install;
       - run: npm install -g @angular/cli;
       - run: npm run build;
       - run: npm run deploy:win;
@@ -33,5 +33,3 @@ workflows:
     jobs:
       - build_windows
       - build_macos
-
-working_directory: ~/angular-electron    
