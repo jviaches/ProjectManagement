@@ -12,9 +12,9 @@ matrix:
     # Windows currently doesn't support encrypted variables.
     # Once supported uncomment this out & remove build with Docker
     #
-    #- os: windows
-    #  language: node_js
-    #  node_js: "12.16.1"
+    - os: windows
+      language: node_js
+      node_js: "12.16.1"
 
     - os: linux
       services: docker
@@ -32,7 +32,9 @@ before_install:
 install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      brew npm install -g @angular/cli;
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+      brew install node
+      npm install -g @angular/cli;
     fi
 script:
   - |
