@@ -1,11 +1,13 @@
 version: 2
 jobs:
+general:
+  build_dir: angular-electron
+  
   build_windows:
     docker:
       - image: electronuserland/builder:wine
     steps:
       - checkout
-      - cd angular-electron
       - run: npm install;
       - run: npm install -g @angular/cli;
       - run: npm run build;
@@ -21,7 +23,6 @@ jobs:
       - run: security unlock-keychain -p $KEYCHAIN_PASSWORD build.keychain
       - run: echo $KEYSTORE | base64 --decode - > keystore.p12
       - run: security import keystore.p12 -k build.keychain -P $KEYCHAIN_PASSWORD -T /usr/bin/codesign
-      - cd angular-electron
       - run: npm install;
       - run: npm install -g @angular/cli;
       - run: npm run build;
