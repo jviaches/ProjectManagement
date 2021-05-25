@@ -21,7 +21,7 @@ jobs:
       - run: cd angular-electron && sudo npm install typescript -g;
       - run: cd angular-electron && npm install @types/node;
       - run: cd angular-electron && sudo npm run build;
-      - run: cd angular-electron && sudo npm run deploy:win;
+      - run: cd angular-electron && sudo npm run deploy:linux;
       
   build_macos:
     macos:
@@ -37,7 +37,7 @@ jobs:
       - run: cd angular-electron && brew install typescript
       - run: cd angular-electron && npm install -g @angular/cli;
       - run: cd angular-electron && npm run build;
-      - run: cd angular-electron && npm run deploy:win;
+      - run: cd angular-electron && npm run deploy:mac;
 
 workflows:
   version: 2
