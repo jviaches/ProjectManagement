@@ -4,7 +4,7 @@ matrix:
     - os: osx
       osx_image: xcode11.3
       language: node_js
-      node_js: "12.16.1"
+      node_js: "15.14.0"
       env:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
@@ -34,7 +34,6 @@ install:
        brew install node;
        brew upgrade node;
        npm install;
-       npm install fsevents;
        npm install -g @angular/cli;
      fi
 script:
