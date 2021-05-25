@@ -17,7 +17,7 @@ jobs:
     steps:
       - checkout
       - run: sudo npm install -g npm
-      - run: cd angular-electron && sudo npm install;
+      - run: cd angular-electron && sudo npm install --unsafe-perm -g expo-cli;
       - run: cd angular-electron && sudo npm install -g @angular/cli;
       - run: cd angular-electron && sudo npm run build;
       - run: cd angular-electron && sudo npm run deploy:win;
