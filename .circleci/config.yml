@@ -6,7 +6,7 @@ jobs:
       - image: electronuserland/builder:wine
     steps:
       - checkout
-      - run: npm install;
+      - run: cd folder-name && npm install;
       - run: npm install -g @angular/cli;
       - run: npm run build;
       - run: npm run deploy:win;
