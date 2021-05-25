@@ -9,13 +9,13 @@ matrix:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 
-    # - os: windows
-    #   language: node_js
-    #    node_js: "15.14.0"
+    - os: windows
+      language: node_js
+      node_js: "15.14.0"
 
-    # - os: linux
-      # services: docker
-      # language: generic
+    - os: linux
+      services: docker
+      language: generic
 
 cache:
   yarn: true
@@ -26,7 +26,8 @@ cache:
 
 before_install:
   - cd angular-electron
- install:
+  
+install:
    - |
      if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
