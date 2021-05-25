@@ -14,13 +14,12 @@ import { BehaviorSubject } from "rxjs";
 import { TaskNewComponent } from "../../../task/task-create/task-create.component";
 import { Title } from "@angular/platform-browser";
 import { AboutComponent } from "../../../about/about.component";
-import { rejects } from "node:assert";
 
 @Injectable({
   providedIn: "root",
 })
 export class ElectronService {
-  public static readonly PAGE_TITLE = "ProjScope";
+  public static readonly PAGE_TITLE = "ProjScope Tasks";
 
   CryptoJS = require("crypto-js");
   encrypedSecretKey = "321c3c23-cbf1-4a30-938d-f8bd80757a0e";

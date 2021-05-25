@@ -9,9 +9,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jviaches/projscope-task.git",
+    "url": "https://github.com/jviaches/projscope-tasks.git",
     "owner": "jviaches",
-    "token": "projscope-task"
+    "token": "projscope-tasks"
   },
   "keywords": [
     "angular",
