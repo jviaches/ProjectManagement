@@ -12,13 +12,13 @@ matrix:
     # Windows currently doesn't support encrypted variables.
     # Once supported uncomment this out & remove build with Docker
 
-    - os: windows
-      language: node_js
-      node_js: "15.14.0"
+    # - os: windows
+      # language: node_js
+      # node_js: "15.14.0"
 
-    # - os: linux
-    #   services: docker
-    #   language: generic
+    - os: linux
+      services: docker
+      language: generic
 
 cache:
   yarn: true
@@ -37,16 +37,16 @@ before_install:
 #       npm install -g @angular/cli;
 #     fi
 script:
-  # - |
-  #   if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-  #     docker run --rm \
-  #       -e GH_TOKEN=$GH_TOKEN \
-  #       -v $PWD:/project \
-  #       -v ~/.cache/electron:/root/.cache/electron \
-  #       -v ~/.cache/electron-builder:/root/.cache/electron-builder \
-  #       electronuserland/builder:wine \
-  #       /bin/bash -c "npm install && npm install -g @angular/cli && npm run build && npm run deploy:mac"
-  #   elif [ "$TRAVIS_OS_NAME" == "windows" ]; then
+  - |
+    if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+      docker run --rm \
+        -e GH_TOKEN=$GH_TOKEN \
+        -v $PWD:/project \
+        -v ~/.cache/electron:/root/.cache/electron \
+        -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+        electronuserland/builder:wine \
+        /bin/bash -c "npm install && npm install -g @angular/cli && npm run build && npm run deploy:linux"
+    elif [ "$TRAVIS_OS_NAME" == "windows" ]; then
       npm install;
       npm install -g @angular/cli;
       npm run build;
@@ -60,8 +60,8 @@ script:
     #   npm install;
     #   npm install -g @angular/cli
     #   npm run build;
-    #   npm run deploy:linux
-    # fi
+    #   npm run deploy:mac
+    fi
 # before_cache:
 #   - rm -rf $HOME/.cache/electron-builder/wine
 
