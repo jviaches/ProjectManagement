@@ -18,6 +18,7 @@ jobs:
       - checkout
       - run: sudo npm install -g npm
       - run: cd angular-electron && sudo npm install -g @angular/cli;
+      - run: cd angular-electron && sudo npm install typescript -g
       - run: cd angular-electron && sudo npm run build;
       - run: cd angular-electron && sudo npm run deploy:win;
       
@@ -32,6 +33,7 @@ jobs:
       - run: echo $KEYSTORE | base64 --decode - > keystore.p12
       - run: security import keystore.p12 -k build.keychain -P $KEYCHAIN_PASSWORD -T /usr/bin/codesign
       - run: cd angular-electron && npm install;
+      - run: cd angular-electron && brew install typescript
       - run: cd angular-electron && npm install -g @angular/cli;
       - run: cd angular-electron && npm run build;
       - run: cd angular-electron && npm run deploy:win;
