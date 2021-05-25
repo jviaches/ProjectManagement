@@ -10,10 +10,21 @@ jobs:
       - run: cd angular-electron && npm install -g @angular/cli;
       - run: cd angular-electron && npm run build;
       - run: cd angular-electron && npm run deploy:win;
-
+      
+  build_linux:
+    docker:
+       - image: circleci/node:15.14.0
+    steps:
+      - checkout
+      - run: sudo npm install -g npm
+      - run: cd angular-electron && sudo npm install;
+      - run: cd angular-electron && sudo npm install -g @angular/cli;
+      - run: cd angular-electron && sudo npm run build;
+      - run: cd angular-electron && sudo npm run deploy:win;
+      
   build_macos:
     macos:
-      xcode: "10.0.0"
+      xcode: "11.3"
     steps:
       - checkout
       - run: security create-keychain -p $KEYCHAIN_PASSWORD build.keychain
@@ -21,10 +32,10 @@ jobs:
       - run: security unlock-keychain -p $KEYCHAIN_PASSWORD build.keychain
       - run: echo $KEYSTORE | base64 --decode - > keystore.p12
       - run: security import keystore.p12 -k build.keychain -P $KEYCHAIN_PASSWORD -T /usr/bin/codesign
-      - run: npm install;
-      - run: npm install -g @angular/cli;
-      - run: npm run build;
-      - run: npm run deploy:win;
+      - run: cd angular-electron && npm install;
+      - run: cd angular-electron && npm install -g @angular/cli;
+      - run: cd angular-electron && npm run build;
+      - run: cd angular-electron && npm run deploy:win;
 
 workflows:
   version: 2
@@ -32,4 +43,5 @@ workflows:
   build:
     jobs:
       - build_windows
+      - build_linux
       - build_macos
