@@ -3,7 +3,7 @@
 
 before_install:
   - cd angular-electron
-  - npm install node-sass
+  - npm install node-sass@latest
   - npm install -g @angular/cli
 
  cache:
