@@ -32,8 +32,9 @@ install:
      if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
        brew install node;
+       brew upgrade node;
        npm install;
-       npm install fsevents
+       npm install fsevents;
        npm install -g @angular/cli;
      fi
 script:
