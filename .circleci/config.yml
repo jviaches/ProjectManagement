@@ -7,9 +7,9 @@ jobs:
     steps:
       - checkout
       - run: cd angular-electron && npm install;
-      - run: npm install -g @angular/cli;
-      - run: npm run build;
-      - run: npm run deploy:win;
+      - run: cd angular-electron && npm install -g @angular/cli;
+      - run: cd angular-electron && npm run build;
+      - run: cd angular-electron && npm run deploy:win;
 
   build_macos:
     macos:
