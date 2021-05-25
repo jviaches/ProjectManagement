@@ -31,7 +31,8 @@ install:
    - |
      if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-       brew install node
+       brew install node;
+       npm install;
        npm install -g @angular/cli;
      fi
 script:
@@ -55,8 +56,6 @@ script:
       security unlock-keychain -p $KEYCHAIN_PASSWORD build.keychain;
       echo $KEYSTORE | base64 --decode - > keystore.p12;
       security import keystore.p12 -k build.keychain -P $KEYCHAIN_PASSWORD -T /usr/bin/codesign;
-      npm install;
-      npm install -g @angular/cli
       npm run build;
       npm run deploy:mac
     fi
