@@ -16,7 +16,7 @@ jobs:
        - image: circleci/node:15.14.0
     steps:
       - checkout
-      - run: sudo chmod -R 777 angular-electron
+      # - run: sudo chmod -R 777 angular-electron
       - run: sudo npm install -g npm
       - run: cd angular-electron && sudo npm install -g @angular/cli;
       - run: cd angular-electron && sudo npm install typescript -g;
