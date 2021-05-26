@@ -21,7 +21,7 @@ jobs:
       - run: cd angular-electron && sudo npm install typescript -g;
       - run: cd angular-electron && npm install @types/node;
       - run: cd angular-electron && sudo npm run build;
-      - run: sudo chmod -R 777 /angular-electron
+      - run: sudo chmod -R 777 angular-electron
       - run: cd angular-electron && sudo npm run deploy:linux --unsafe-perm=true;
       
   build_macos:
