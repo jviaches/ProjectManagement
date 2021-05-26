@@ -16,13 +16,14 @@ jobs:
        - image: circleci/node:15.14.0
     steps:
       - checkout
+      - run: sudo chmod -R 777 angular-electron
       - run: sudo npm install -g npm
       - run: cd angular-electron && sudo npm install -g @angular/cli;
       - run: cd angular-electron && sudo npm install typescript -g;
-      - run: cd angular-electron && npm install @types/node;
+      - run: cd angular-electron && npm install @types/node -g;
+      - run: cd angular-electron && sudo npm install -g electron --unsafe-perm=true --allow-root
       - run: cd angular-electron && sudo npm run build;
-      - run: sudo chmod -R 777 angular-electron
-      - run: cd angular-electron && sudo npm run deploy:linux --unsafe-perm=true;
+      - run: cd angular-electron && sudo npm run deploy:linux
       
   build_macos:
     macos:
