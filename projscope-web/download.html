@@ -124,13 +124,13 @@
 			os = 'Android';
 		  } else if (!os && /Linux/.test(platform)) {
 			//os = 'Linux';
-			os = 'https://github.com/jviaches/projscope-tasks/releases/download/untagged-a89e45059fe36108112d/Projscope-Tasks-1.0.0.AppImage';		
+			os = 'https://github.com/jviaches/projscope-tasks/releases/download/v1.0.0/Projscope-Tasks-1.0.0.AppImage';		
 		  }
 		  
 		  document.getElementById("download_link").setAttribute("href",os);
 		  document.getElementById("download_win").setAttribute("href", 'https://github.com/jviaches/projscope-tasks/releases/download/v1.0.0/Projscope-Tasks-Setup-1.0.0.exe');
 		  document.getElementById("download_mac").setAttribute("href", 'https://github.com/jviaches/projscope-tasks/releases/download/v1.0.0/Projscope-Tasks-Setup-1.0.0.exe');
-		  document.getElementById("download_linux").setAttribute("href", 'https://github.com/jviaches/projscope-tasks/releases/download/untagged-a89e45059fe36108112d/Projscope-Tasks-1.0.0.AppImage');
+		  document.getElementById("download_linux").setAttribute("href", 'https://github.com/jviaches/projscope-tasks/releases/download/v1.0.0/Projscope-Tasks-1.0.0.AppImage');
 		  setTimeout(function () { window.location = os; }, 3000)
 		}
 		
