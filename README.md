@@ -6,4 +6,4 @@ Scripts:
 
 Release being uploaded to: https://github.com/jviaches/projscope-tasks
 
-![Dashboard](https://github.com/jviaches/ProjectManagement/blob/main/images/dashboard.PNG)
+![Dashboard](https://github.com/jviaches/ProjectManagement/blob/main/images/dashboard.PNG) 
