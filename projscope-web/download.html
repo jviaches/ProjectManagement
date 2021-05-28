@@ -62,9 +62,9 @@
                             <div class="header pt-30 pb-30 border-bottom-light">
 								<i class="fa fa-apple" aria-hidden="true" style="font-size: 10rem;"></i>
                             </div>
-                            <div class="body pb-40 pt-30 pr-30 pl-30">
+                            <div class="body pb-40 pt-30 pr-30 pl-30" style="pointer-events: none; opacity: 0.6;">
                                 <a id="download_mac" href="#" class="btn btn--outline btn-3d-hover btn-splash-hover">
-                                    <span class="btn__text">Mac</span>
+                                    <span class="btn__text">Mac - Comming soon!</span>
                                 </a>
                             </div>
                         </div>
@@ -114,7 +114,7 @@
 
 		  if (macosPlatforms.indexOf(platform) !== -1) {
 			//os = 'Mac OS';
-			os = 'https://github.com/jviaches/projscope-tasks/releases/download/v1.0.0/Projscope-Tasks-Setup-1.0.0.exe';			
+			//os = 'https://github.com/jviaches/projscope-tasks/releases/download/v1.0.0/Projscope-Tasks-Setup-1.0.0.exe';			
 		  } else if (iosPlatforms.indexOf(platform) !== -1) {
 			//os = 'iOS';			
 		  } else if (windowsPlatforms.indexOf(platform) !== -1) {
@@ -129,7 +129,7 @@
 		  
 		  document.getElementById("download_link").setAttribute("href",os);
 		  document.getElementById("download_win").setAttribute("href", 'https://github.com/jviaches/projscope-tasks/releases/download/v1.0.0/Projscope-Tasks-Setup-1.0.0.exe');
-		  document.getElementById("download_mac").setAttribute("href", 'https://github.com/jviaches/projscope-tasks/releases/download/v1.0.0/Projscope-Tasks-Setup-1.0.0.exe');
+		  //document.getElementById("download_mac").setAttribute("href", 'https://github.com/jviaches/projscope-tasks/releases/download/v1.0.0/Projscope-Tasks-Setup-1.0.0.exe');
 		  document.getElementById("download_linux").setAttribute("href", 'https://github.com/jviaches/projscope-tasks/releases/download/v1.0.0/Projscope-Tasks-1.0.0.AppImage');
 		  setTimeout(function () { window.location = os; }, 3000)
 		}
