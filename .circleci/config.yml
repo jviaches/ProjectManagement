@@ -1,5 +1,6 @@
 version: 2
 jobs:
+
   build-linux:
     working_directory: ~/angular-electron
     docker:
@@ -27,6 +28,9 @@ jobs:
       - run: cd angular-electron && npm run build;
       - run: cd angular-electron && npm run deploy:win;
 
+workflows:
+  version: 2
+  
   build:
     jobs:
       - build_windows
