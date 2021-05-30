@@ -19,9 +19,8 @@ jobs:
       - run: sudo npm install -g npm
       - run: cd angular-electron && sudo npm install -g @angular/cli;
       - run: cd angular-electron && sudo npm install typescript -g;
-      # - run: cd angular-electron && npm install @types/node -g;
       - run: cd angular-electron && sudo npm install -g electron --unsafe-perm=true --allow-root;
-      - run: cd angular-electron && sudo npm run build unsafe-perm=true --allow-root;
+      - run: cd angular-electron && sudo npm run build --unsafe-perm=true --allow-root;
       - run: cd angular-electron && sudo npm run deploy:linux
       
   # build_macos:
