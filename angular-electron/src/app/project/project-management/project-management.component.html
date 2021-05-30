@@ -89,7 +89,7 @@
               <div class="task__stats">
                 <span
                   ><i class="fas fa-flag"></i>
-                  {{ task.creationDate | date: "LLL dd" }}</span
+                  {{ task.creationDate | date: 'mediumDate' }}</span
                 >
                 <!-- <span><i class="fas fa-comment"></i>2</span>
                   <span><i class="fas fa-paperclip"></i>5</span>
@@ -137,7 +137,7 @@
             <span
               class="priority"
               [style.background-color]="color.key"
-              style="margin-right: 5px"
+              style="margin-right: 5px; border-radius: 5px 5px 5px; border: 1px solid gray;"
             ></span>
             <span>{{ color.value }}</span>
           </div>
