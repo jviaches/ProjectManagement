@@ -16,7 +16,7 @@ jobs:
     steps:
       - checkout
       # - run: sudo chmod -R 777 angular-electron
-      - run: sudo npm install -g npm
+      - run: sudo npm install -g --unsafe-perm=true --allow-root
       - run: cd angular-electron && sudo npm install -g @angular/cli;
       - run: cd angular-electron && sudo npm install typescript -g;
       - run: cd angular-electron && sudo npm install -g electron --unsafe-perm=true --allow-root;
