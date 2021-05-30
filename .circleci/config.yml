@@ -1,14 +1,14 @@
 version: 2
 jobs: 
-  build_windows:
-    docker:
-      - image: electronuserland/builder:wine
-    steps:
-      - checkout
-      - run: cd angular-electron && npm install;
-      - run: cd angular-electron && npm install -g @angular/cli;
-      - run: cd angular-electron && npm run build;
-      - run: cd angular-electron && npm run deploy:win;
+  # build_windows:
+  #   docker:
+  #     - image: electronuserland/builder:wine
+  #   steps:
+  #     - checkout
+  #     - run: cd angular-electron && npm install;
+  #     - run: cd angular-electron && npm install -g @angular/cli;
+  #     - run: cd angular-electron && npm run build;
+  #     - run: cd angular-electron && npm run deploy:win;
       
   build_linux:
     docker:
@@ -20,8 +20,8 @@ jobs:
       - run: cd angular-electron && sudo npm install -g @angular/cli;
       - run: cd angular-electron && sudo npm install typescript -g;
       # - run: cd angular-electron && npm install @types/node -g;
-      - run: cd angular-electron && sudo npm install -g electron --unsafe-perm=true --allow-root
-      - run: cd angular-electron && sudo npm run build;
+      - run: cd angular-electron && sudo npm install -g electron --unsafe-perm=true --allow-root;
+      - run: cd angular-electron && sudo npm run build unsafe-perm=true --allow-root;
       - run: cd angular-electron && sudo npm run deploy:linux
       
   # build_macos:
@@ -45,6 +45,6 @@ workflows:
   
   build:
     jobs:
-      - build_windows
+      # - build_windows
       - build_linux
       # - build_macos
