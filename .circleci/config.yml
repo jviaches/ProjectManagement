@@ -16,6 +16,8 @@ jobs:
       #     - "node_modules"
       - run: cd angular-electron && npm run build;
       - run: cd angular-electron && npm run deploy:linux;
+      - store_artifacts:
+          path: /angular-electron
 
   build_windows:
     working_directory: ~/angular-electron
@@ -27,6 +29,8 @@ jobs:
       - run: cd angular-electron && npm install -g @angular/cli;
       - run: cd angular-electron && npm run build;
       - run: cd angular-electron && npm run deploy:win;
+      - store_artifacts:
+          path: /angular-electron
 
 workflows:
   version: 2
