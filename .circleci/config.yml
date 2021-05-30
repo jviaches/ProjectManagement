@@ -1,7 +1,7 @@
 version: 2
 jobs:
 
-  build-linux:
+  build_linux:
     working_directory: ~/angular-electron
     docker:
       - image: circleci/node:15.14.0
@@ -30,7 +30,7 @@ jobs:
 
 workflows:
   version: 2
-  
+
   build:
     jobs:
       - build_windows
