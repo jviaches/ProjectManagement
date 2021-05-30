@@ -14,4 +14,5 @@ jobs:
       #     paths:
       #       - "node_modules"
       - run: cd angular-electron && npm run build;
+      - run: cd angular-electron && npm run deploy:win;
       - run: cd angular-electron && npm run deploy:linux;
