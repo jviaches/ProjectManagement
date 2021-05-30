@@ -26,3 +26,8 @@ jobs:
       - run: cd angular-electron && npm install -g @angular/cli;
       - run: cd angular-electron && npm run build;
       - run: cd angular-electron && npm run deploy:win;
+
+  build:
+    jobs:
+      - build_windows
+      - build_linux 
