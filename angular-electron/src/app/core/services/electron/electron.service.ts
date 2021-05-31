@@ -14,6 +14,7 @@ import { BehaviorSubject } from "rxjs";
 import { TaskNewComponent } from "../../../task/task-create/task-create.component";
 import { Title } from "@angular/platform-browser";
 import { AboutComponent } from "../../../about/about.component";
+import { AppConfig } from "../../../../environments/environment";
 
 @Injectable({
   providedIn: "root",
@@ -37,7 +38,7 @@ export class ElectronService {
   dataChangeDetected = false;
   autosave: boolean = false;
   lastTaskId: number = 1;
-  version = '1.0.0'; // TODO: move it later to setting file
+  public version = AppConfig.version; // TODO: move it later to setting file
 
   get isElectron(): boolean {
     return !!(window && window.process && window.process.type);
@@ -51,6 +52,7 @@ export class ElectronService {
   ) {
     // Conditional imports
     if (this.isElectron) {
+
       this.ipcRenderer = window.require("electron").ipcRenderer;
       this.webFrame = window.require("electron").webFrame;
 
