@@ -1,4 +1,4 @@
-<div class="center">
+<div class="center" style="width: 600px;">
     <input [(ngModel)]='caption' class="input" type="text" placeholder="Caption" style="margin-bottom: 5px;">
     <form>
         <mat-form-field appearance="legacy" style="width: 100%;">
@@ -12,7 +12,8 @@
           </mat-select>
         </mat-form-field>
     </form>
-    <quill-editor id="editor" [styles]="editorStyle" [modules]="quillConfiguration"
+
+    <quill-editor id="editor" [styles]="editorStyle" [modules]="quillConfiguration" [(ngModel)]="editorText"
         (onContentChanged)="onContentChanged($event)" required></quill-editor>
           
     <div style="margin-top: 20px;">

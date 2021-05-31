@@ -26,8 +26,7 @@ export class TaskNewComponent implements OnInit  {
   }
 
   editorStyle = {
-    height: '260px',
-    width: '400px'
+    height: '260px'
   };
 
   constructor(private notificationService: NotificationService, 
