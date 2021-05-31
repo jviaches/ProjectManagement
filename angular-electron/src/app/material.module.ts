@@ -29,6 +29,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   imports: [
@@ -62,7 +63,8 @@ import { MatBadgeModule } from '@angular/material/badge';
     MatCheckboxModule,
     MatProgressBarModule,
     DragDropModule,
-    MatBadgeModule
+    MatBadgeModule,
+    MatAutocompleteModule
   ],
   exports: [
     MatCardModule,
@@ -95,7 +97,8 @@ import { MatBadgeModule } from '@angular/material/badge';
     MatCheckboxModule,
     MatProgressBarModule,
     DragDropModule,
-    MatBadgeModule
+    MatBadgeModule,
+    MatAutocompleteModule
   ],
   providers: [
     MatDatepickerModule, MatDialogModule

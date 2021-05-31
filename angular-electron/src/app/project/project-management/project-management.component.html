@@ -39,11 +39,33 @@
         </div>
       </div>
 
+      <div class="is-two-thirds" style="margin-bottom: 20px;">
+        <div>
+          <form class="example-form">
+            <mat-form-field class="example-full-width">
+              <mat-label>Search</mat-label>
+              <input matInput
+                    aria-label="search"
+                    #autoCompleteInput
+                    [matAutocomplete]="auto"
+                    [formControl]="searchTasksCtrl">
+              <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let taskSection of filteredTasks | async" [value]="taskSection.taskName" (click)="viewTaskById(taskSection.taskId)">
+                  <span
+                  class="priority"
+                  [style.background-color]="taskSection.taskPriorityColor"
+                  style="margin-right: 5px; border-radius: 5px 5px 5px; border: 1px solid gray;"></span>
+                  <span>{{taskSection.taskName}}</span> |
+                  <small>{{taskSection.sectionName}}</small>
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+    
+          </form>
+        </div>
+      </div>
       <div class="project-tasks">
-        <div
-          class="project-column"
-          *ngFor="let section of project.sections"
-        >
+        <div class="project-column" *ngFor="let section of project.sections">
           <div class="section-title">
             <div>
               <span
