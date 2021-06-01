@@ -216,10 +216,6 @@ export class ProjectManagementComponent implements OnInit {
                 this.project.sections[index].tasks.splice(indexResult, 1);
 
                 //add task to new a section
-                //if (!this.project.sections[result.section].tasks) {
-                //   this.project.sections[result.section].tasks = new Task[1];
-                // }
-
                 this.project.sections[result.section.value].tasks.push(viewedTask);
                 this.electronService.setDataChange();
                 this.recalculateData();
