@@ -15,6 +15,7 @@ export class TaskViewComponent implements OnInit {
   public project: Project = null;
 
   public caption = "";
+  public taskId = 0;
   public selectedPriority: SelectionItem;
   public selectedSection: SelectionItem;
 
@@ -52,6 +53,7 @@ export class TaskViewComponent implements OnInit {
       );
 
       this.caption = this.data.task.title;
+      this.taskId = this.data.task.id;
       this.editorText = this.data.task.content;
     } else {
       this.selectedPriority = this.utilsService.priorities[1];

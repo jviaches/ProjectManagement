@@ -1,6 +1,12 @@
 <div class="center" style="width: 600px">
   <div style="padding-bottom: 20px">
-    <h1>Task Details</h1>
+   <h1>
+    <div>
+        <span>Task Details</span>
+        <span *ngIf="taskId !== 0"> - #{{taskId}}</span>
+    </div>
+   </h1>
+    
   </div>
   <input
     [(ngModel)]="caption"

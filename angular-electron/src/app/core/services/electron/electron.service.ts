@@ -15,7 +15,6 @@ import { Title } from "@angular/platform-browser";
 import { AboutComponent } from "../../../about/about.component";
 import { AppConfig } from "../../../../environments/environment";
 import { TaskViewComponent } from "../../../task/task-view/task-view.component";
-import { Priority } from "../../models/priority.model";
 
 @Injectable({
   providedIn: "root",
@@ -404,7 +403,6 @@ export class ElectronService {
         const taskIndex = this.project.value.sections[sectionIndex-1].tasks.findIndex((task) => task.id === taskId );
         this.project.value.sections[sectionIndex-1].tasks.splice(taskIndex, 1);
 
-        this.setLastTaskId(this.project.value);
         this.setDataChange();
         this.project.next(this.project.value);
       }
@@ -472,9 +470,9 @@ export class ElectronService {
 
   setLastTaskId(project: Project) {
     if (!project) {
-      this.lastTaskId = 1;
+      this.lastTaskId = 0;
     } else {
-      let maxTaskId = 1;
+      let maxTaskId = 0;
       
       project.sections.forEach(section => {
         const localMaxId = Math.max(...section.tasks.map((task) => task.id))
