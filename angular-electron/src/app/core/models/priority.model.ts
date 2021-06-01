@@ -1,4 +1,4 @@
-export interface PriorityItem {
+export interface SelectionItem {
     value: any;
     viewValue: any;
   }

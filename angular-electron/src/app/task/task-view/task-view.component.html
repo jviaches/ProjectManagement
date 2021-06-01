@@ -1,23 +1,61 @@
-<div class="center" style="width: 600px;">
-    <input [(ngModel)]='caption' class="input" type="text" placeholder="Caption" style="margin-bottom: 5px;">
-    <form>
-        <mat-form-field appearance="legacy" style="width: 100%;">
-          <mat-label>Priority</mat-label>
-          <mat-select [(ngModel)]="selectedValue" name="priority">
-            <mat-option *ngFor="let priority of utilsService.priorities" [value]="priority.value"
-                        [ngStyle]="{'border-color': this.utilsService.getColorByPriority(priority.viewValue)}"
-                        class="task-priority">
-                <div>{{priority.viewValue}}</div>
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-    </form>
+<div class="center" style="width: 600px">
+  <div style="padding-bottom: 20px">
+    <h1>Task Details</h1>
+  </div>
+  <input
+    [(ngModel)]="caption"
+    class="input"
+    type="text"
+    placeholder="Caption"
+    style="margin-bottom: 5px"
+  />
 
-    <quill-editor id="editor" [styles]="editorStyle" [modules]="quillConfiguration" [(ngModel)]="editorText"
-        (onContentChanged)="onContentChanged($event)" required></quill-editor>
+  <form style="display: flex; justify-content: space-between">
+    <mat-form-field appearance="legacy" style="width: 48%">
+        <mat-label>Priority</mat-label>
+        <mat-select [(ngModel)]="selectedPriority" name="priority">
+          <mat-option
+            *ngFor="let priority of utilsService.priorities"
+            [value]="priority"
+            [ngStyle]="{'border-color': this.utilsService.getColorByPriority(priority.viewValue)}"
+            class="task-priority">
+            {{ priority.viewValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-    <div style="margin-top: 20px;">
-        <button mat-raised-button (click)="updateEvent()" style="margin-right: 10px;">Update</button>
-        <button mat-raised-button (click)="cancel()">Cancel</button>
-    </div>
+    <mat-form-field appearance="legacy" style="width: 48%">
+      <mat-label>Section</mat-label>
+      <mat-select [(ngModel)]="selectedSection" name="section">
+        <mat-option
+          *ngFor="let section of utilsService.sections"
+          [value]="section">
+          {{ section.viewValue }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+
+  <quill-editor
+    id="editor"
+    [styles]="editorStyle"
+    [modules]="quillConfiguration"
+    [(ngModel)]="editorText"
+    (onContentChanged)="onContentChanged($event)"
+    required
+  ></quill-editor>
+
+  <div style="margin-top: 20px">
+    <button
+      mat-raised-button
+      (click)="createEvent()"
+      style="margin-right: 10px"
+      [disabled]="
+        caption === '' || selectedPriority === '' || selectedSection === ''
+      "
+    >
+      Create
+    </button>
+    <button mat-raised-button (click)="cancel()">Cancel</button>
+  </div>
 </div>

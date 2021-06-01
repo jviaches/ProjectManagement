@@ -172,39 +172,55 @@ export class ProjectManagementComponent implements OnInit {
     //      event.currentIndex);
   }
 
-  viewTaskById(taskId: number) {
+  viewTaskById(taskId: number, sectionIndex: number) {
     const viewedTask = this.getTaskById(taskId);
-    this.viewTask(viewedTask);
+    this.viewTask(viewedTask, sectionIndex);
   }
 
-  viewTask(task: Task) {
+  viewTask(task: Task, sectionIndex: number) {
+    sectionIndex -=1;
     this.notificationService
-      .showModalComponent(TaskViewComponent, "", { task })
+      .showModalComponent(TaskViewComponent, "", { task, sectionIndex })
       .subscribe((result) => {
-        if (result !== "CANCEL") {
+        if (result !== "FAIL") {
           const viewedTask = this.getTaskById(task.id);
 
           for (let index = 0; index < this.project.sections.length; index++) {
-            const element = this.project.sections[index];
-            const indexResult = element.tasks.findIndex((task) => task.id === viewedTask.id );
+            const section = this.project.sections[index];
+            const indexResult = section.tasks.findIndex((task) => task.id === viewedTask.id );
 
             if (indexResult !== -1) {
               // task found
 
-              if (this.project.sections[index].tasks[indexResult].title !== result.caption) {
-                this.project.sections[index].tasks[indexResult].title = result.caption;
+              if (section.tasks[indexResult].title !== result.caption) {
+                section.tasks[indexResult].title = result.caption;
                 this.electronService.setDataChange();
                 this.recalculateData();
               }
 
-              if (this.project.sections[index].tasks[indexResult].content !== result.text) {
-                this.project.sections[index].tasks[indexResult].content = result.text;
+              if (section.tasks[indexResult].content !== result.text) {
+                section.tasks[indexResult].content = result.text;
                 this.electronService.setDataChange();
                 this.recalculateData();
               }
 
-              if (this.project.sections[index].tasks[indexResult].priority !== result.priority) {
-                this.project.sections[index].tasks[indexResult].priority = result.priority;
+              if (section.tasks[indexResult].priority !== result.priority.value) {
+                section.tasks[indexResult].priority = result.priority.value;
+                this.electronService.setDataChange();
+                this.recalculateData();
+              }
+
+              if (section.orderIndex-1 !== result.section.value) {
+                
+                //remove task from a prev section 
+                this.project.sections[index].tasks.splice(indexResult, 1);
+
+                //add task to new a section
+                //if (!this.project.sections[result.section].tasks) {
+                //   this.project.sections[result.section].tasks = new Task[1];
+                // }
+
+                this.project.sections[result.section.value].tasks.push(viewedTask);
                 this.electronService.setDataChange();
                 this.recalculateData();
               }

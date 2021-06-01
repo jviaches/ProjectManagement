@@ -50,11 +50,11 @@
                     [matAutocomplete]="auto"
                     [formControl]="searchTasksCtrl">
               <mat-autocomplete #auto="matAutocomplete">
-                <mat-option *ngFor="let taskSection of filteredTasks | async" [value]="taskSection.taskName" (click)="viewTaskById(taskSection.taskId)">
-                  <span
-                  class="priority"
-                  [style.background-color]="taskSection.taskPriorityColor"
-                  style="margin-right: 5px; border-radius: 5px 5px 5px; border: 1px solid gray;"></span>
+                <mat-option *ngFor="let taskSection of filteredTasks | async" [value]="taskSection.taskName" (click)="viewTaskById(taskSection.taskId, taskSection.sectionId)">
+                    <span
+                    class="priority"
+                    [style.background-color]="taskSection.taskPriorityColor"
+                    style="margin-right: 5px; border-radius: 5px 5px 5px; border: 1px solid gray;"></span>
                   <span>{{taskSection.taskName}}</span> |
                   <small>{{taskSection.sectionName}}</small>
                 </mat-option>
@@ -88,7 +88,7 @@
               class="task"
               *ngFor="let task of sectionsTasks['cdk-drop-list-' + section.orderIndex]"
               cdkDrag
-              (dblclick)="viewTask(task)"
+              (dblclick)="viewTask(task, section.orderIndex)"
               [style.border-color]="setTaskColor(task.priority)"
             >
               <div class="task__tags">
@@ -97,7 +97,7 @@
                   <i class="fas fa-ellipsis-h"></i>
                 </button>
                 <mat-menu #menu="matMenu">
-                  <button mat-menu-item (click)="viewTask(task)">
+                  <button mat-menu-item (click)="viewTask(task, section.orderIndex)">
                     <i class="far fa-clipboard"></i>
                     <span> Details</span>
                   </button>

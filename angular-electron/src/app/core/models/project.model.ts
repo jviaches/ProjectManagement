@@ -11,7 +11,7 @@ export interface Project {
 export interface Section {
     orderIndex: number;
     name: string;
-    tasks: Task[]
+    tasks: Task[];
 }
 
 export interface Tag {

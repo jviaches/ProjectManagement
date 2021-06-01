@@ -1,65 +1,83 @@
-import {  Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Task } from '../../core/models/project.model';
-import { NotificationService} from '../../core/services/notification.service';
-import { UtilsService } from '../../core/services/utils.service';
+import { Component, Inject, OnInit } from "@angular/core";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { SelectionItem } from "../../core/models/priority.model";
+import { Project } from "../../core/models/project.model";
+import { ElectronService } from "../../core/services";
+import { NotificationService } from "../../core/services/notification.service";
+import { UtilsService } from "../../core/services/utils.service";
 
 @Component({
-  selector: 'app-task-view',
-  templateUrl: './task-view.component.html',
-  styleUrls: ['./task-view.component.scss']
+  selector: "app-task-view",
+  templateUrl: "./task-view.component.html",
+  styleUrls: ["./task-view.component.scss"],
 })
-export class TaskViewComponent implements OnInit  {
+export class TaskViewComponent implements OnInit {
+  public project: Project = null;
 
-  task: Task;
-  selectedValue: any;
-  caption = '';
-  editorText = '';
+  public caption = "";
+  public selectedPriority: SelectionItem;
+  public selectedSection: SelectionItem;
+
+  editorText: "";
   quillConfiguration = {
     toolbar: [
-      ['bold', 'italic', 'underline', 'strike'],
+      ["bold", "italic", "underline", "strike"],
       // ['blockquote', 'code-block'],
-      [{ list: 'ordered' }, { list: 'bullet' }],
+      [{ list: "ordered" }, { list: "bullet" }],
       [{ header: [1, 2, 3, 4, 5, 6, false] }],
       // [{ color: [] }, { background: [] }],
       // ['link'],
       // ['clean'],
     ],
-  }
-
-  editorStyle = {
-    height: '260px'
   };
 
-  constructor(private notificationService: NotificationService, 
-              private dialogRef: MatDialogRef<TaskViewComponent>, 
-              @Inject(MAT_DIALOG_DATA) public data: any,
-              public utilsService: UtilsService) {
+  editorStyle = {
+    height: "260px",
+  };
 
-              console.log(this.utilsService.getColorByPriority('Minor'));
-              
+  constructor(
+    private notificationService: NotificationService,
+    private dialogRef: MatDialogRef<TaskViewComponent>,
+    public utilsService: UtilsService,
+    public electronService: ElectronService,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    if (this.data.task) {
+      this.selectedPriority = this.utilsService.priorities.find(
+        (item) => item.value === this.data.task.priority
+      );
+
+      this.selectedSection = this.utilsService.sections.find(
+        (item) => item.value === this.data.sectionIndex
+      );
+
+      this.caption = this.data.task.title;
+      this.editorText = this.data.task.content;
+    } else {
+      this.selectedPriority = this.utilsService.priorities[1];
+      this.selectedSection = this.utilsService.sections[0];
+    }
   }
 
   ngOnInit() {
-    this.task = this.data.task;
-    this.selectedValue = this.task.priority.valueOf();
-    this.caption = this.task.title;
-    this.editorText = this.task.content;
   }
 
   onContentChanged = (event) => {
     this.editorText = event.html;
-  }
+  };
 
-  updateEvent() {
-    if (this.caption.trim().length === 0) {
-      this.notificationService.showActionConfirmationFail('Action cancelled. Nothing was created.');
-    } else {
-      this.dialogRef.close({id: this.task.id, caption: this.caption, text:this.editorText, priority: this.selectedValue });
+  createEvent() {
+    if (this.caption.trim().length !== 0) {
+      this.dialogRef.close({
+        caption: this.caption,
+        text: this.editorText,
+        priority: this.selectedPriority,
+        section: this.selectedSection,
+      });
     }
   }
 
   cancel() {
-    this.dialogRef.close('CANCEL');
+    this.dialogRef.close("FAIL");
   }
 }

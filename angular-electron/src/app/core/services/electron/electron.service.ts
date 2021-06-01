@@ -11,10 +11,11 @@ import { ProgramUpdate } from "../../models/update.model";
 import { NotificationService } from "../notification.service";
 import { Router } from "@angular/router";
 import { BehaviorSubject } from "rxjs";
-import { TaskNewComponent } from "../../../task/task-create/task-create.component";
 import { Title } from "@angular/platform-browser";
 import { AboutComponent } from "../../../about/about.component";
 import { AppConfig } from "../../../../environments/environment";
+import { TaskViewComponent } from "../../../task/task-view/task-view.component";
+import { Priority } from "../../models/priority.model";
 
 @Injectable({
   providedIn: "root",
@@ -37,7 +38,7 @@ export class ElectronService {
   filePath: string = "";
   dataChangeDetected = false;
   autosave: boolean = false;
-  lastTaskId: number = 1;
+  lastTaskId: number = 0;
   public version = AppConfig.version; // TODO: move it later to setting file
 
   get isElectron(): boolean {
@@ -376,21 +377,21 @@ export class ElectronService {
 
   createTask() {
     this.notificationService
-      .showModalComponent(TaskNewComponent, "", {})
+      .showModalComponent(TaskViewComponent, "", {})
       .subscribe((result) => {
         if (result !== "FAIL") {
           const task: Task = {
             id: this.getNextTaskId(),
             title: result.caption,
             content: result.text,
-            priority: result.priority,
+            priority: result.priority.value,
             tags: [],
-            orderIndex: 1,
+            orderIndex: result.section.value,
             creationDate: new Date(),
           };
 
           this.setDataChange();
-          this.project.value.sections[0].tasks.push(task);
+          this.project.value.sections[result.section.value].tasks.push(task);
           this.project.next(this.project.value);
         }
       });
