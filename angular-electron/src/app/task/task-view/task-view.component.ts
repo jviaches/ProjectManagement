@@ -68,7 +68,7 @@ export class TaskViewComponent implements OnInit {
     this.editorText = event.html;
   };
 
-  createEvent() {
+  updateTask() {
     if (this.caption.trim().length !== 0) {
       this.dialogRef.close({
         caption: this.caption,

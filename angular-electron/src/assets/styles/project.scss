@@ -75,10 +75,10 @@
 
 .task {
   cursor: move;
-  background-color: var(--white);
+  background-color: var(--task-bg);
+  margin: 4px;
   padding: 0 1rem 1rem 1rem;
   border-radius: 5px;
-  width: 100%;
   box-shadow: rgba(99, 99, 99, 0.1) 0px 2px 8px 0px;
   margin-bottom: 1rem;
 
@@ -195,11 +195,11 @@
     }
     &--copyright {
       &::-webkit-progress-bar {
-        background-color: #ecd8e6;
+        background-color: var(--task-bg);
       }
 
       &::-webkit-progress-value {
-        background: #d459e8;
+        background: #46bd84;
       }
     }
 
@@ -279,4 +279,33 @@ button:focus {
   border-width: thin;
   border-left-color: transparent;
   border-left-width: 5px;
+}
+
+.input {
+  background: var(--section);
+  color: var(--text);
+}
+
+.ql-snow {
+  color: var(--text);
+}
+
+span {
+  color: var(--text);
+}
+
+div {
+  color: var(--text);
+}
+
+p {
+  color: var(--text);
+}
+
+h2 {
+  color: var(--text);
+}
+
+.far {
+  color: var(--text);
 }

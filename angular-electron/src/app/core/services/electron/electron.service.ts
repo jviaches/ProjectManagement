@@ -8,13 +8,15 @@ import * as fs from "fs";
 
 import { Project, Task } from "../../models/project.model";
 import { ProgramUpdate } from "../../models/update.model";
+import { AppSettings } from "../../models/appsettings.model";
 import { NotificationService } from "../notification.service";
 import { Router } from "@angular/router";
 import { BehaviorSubject } from "rxjs";
 import { Title } from "@angular/platform-browser";
 import { AboutComponent } from "../../../about/about.component";
-import { AppConfig } from "../../../../environments/environment";
+
 import { TaskViewComponent } from "../../../task/task-view/task-view.component";
+import { ThemeService } from "../theme.service";
 
 @Injectable({
   providedIn: "root",
@@ -32,13 +34,13 @@ export class ElectronService {
   fs: typeof fs;
   dialog: typeof dialog;
 
+  appSettings: AppSettings;
   project: BehaviorSubject<Project> = new BehaviorSubject(null);
   systemUpdateMessage: BehaviorSubject<ProgramUpdate> = new BehaviorSubject(null);
   filePath: string = "";
   dataChangeDetected = false;
   autosave: boolean = false;
   lastTaskId: number = 0;
-  public version = AppConfig.version; // TODO: move it later to setting file
 
   get isElectron(): boolean {
     return !!(window && window.process && window.process.type);
@@ -48,7 +50,8 @@ export class ElectronService {
     private ngZone: NgZone,
     private router: Router,
     private notificationService: NotificationService,
-    private titleService: Title
+    private titleService: Title,
+    private themeService: ThemeService
   ) {
     // Conditional imports
     if (this.isElectron) {
@@ -63,12 +66,12 @@ export class ElectronService {
       this.fs = window.require("fs");
       this.dialog = this.remote.dialog;
 
-
       const newUpdate= {
         releaseNotes: null,
         releaseName: ''
       };
       this.systemUpdateMessage.next(newUpdate);
+      this.loadAppSettings();
 
 
       this.ipcRenderer.on("new-project", (event, arg) => {
@@ -421,7 +424,7 @@ export class ElectronService {
 
   public get defaultProject(): Project {
     const project = {
-      version: this.version,
+      version: this.appSettings?.version || 'DEBUG',
       name: "Project Name",
       notes: "notes..",
       sections: [
@@ -497,5 +500,40 @@ export class ElectronService {
     const bytes = this.CryptoJS.AES.decrypt(ciphertext, this.encrypedSecretKey);
     const originalText = bytes.toString(this.CryptoJS.enc.Utf8);
     return originalText;
+  }
+
+  // app settings
+  private saveAppSettings() {
+    this.fs.writeFile('settings.cfg', JSON.stringify(this.appSettings), (err) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+    });
+  }
+
+  private loadAppSettings() {
+    this.fs.readFile('settings.cfg', "utf-8", (err, data) => {
+      if (err) {
+        this.appSettings = new AppSettings();
+        this.themeService.setActiveThemeById(1);
+        this.saveAppSettings();
+        return;
+      } else {
+        this.appSettings = JSON.parse(data)
+        this.themeService.setActiveThemeById(this.appSettings.themeId)
+        
+      }
+    });
+  }
+
+  updateTheme(themeId: number){
+    this.themeService.setActiveThemeById(themeId);
+    this.appSettings.themeId = themeId;
+    this.saveAppSettings();
+  }
+
+  getActiveThemeId(): number {
+    return this.themeService.getActiveTheme().id;
   }
 }

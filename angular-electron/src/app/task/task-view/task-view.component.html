@@ -54,13 +54,10 @@
   <div style="margin-top: 20px">
     <button
       mat-raised-button
-      (click)="createEvent()"
+      (click)="updateTask()"
       style="margin-right: 10px"
-      [disabled]="
-        caption === '' || selectedPriority === '' || selectedSection === ''
-      "
-    >
-      Create
+      [disabled]="caption === ''">
+      Update
     </button>
     <button mat-raised-button (click)="cancel()">Cancel</button>
   </div>

@@ -14,6 +14,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from "rxjs";
 import { map, startWith } from 'rxjs/operators';
 import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
+import { ThemeService } from "../../core/services/theme.service";
 
 interface Dictionary<T> {
   [Key: string]: Task[];
@@ -40,6 +41,7 @@ export class ProjectManagementComponent implements OnInit {
   public connectedSections: Array<string> = [];
   public sectionsTasks: Dictionary<string> = {};
   public editProjectName: boolean = false;
+  public isLightTheme =  this.electronService.getActiveThemeId() === 1;
 
   searchTasksCtrl = new FormControl();
   taskSections: TaskSection[] = [];
@@ -60,13 +62,12 @@ export class ProjectManagementComponent implements OnInit {
 
   editorStyle = {
     height: "260px",
-    background: "white",
   };
 
   constructor(
     private electronService: ElectronService,
     private notificationService: NotificationService,
-    public utilsService: UtilsService
+    public utilsService: UtilsService,
   ) {
     this.filteredTasks = this.searchTasksCtrl.valueChanges
     .pipe(
@@ -82,6 +83,14 @@ export class ProjectManagementComponent implements OnInit {
       },
       (error) => {}
     );
+  }
+  
+  changedTheme() {
+    if (this.isLightTheme) {
+      this.electronService.updateTheme(1);
+    } else {
+      this.electronService.updateTheme(2);
+    }
   }
 
   public get sectiondIds(): string[] {

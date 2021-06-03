@@ -3,14 +3,9 @@
   <div class="app" *ngIf="project !== null">
     <main class="project">
       <div class="project-info">
-        <div style="display: flex" *ngIf="!editProjectName">
+        <div class="project-title" style="display: flex" *ngIf="!editProjectName">
           <h1>{{ project.name }}</h1>
-          <button
-            class="project-participants__edit"
-            (click)="setProjectNameEditMode()"
-          >
-            <i class="far fa-edit"></i>
-          </button>
+          <i class="fas fa-pen" (click)="setProjectNameEditMode()"></i>
         </div>
 
         <div *ngIf="editProjectName" style="display: flex">
@@ -24,12 +19,7 @@
               />
             </mat-form-field>
           </form>
-          <button
-            class="project-participants__edit"
-            (click)="setProjectNameEditMode()"
-          >
-            <i class="fas fa-save"></i>
-          </button>
+          <i class="fas fa-save" (click)="setProjectNameEditMode()"></i>
         </div>
 
         <div class="project-participants">
@@ -70,8 +60,7 @@
             <div>
               <span
                 matBadge="{{ sectionId(section.orderIndex) }}"
-                matBadgeOverlap="true"
-              >
+                matBadgeOverlap="true">
                 {{ section.name }}
               </span>
             </div>
@@ -82,15 +71,13 @@
             [id]="'cdk-drop-list-' + section.orderIndex"
             [cdkDropListData]="sectionsTasks['cdk-drop-list-' + section.orderIndex]"
             [cdkDropListConnectedTo]="sectiondIds"
-            (cdkDropListDropped)="taskDrop($event)"
-          >
+            (cdkDropListDropped)="taskDrop($event)">
             <div
               class="task"
               *ngFor="let task of sectionsTasks['cdk-drop-list-' + section.orderIndex]"
               cdkDrag
               (dblclick)="viewTask(task, section.orderIndex)"
-              [style.border-color]="setTaskColor(task.priority)"
-            >
+              [style.border-color]="setTaskColor(task.priority)">
               <div class="task__tags">
                 <span></span>
                 <button mat-icon-button [matMenuTriggerFor]="menu">
@@ -109,10 +96,9 @@
               </div>
               <p>{{ task.title }}</p>
               <div class="task__stats">
-                <span
-                  ><i class="fas fa-flag"></i>
-                  {{ task.creationDate | date: 'mediumDate' }}</span
-                >
+                <span><i class="far fa-calendar-plus"         
+                  matTooltip="Creation date"
+                  aria-label="Task creation date"></i>   {{ task.creationDate | date: 'mediumDate' }}</span>
                 <!-- <span><i class="fas fa-comment"></i>2</span>
                   <span><i class="fas fa-paperclip"></i>5</span>
                   <span class='task__owner'></span> -->
@@ -154,8 +140,7 @@
         <div style="display: flex; flex-wrap: wrap;">
           <div
             style="flex: 50%; width: 100%;"
-            *ngFor="let color of utilsService.priorityColors | keyvalue"
-          >
+            *ngFor="let color of utilsService.priorityColors | keyvalue">
             <span
               class="priority"
               [style.background-color]="color.key"
@@ -179,6 +164,12 @@
           ></quill-editor>
         </div>
       </div>
+
+      <div style="display:flex;">
+        <h2 style="margin-right: 20px;"><b>Theme</b></h2>
+        <mat-slide-toggle [(ngModel)]="isLightTheme" (change)="changedTheme()"></mat-slide-toggle>
+      </div>
+        
     </aside>
   </div>
   <!-- <a routerLink="/detail">{{ 'PAGES.HOME.GO_TO_DETAIL' | translate }}</a> -->

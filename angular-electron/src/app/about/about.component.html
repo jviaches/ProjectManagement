@@ -2,7 +2,7 @@
     <article class="">
         <div style="display: flex; justify-content: space-between">
           <img src="assets/img/brand-logo-color.png" />
-          <span style="font-size: small;">Ver: {{electronService.version}}</span>
+          <span style="font-size: small;">Ver: {{electronService.appSettings?.version || 'DEBUG'}}</span>
         </div>
         <div style="display: flex; flex-direction: column; justify-content: flex-start;">
           <br />
@@ -13,7 +13,8 @@
           <div>License:</div>
           <div style="font-size: small; text-align: left;">
             This program is free software; you can redistribute it. 
-            This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. 
+            This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+            without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
           </div>   
         </div>
         <div style="margin-top: 20px;">
