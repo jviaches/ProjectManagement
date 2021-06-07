@@ -49,19 +49,23 @@
   }
 
   &-tasks {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
     width: 100%;
-    grid-column-gap: 1.5rem;
+    display: flex;
+    justify-content: space-between;
   }
   &-column {
+    flex-basis: 100%;    
+    margin-right: 20px;
+
     &-heading {
       margin-bottom: 1rem;
       @include display;
       justify-content: space-between;
+
       &__title {
         font-size: 20px;
       }
+
       &__options {
         background: transparent;
         color: var(--light-grey);
@@ -81,7 +85,6 @@
   border-radius: 5px;
   box-shadow: rgba(99, 99, 99, 0.1) 0px 2px 8px 0px;
   margin-bottom: 1rem;
-
   border-left: 3px solid transparent;
   border-width: thin;
   border-left-color: transparent;
