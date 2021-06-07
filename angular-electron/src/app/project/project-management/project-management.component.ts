@@ -173,7 +173,7 @@ export class ProjectManagementComponent implements OnInit {
     //     event.item.element.nativeElement.textContent +
     //     `' + dropped on ` +
     //     event.container.id
-    // );
+    // ); 
 
     // transferArrayItem(event.previousContainer.data,
     //      event.container.data,
