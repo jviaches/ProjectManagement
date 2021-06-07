@@ -23,6 +23,7 @@ import { ModalYesNoDialogComponent } from './modals/yesno-modal-dialog/yesno-mod
 
 import { NotificationService } from './core/services/notification.service'
 import { UtilsService } from './core/services/utils.service'
+import { ThemeService } from './core/services/theme.service'
 
 import { AboutComponent } from './about/about.component';
 
@@ -51,7 +52,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
       }
     })
   ],
-  providers: [NotificationService, Title, UtilsService],
+  providers: [NotificationService, Title, UtilsService, ThemeService],
   bootstrap: [AppComponent],
   entryComponents: [ ModalDialogComponent, ModalYesNoDialogComponent]
 })

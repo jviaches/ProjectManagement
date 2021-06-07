@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { ElectronService } from '../../core/services';
+import { ThemeService } from '../../core/services/theme.service';
 
 // export interface PeriodicElement {
 //   name: string;
@@ -29,12 +29,13 @@ import { ElectronService } from '../../core/services';
 })
 export class ProjectListComponent implements OnInit {
 
-  constructor(private router: Router, private electronService: ElectronService) { }
+  constructor(private themeService: ThemeService, private electronService: ElectronService) { }
 
   //displayedColumns: string[] = ['name', 'actions'];
   //dataSource = ELEMENT_DATA;
 
   ngOnInit(): void {
+    this.themeService.setLightTheme();
   }
 
   loadProject() {

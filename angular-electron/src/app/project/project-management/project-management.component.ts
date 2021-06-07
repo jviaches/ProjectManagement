@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { AfterViewChecked, Component, OnInit, ViewChild } from "@angular/core";
 import {
   CdkDragDrop,
   moveItemInArray,
@@ -10,9 +10,21 @@ import { TaskViewComponent } from "../../task/task-view/task-view.component";
 import { ElectronService } from "../../core/services";
 import { Priority, PriorityColor } from "../../core/models/priority.model";
 import { UtilsService } from "../../core/services/utils.service";
+import { FormControl } from '@angular/forms';
+import { Observable } from "rxjs";
+import { map, startWith } from 'rxjs/operators';
+import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
 
 interface Dictionary<T> {
   [Key: string]: Task[];
+}
+
+export interface TaskSection {
+  taskId: number;
+  taskName: string;
+  taskPriorityColor: string;
+  sectionId: number;
+  sectionName: string;
 }
 
 @Component({
@@ -21,10 +33,18 @@ interface Dictionary<T> {
   styleUrls: ["./project-management.component.scss"],
 })
 export class ProjectManagementComponent implements OnInit {
+
+  @ViewChild('autoCompleteInput', { read: MatAutocompleteTrigger }) autoComplete: MatAutocompleteTrigger;
+
   public project: Project = null;
   public connectedSections: Array<string> = [];
   public sectionsTasks: Dictionary<string> = {};
   public editProjectName: boolean = false;
+  public isLightTheme =  this.electronService.getActiveThemeId() === 1;
+
+  searchTasksCtrl = new FormControl();
+  taskSections: TaskSection[] = [];
+  filteredTasks: Observable<TaskSection[]>;
 
   caption = "";
   quillConfiguration = {
@@ -41,22 +61,36 @@ export class ProjectManagementComponent implements OnInit {
 
   editorStyle = {
     height: "260px",
-    background: "white",
   };
 
   constructor(
     private electronService: ElectronService,
     private notificationService: NotificationService,
-    public utilsService: UtilsService
-  ) {}
-
+    public utilsService: UtilsService,
+  ) {
+    this.filteredTasks = this.searchTasksCtrl.valueChanges
+    .pipe(
+      startWith(''),
+      map(task => task ? this._filterTasks(task) : this.taskSections.slice())
+    );
+  }
+  
   ngOnInit(): void {
+
     this.electronService.project.subscribe((project) => {
         this.project = project;
         this.recalculateData();
       },
       (error) => {}
     );
+  }
+  
+  changedTheme() {
+    if (this.isLightTheme) {
+      this.electronService.updateTheme(1);
+    } else {
+      this.electronService.updateTheme(2);
+    }
   }
 
   public get sectiondIds(): string[] {
@@ -147,33 +181,53 @@ export class ProjectManagementComponent implements OnInit {
     //      event.currentIndex);
   }
 
-  viewTask(task: Task) {
+  viewTaskById(taskId: number, sectionIndex: number) {
+    const viewedTask = this.getTaskById(taskId);
+    this.viewTask(viewedTask, sectionIndex);
+  }
+
+  viewTask(task: Task, sectionIndex: number) {
+    sectionIndex -=1;
     this.notificationService
-      .showModalComponent(TaskViewComponent, "", { task })
+      .showModalComponent(TaskViewComponent, "", { task, sectionIndex })
       .subscribe((result) => {
-        if (result !== "CANCEL") {
+        if (result !== "FAIL") {
           const viewedTask = this.getTaskById(task.id);
 
           for (let index = 0; index < this.project.sections.length; index++) {
-            const element = this.project.sections[index];
-            const indexResult = element.tasks.findIndex((task) => task.id === viewedTask.id );
+            const section = this.project.sections[index];
+            const indexResult = section.tasks.findIndex((task) => task.id === viewedTask.id );
 
             if (indexResult !== -1) {
               // task found
 
-              if (this.project.sections[index].tasks[indexResult].title !== result.caption) {
-                this.project.sections[index].tasks[indexResult].title = result.caption;
+              if (section.tasks[indexResult].title !== result.caption) {
+                section.tasks[indexResult].title = result.caption;
                 this.electronService.setDataChange();
+                this.recalculateData();
               }
 
-              if (this.project.sections[index].tasks[indexResult].content !== result.text) {
-                this.project.sections[index].tasks[indexResult].content = result.text;
+              if (section.tasks[indexResult].content !== result.text) {
+                section.tasks[indexResult].content = result.text;
                 this.electronService.setDataChange();
+                this.recalculateData();
               }
 
-              if (this.project.sections[index].tasks[indexResult].priority !== result.priority) {
-                this.project.sections[index].tasks[indexResult].priority = result.priority;
+              if (section.tasks[indexResult].priority !== result.priority.value) {
+                section.tasks[indexResult].priority = result.priority.value;
                 this.electronService.setDataChange();
+                this.recalculateData();
+              }
+
+              if (section.orderIndex-1 !== result.section.value) {
+                
+                //remove task from a prev section 
+                this.project.sections[index].tasks.splice(indexResult, 1);
+
+                //add task to new a section
+                this.project.sections[result.section.value].tasks.push(viewedTask);
+                this.electronService.setDataChange();
+                this.recalculateData();
               }
 
               break;
@@ -229,6 +283,25 @@ export class ProjectManagementComponent implements OnInit {
         });
       });
     }
+
+    this.taskSections = [];
+    for (let index = 0; index < this.project.sections.length; index++) {
+      const section = this.project.sections[index];
+      section.tasks.forEach(task => {
+        this.taskSections.push( {
+          sectionId: section.orderIndex,
+          sectionName: section.name,          
+          taskId: task.id,
+          taskName: task.title,
+          taskPriorityColor: this.setTaskColor(task.priority)
+        });
+      });
+    }
+
+    if (this.autoComplete) {
+      this.searchTasksCtrl.setValue('');
+      this.autoComplete.closePanel();
+    }
   }
 
   sectionId(id: string): Number {
@@ -241,7 +314,7 @@ export class ProjectManagementComponent implements OnInit {
     return task ? task.priority : "";
   }
 
-  setTaskColor(priority: Priority) {
+  setTaskColor(priority: Priority): PriorityColor {
     if (priority == Priority.Minor) {
       return PriorityColor.Minor;
     }
@@ -273,5 +346,10 @@ export class ProjectManagementComponent implements OnInit {
     }
 
     return foundTask;
+  }
+
+  private _filterTasks(value: string): TaskSection[] {
+    const filterValue = value.toLowerCase();
+    return this.taskSections.filter(task => task.taskName.toLowerCase().indexOf(filterValue) === 0);
   }
 }

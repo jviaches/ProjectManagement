@@ -8,12 +8,12 @@
 
 .section {
   min-height: 200px;
-  border-radius: 5px;  
-  box-shadow: 0.5px 0.5px #D3D3D3;
+  border-radius: 5px;
+  box-shadow: 0.5px 0.5px #d3d3d3;
   padding: 2px;
   overflow: hidden;
   display: block;
-  background-color: #F4F9FC
+  background-color: var(--section);
 }
 
 .example-box {
@@ -66,6 +66,11 @@
   width: 100%;
 }
 
+.section {
+  min-height: 350px;
+  word-break: break-all;
+}
+
 .section-title {
   display: flex;
   justify-content: space-between;
@@ -76,4 +81,41 @@
   width: 14px;
   border-radius: 50%;
   display: inline-block;
+}
+
+.example-form {
+  max-width: 500px;
+}
+
+.example-full-width {
+  width: 100%;
+}
+
+.project-column {
+  word-wrap: break-word;
+}
+
+.fas.fa-pen {
+  font-size: small;
+}
+
+.fas.fa-save {
+  font-size: small;
+}
+
+.fas.fa-pen:hover {
+  color: var(--tag-3-text);
+}
+
+.fas.fa-save:hover {
+  color: var(--tag-3-text);
+}
+
+.project-title {
+  display: none;
+}
+.project-title:hover {
+  .fas.fa-pen {
+    display: flex;
+  }
 }

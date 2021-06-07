@@ -44,9 +44,62 @@ $candy-app-theme: mat-light-theme(
   }
 }
 
+.mat-label {
+  background-color: var(--text);
+  color: var(--text);
+}
+
+mat-label {
+  color: var(--text);
+}
+
+.mat-option {
+  background-color: var(--section);
+  color: var(--text);
+}
+
+.mat-menu-panel {
+  background-color: var(--section);
+  color: var(--text);
+}
+
+.mat-form-field {
+  color: var(--text);
+}
+
+.mat-raised-button {
+  background-color: var(--button);
+  color: var(--text);
+}
+
+.mat-select-value {
+  color: var(--text);
+}
+
+.mat-select-panel .mat-option.mat-selected:not(.mat-option-multiple) {
+  background-color: var(--bg);
+}
+
+.mat-option:hover:not(.mat-option-disabled){
+  background: var(--bg) !important;
+}
+
+.mat-menu-item:hover{
+  background-color:var(--bg) !important;
+}
+
+// .mat-menu-item:hover{
+//   background-color:grey;
+//   color: purple;
+// }
+// .mat-menu-item:hover .mat-icon{
+//   color: purple;
+// }
+
 .mat-dialog-container {
   text-align: center;
   border-radius: 10px;
+  background-color: var(--dialog);
 
   mat-dialog-content {
     margin-bottom: 20px;
@@ -62,16 +115,45 @@ $candy-app-theme: mat-light-theme(
 }
 
 .snackBar-success-style {
-  background-color:#F4F9FC;
-  color:black;
+  background-color:var(--section) !important;
+  color:var(--text);;
 }
 
 .snackBar-warning-style {
-  background-color:#F4F9FC;
+  background-color:var(--section) !important;
   color:peru;
 }
 
 .snackBar-fail-style {
-  background-color:#F4F9FC;
+  background-color:var(--section) !important;
   color:red;
+}
+
+.mat-slide-toggle-thumb {
+  width: 18px !important;
+  height: 18px !important;
+  transform: translate(0%, 0%);
+  background-image: url(../icons/night.png) !important;
+
+background-origin: content-box;
+background-size: contain;
+background-position: center center;
+}
+
+// .mat-accent .mat-slide-toggle-thumb{
+//   filter: grayscale(100%);
+// }
+
+.mat-checked .mat-slide-toggle-thumb{
+//filter: grayscale(0);
+background-image: url(../icons/sunny.png) !important;
+}
+
+
+.mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+  background-color: var(--tag-3-text);
+}
+
+.mat-autocomplete-panel .mat-option.mat-selected:not(.mat-active):not(:hover) {
+  background-color: var(--section);
 }

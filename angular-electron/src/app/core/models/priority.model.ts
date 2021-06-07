@@ -1,4 +1,4 @@
-export interface PriorityItem {
+export interface SelectionItem {
     value: any;
     viewValue: any;
   }
@@ -12,7 +12,7 @@ export enum Priority {
 
 export enum PriorityColor {
   'Minor' = '#d8ecf3',
-  'Normal' = 'transparent',
+  'Normal' = 'var(--task-bg)',
   'High' = 'pink',
   'Critical' = 'red'
 }
