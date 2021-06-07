@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { AfterViewChecked, Component, OnInit, ViewChild } from "@angular/core";
 import {
   CdkDragDrop,
   moveItemInArray,
@@ -14,7 +14,6 @@ import { FormControl } from '@angular/forms';
 import { Observable } from "rxjs";
 import { map, startWith } from 'rxjs/operators';
 import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
-import { ThemeService } from "../../core/services/theme.service";
 
 interface Dictionary<T> {
   [Key: string]: Task[];
@@ -75,8 +74,9 @@ export class ProjectManagementComponent implements OnInit {
       map(task => task ? this._filterTasks(task) : this.taskSections.slice())
     );
   }
-
+  
   ngOnInit(): void {
+
     this.electronService.project.subscribe((project) => {
         this.project = project;
         this.recalculateData();
