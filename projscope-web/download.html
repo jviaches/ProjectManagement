@@ -126,23 +126,23 @@
 
 		  if (macosPlatforms.indexOf(platform) !== -1) {
 			//os = 'Mac OS';
-			//os = 'https://github.com/jviaches/projscope-tasks/releases/download/v1.0.0/Projscope-Tasks-Setup-1.0.0.exe';			
+			//os = 'https://github.com/jviaches/projscope-tasks/releases/download/v1.1.0/Projscope-Tasks-Setup-1.1.0.exe';			
 		  } else if (iosPlatforms.indexOf(platform) !== -1) {
 			//os = 'iOS';			
 		  } else if (windowsPlatforms.indexOf(platform) !== -1) {
 			//os = 'Windows';
-			os = 'https://github.com/jviaches/projscope-tasks/releases/download/v1.0.0/Projscope-Tasks-Setup-1.0.0.exe';		
+			os = 'https://github.com/jviaches/projscope-tasks/releases/download/v1.1.0/Projscope-Tasks-Setup-1.1.0.exe';		
 		  } else if (/Android/.test(userAgent)) {
 			os = 'Android';
 		  } else if (!os && /Linux/.test(platform)) {
 			//os = 'Linux';
-			os = 'https://github.com/jviaches/projscope-tasks/releases/download/v1.0.0/Projscope-Tasks-1.0.0.AppImage';		
+			os = 'https://github.com/jviaches/projscope-tasks/releases/download/v1.1.0/Projscope-Tasks-1.1.0.AppImage';		
 		  }
 		  
 		  document.getElementById("download_link").setAttribute("href",os);
-		  document.getElementById("download_win").setAttribute("href", 'https://github.com/jviaches/projscope-tasks/releases/download/v1.0.0/Projscope-Tasks-Setup-1.0.0.exe');
-		  //document.getElementById("download_mac").setAttribute("href", 'https://github.com/jviaches/projscope-tasks/releases/download/v1.0.0/Projscope-Tasks-Setup-1.0.0.exe');
-		  document.getElementById("download_linux").setAttribute("href", 'https://github.com/jviaches/projscope-tasks/releases/download/v1.0.0/Projscope-Tasks-1.0.0.AppImage');
+		  document.getElementById("download_win").setAttribute("href", 'https://github.com/jviaches/projscope-tasks/releases/download/v1.1.0/Projscope-Tasks-Setup-1.1.0.exe');
+		  //document.getElementById("download_mac").setAttribute("href", 'https://github.com/jviaches/projscope-tasks/releases/download/v1.1.0/Projscope-Tasks-Setup-1.1.0.exe');
+		  document.getElementById("download_linux").setAttribute("href", 'https://github.com/jviaches/projscope-tasks/releases/download/v1.1.0/Projscope-Tasks-1.1.0.AppImage');
 		  setTimeout(function () { window.location = os; }, 3000)
 		}
 		
