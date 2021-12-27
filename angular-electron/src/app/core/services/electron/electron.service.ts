@@ -187,7 +187,7 @@ export class ElectronService {
       //   this.ipcRenderer.removeAllListeners('app_version');
       //   this.notificationService.showActionConfirmationSuccess('app_ver: ' + arg.version)
       // });
-  
+
       // this.ipcRenderer.on('update_available', () => {
       //   this.ipcRenderer.removeAllListeners('update_available');
       //   this.notificationService.showActionConfirmationSuccess('A new update is available. Downloading now...');
@@ -476,7 +476,7 @@ export class ElectronService {
       this.lastTaskId = 0;
     } else {
       let maxTaskId = 0;
-      
+
       project.sections.forEach(section => {
         const localMaxId = Math.max(...section.tasks.map((task) => task.id))
         if (localMaxId > maxTaskId ) {

@@ -18,12 +18,13 @@ import { ProjectModule } from './project/project.module';
 import { HomeComponent } from './home/home.component';
 
 
-import { ModalDialogComponent } from './modals/modal-dialog/modal-dialog.component'
-import { ModalYesNoDialogComponent } from './modals/yesno-modal-dialog/yesno-modal-dialog.component'
+import { ModalDialogComponent } from './modals/modal-dialog/modal-dialog.component';
+import { ModalYesNoDialogComponent } from './modals/yesno-modal-dialog/yesno-modal-dialog.component';
 
-import { NotificationService } from './core/services/notification.service'
-import { UtilsService } from './core/services/utils.service'
-import { ThemeService } from './core/services/theme.service'
+import { NotificationService } from './core/services/notification.service';
+import { UtilsService } from './core/services/utils.service';
+import { ThemeService } from './core/services/theme.service';
+import { ProjectService } from './core/services/project.service';
 
 import { AboutComponent } from './about/about.component';
 
@@ -52,7 +53,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
       }
     })
   ],
-  providers: [NotificationService, Title, UtilsService, ThemeService],
+  providers: [NotificationService, Title, UtilsService, ThemeService, ProjectService],
   bootstrap: [AppComponent],
   entryComponents: [ ModalDialogComponent, ModalYesNoDialogComponent]
 })
