@@ -39,7 +39,7 @@ export class ProjectManagementComponent implements OnInit {
   public project: Project = null;
   public connectedSections: Array<string> = [];
   public sectionsTasks: Dictionary<string> = {};
-  public editProjectName: boolean = false;
+  public editProjectName = false;
   public isLightTheme =  this.electronService.getActiveThemeId() === 1;
 
   searchTasksCtrl = new FormControl();
@@ -68,23 +68,21 @@ export class ProjectManagementComponent implements OnInit {
     private notificationService: NotificationService,
     public utilsService: UtilsService,
   ) {
-    this.filteredTasks = this.searchTasksCtrl.valueChanges
-    .pipe(
+    this.filteredTasks = this.searchTasksCtrl.valueChanges.pipe(
       startWith(''),
       map(task => task ? this._filterTasks(task) : this.taskSections.slice())
     );
   }
-  
+
   ngOnInit(): void {
 
     this.electronService.project.subscribe((project) => {
-        this.project = project;
-        this.recalculateData();
-      },
-      (error) => {}
+      this.project = project;
+      this.recalculateData();
+    },(error) => {}
     );
   }
-  
+
   changedTheme() {
     if (this.isLightTheme) {
       this.electronService.updateTheme(1);
@@ -97,7 +95,7 @@ export class ProjectManagementComponent implements OnInit {
     return Object.keys(this.sectionsTasks);
   }
 
-  public get projectCopletionPecentage(): Number {
+  public get projectCopletionPecentage(): number {
     let taskAmount = 0;
     this.project.sections.map((a) => (taskAmount += a.tasks.length));
 
@@ -126,7 +124,7 @@ export class ProjectManagementComponent implements OnInit {
       const startIndex = "cdk-drop-list-".length;
       const sectionOrderId = event.container.id.substring(startIndex, event.container.id.length);
 
-      let sectionTasks: Task[] = [];
+      const sectionTasks: Task[] = [];
       event.container.data.map((str, index) =>
         sectionTasks.push(JSON.parse(JSON.stringify(str)))
       );
@@ -143,7 +141,7 @@ export class ProjectManagementComponent implements OnInit {
       const prevSectionId = Number(event.previousContainer.id.replace("cdk-drop-list-", ""));
       const movedTask: Task = <Task>(event.container.data[event.currentIndex] as unknown);
 
-      const taskIndex = this.project.sections[Number(prevSectionId) - 1].tasks.indexOf(movedTask); 
+      const taskIndex = this.project.sections[Number(prevSectionId) - 1].tasks.indexOf(movedTask);
       if (taskIndex !== -1) {
         this.project.sections[Number(prevSectionId) - 1].tasks.splice(taskIndex, 1);
       }
@@ -152,7 +150,7 @@ export class ProjectManagementComponent implements OnInit {
       const startIndex = "cdk-drop-list-".length;
       const sectionOrderId = event.container.id.substring(startIndex, event.container.id.length);
 
-      let sectionTasks: Task[] = [];
+      const sectionTasks: Task[] = [];
       event.container.data.map((str, index) =>
         sectionTasks.push(JSON.parse(JSON.stringify(str)))
       );
@@ -161,10 +159,6 @@ export class ProjectManagementComponent implements OnInit {
 
     this.recalculateData();
     this.electronService.setDataChange();
-
-    if (this.electronService.autosave) {
-      this.electronService.saveProject(JSON.stringify(this.project));
-    }
   }
 
   tagDrop(event: CdkDragDrop<string[]>) {
@@ -173,7 +167,7 @@ export class ProjectManagementComponent implements OnInit {
     //     event.item.element.nativeElement.textContent +
     //     `' + dropped on ` +
     //     event.container.id
-    // ); 
+    // );
 
     // transferArrayItem(event.previousContainer.data,
     //      event.container.data,
@@ -220,8 +214,8 @@ export class ProjectManagementComponent implements OnInit {
               }
 
               if (section.orderIndex-1 !== result.section.value) {
-                
-                //remove task from a prev section 
+
+                //remove task from a prev section
                 this.project.sections[index].tasks.splice(indexResult, 1);
 
                 //add task to new a section
@@ -248,10 +242,6 @@ export class ProjectManagementComponent implements OnInit {
   onContentChanged = (event) => {
     this.project.notes = event.html;
     this.electronService.setDataChange();
-
-    if (this.electronService.autosave) {
-      this.electronService.saveProject(JSON.stringify(this.project));
-    }
   };
 
   setProjectNameEditMode() {
@@ -271,15 +261,15 @@ export class ProjectManagementComponent implements OnInit {
 
     if (this.project.sections.length > 0) {
       this.project.sections.map((section) =>
-        this.connectedSections.push("cdk-drop-list-" + section.orderIndex)
+        this.connectedSections.push("cdk-drop-list-".concat(section.orderIndex.toString()))
       );
       this.project.sections.map((section) =>
-          (this.sectionsTasks["cdk-drop-list-" + section.orderIndex] = [])
+        (this.sectionsTasks["cdk-drop-list-".concat(section.orderIndex.toString())] = [])
       );
 
       this.project.sections.forEach((section) => {
         section.tasks.forEach((task) => {
-          this.sectionsTasks["cdk-drop-list-" + section.orderIndex].push(task);
+          this.sectionsTasks["cdk-drop-list-".concat(section.orderIndex.toString())].push(task);
         });
       });
     }
@@ -290,7 +280,7 @@ export class ProjectManagementComponent implements OnInit {
       section.tasks.forEach(task => {
         this.taskSections.push( {
           sectionId: section.orderIndex,
-          sectionName: section.name,          
+          sectionName: section.name,
           taskId: task.id,
           taskName: task.title,
           taskPriorityColor: this.setTaskColor(task.priority)
@@ -304,13 +294,13 @@ export class ProjectManagementComponent implements OnInit {
     }
   }
 
-  sectionId(id: string): Number {
+  sectionId(id: string): number {
     return this.sectionsTasks["cdk-drop-list-" + id]
       ? this.sectionsTasks["cdk-drop-list-" + id].length
       : 0;
   }
 
-  taskPriority(task: Task) {
+  taskPriority(task: Task): any {
     return task ? task.priority : "";
   }
 

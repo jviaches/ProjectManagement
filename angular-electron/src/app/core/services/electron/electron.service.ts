@@ -36,11 +36,12 @@ export class ElectronService {
 
   appSettings: AppSettings;
   project: BehaviorSubject<Project> = new BehaviorSubject(null);
-  systemUpdateMessage: BehaviorSubject<ProgramUpdate> = new BehaviorSubject(null);
-  filePath: string = "";
+  systemUpdateMessage: BehaviorSubject<ProgramUpdate> = new BehaviorSubject(
+    null
+  );
+  filePath = "";
   dataChangeDetected = false;
-  autosave: boolean = false;
-  lastTaskId: number = 0;
+  lastTaskId = 0;
 
   get isElectron(): boolean {
     return !!(window && window.process && window.process.type);
@@ -55,7 +56,6 @@ export class ElectronService {
   ) {
     // Conditional imports
     if (this.isElectron) {
-
       this.ipcRenderer = window.require("electron").ipcRenderer;
       this.webFrame = window.require("electron").webFrame;
 
@@ -66,13 +66,12 @@ export class ElectronService {
       this.fs = window.require("fs");
       this.dialog = this.remote.dialog;
 
-      const newUpdate= {
+      const newUpdate = {
         releaseNotes: null,
-        releaseName: ''
+        releaseName: "",
       };
       this.systemUpdateMessage.next(newUpdate);
       this.loadAppSettings();
-
 
       this.ipcRenderer.on("new-project", (event, arg) => {
         this.ngZone.run(() => {
@@ -90,7 +89,6 @@ export class ElectronService {
             );
           } else {
             this.saveProject(JSON.stringify(this.project.value));
-            this.notificationService.showActionConfirmationSuccess("Project has been saved.");
           }
         });
 
@@ -105,7 +103,6 @@ export class ElectronService {
             );
           } else {
             this.saveAsProject(JSON.stringify(this.project.value));
-            this.notificationService.showActionConfirmationSuccess("Project has been saved.");
           }
         });
         this.ipcRenderer.send("close-project-enable", true);
@@ -148,19 +145,22 @@ export class ElectronService {
 
       this.ipcRenderer.on("about", (event, arg) => {
         this.ngZone.run(() => {
-         this.notificationService.showModalComponent(AboutComponent,'About','');
+          this.notificationService.showModalComponent(
+            AboutComponent,
+            "About",
+            ""
+          );
         });
       });
-
 
       // this.ipcRenderer.on('checking-for-update', () => {
       //   //this.ipcRenderer.removeAllListeners('checking-for-update');
       //   this.notificationService.showActionConfirmationSuccess('checking-for-update..');
       // });
 
-      this.ipcRenderer.on('update-available', () => {
-         //this.ipcRenderer.removeAllListeners('update-available');
-         //this.notificationService.showActionConfirmationSuccess('update-available..');
+      this.ipcRenderer.on("update-available", () => {
+        //this.ipcRenderer.removeAllListeners('update-available');
+        //this.notificationService.showActionConfirmationSuccess('update-available..');
       });
 
       // this.ipcRenderer.on('update-not-available', () => {
@@ -174,10 +174,9 @@ export class ElectronService {
       // });
 
       this.ipcRenderer.on("update-downloaded", (releaseNotes, releaseName) => {
-
-        const newUpdate= {
+        const newUpdate = {
           releaseNotes: releaseNotes,
-          releaseName: releaseName
+          releaseName: releaseName,
         };
         this.systemUpdateMessage.next(newUpdate);
       });
@@ -195,18 +194,18 @@ export class ElectronService {
     }
   }
 
-  exitProgram() {
+  exitProgram(): void {
     this.project = new BehaviorSubject(null);
-      this.notificationService
+    this.notificationService
       .showYesNoModalMessage(this.dialogContent())
       .subscribe((response) => {
         if (response === "yes") {
           this.ipcRenderer.send("app-close", null);
         }
       });
-    }
+  }
 
-  newProject() {
+  newProject(): Promise<Project> {
     return new Promise<Project>((resolve) => {
       if (this.project.value === null) {
         this.ipcRenderer.send("close-project-enable", true);
@@ -236,13 +235,13 @@ export class ElectronService {
     });
   }
 
-  updateProjectName(projName: string) {
+  updateProjectName(projName: string): void {
     this.setDataChange();
     this.project.value.name = projName;
     this.project.next(this.project.value);
   }
 
-  closeProject() {
+  closeProject(): void {
     this.notificationService
       .showYesNoModalMessage(this.dialogContent())
       .subscribe((response) => {
@@ -252,7 +251,7 @@ export class ElectronService {
       });
   }
 
-  resetProject() {
+  resetProject(): void {
     this.ipcRenderer.send("close-project-enable", false);
     this.project = new BehaviorSubject(null);
 
@@ -264,30 +263,19 @@ export class ElectronService {
     this.redirectTo("/", false);
   }
 
-  saveProject(content: any) {
+  saveProject(content: string): void {
     if (this.filePath === "") {
       this.saveAsProject(content);
     } else {
-      var encryptedContent = this.encrypt(content);
-      this.fs.writeFile(this.filePath, encryptedContent, (err) => {
-        if (err) {
-          alert("An error ocurred updating the file" + err.message);
-          console.log(err);
-          return;
-        }
-      });
+      const encryptedContent = this.encrypt(content);
+      this.saveProjectToDisk(encryptedContent);
     }
-
-    this.dataChangeDetected = false;
-    this.setPageTitle(false);
   }
 
-  saveAsProject(content: any) {
-    console.log(content);
-    
-    var encryptedContent = this.encrypt(content);
+  saveAsProject(content: string): void {
+    const encryptedContent = this.encrypt(content);
 
-    var filepath = this.dialog.showSaveDialogSync(null, {
+    const filepath = this.dialog.showSaveDialogSync(null, {
       properties: ["createDirectory"],
       filters: [{ name: "Project", extensions: ["prj"] }],
     });
@@ -299,18 +287,7 @@ export class ElectronService {
       this.filePath = filepath;
     }
 
-    this.fs.writeFile(filepath, encryptedContent, (err) => {
-      if (err) {
-        alert("An error ocurred updating the file" + err.message);
-        console.log(err);
-        return;
-      }
-
-      this.ipcRenderer.send("close-project-enable", true);
-
-      this.dataChangeDetected = false;
-      this.setPageTitle(false);
-    });
+    this.saveProjectToDisk(encryptedContent);
   }
 
   loadProject(): Promise<Project> {
@@ -322,7 +299,7 @@ export class ElectronService {
             if (response === "no") {
               resolve(this.project.value);
             } else {
-              var file = this.dialog.showOpenDialogSync(null, {
+              const file = this.dialog.showOpenDialogSync(null, {
                 properties: ["openFile"],
                 filters: [{ name: "Project", extensions: ["prj"] }],
               });
@@ -341,14 +318,14 @@ export class ElectronService {
                     "Error",
                     "Incorrect or corrupted projscope file!"
                   );
-                  Promise.reject('Error');
+                  Promise.reject("Error");
                 }
                 resolve(this.project.value);
               });
             }
           });
       } else {
-        var file = this.dialog.showOpenDialogSync(null, {
+        const file = this.dialog.showOpenDialogSync(null, {
           properties: ["openFile"],
           filters: [{ name: "Project", extensions: ["prj"] }],
         });
@@ -367,7 +344,7 @@ export class ElectronService {
                 "Incorrect or corrupted projscope file!"
               );
 
-              Promise.reject('Error');
+              Promise.reject("Error");
             }
 
             resolve(this.project.value);
@@ -377,7 +354,7 @@ export class ElectronService {
     });
   }
 
-  createTask() {
+  createTask(): void {
     this.notificationService
       .showModalComponent(TaskViewComponent, "", {})
       .subscribe((result) => {
@@ -399,12 +376,16 @@ export class ElectronService {
       });
   }
 
-  deleteTask(taskId: number, sectionIndex: number) {
+  deleteTask(taskId: number, sectionIndex: number): void {
     this.notificationService.showYesNoModalMessage("").subscribe((result) => {
       if (result === "yes") {
-
-        const taskIndex = this.project.value.sections[sectionIndex-1].tasks.findIndex((task) => task.id === taskId );
-        this.project.value.sections[sectionIndex-1].tasks.splice(taskIndex, 1);
+        const taskIndex = this.project.value.sections[
+          sectionIndex - 1
+        ].tasks.findIndex((task) => task.id === taskId);
+        this.project.value.sections[sectionIndex - 1].tasks.splice(
+          taskIndex,
+          1
+        );
 
         this.setDataChange();
         this.project.next(this.project.value);
@@ -412,7 +393,7 @@ export class ElectronService {
     });
   }
 
-  redirectTo(uri: string, fromHomePage: boolean) {
+  redirectTo(uri: string, fromHomePage: boolean): void {
     if (fromHomePage) {
       this.router.navigateByUrl(uri);
     } else {
@@ -424,7 +405,7 @@ export class ElectronService {
 
   public get defaultProject(): Project {
     const project = {
-      version: this.appSettings?.version || 'DEBUG',
+      version: this.appSettings?.version || "DEBUG",
       name: "Project Name",
       notes: "notes..",
       sections: [
@@ -439,12 +420,12 @@ export class ElectronService {
     return project;
   }
 
-  setDataChange() {
+  setDataChange(): void {
     this.dataChangeDetected = true;
     this.setPageTitle(true);
   }
 
-  setPageTitle(change: boolean) {
+  setPageTitle(change: boolean): void {
     if (this.filePath === "") {
       this.titleService.setTitle(ElectronService.PAGE_TITLE);
     } else {
@@ -471,15 +452,15 @@ export class ElectronService {
     return this.lastTaskId;
   }
 
-  setLastTaskId(project: Project) {
+  setLastTaskId(project: Project): void {
     if (!project) {
       this.lastTaskId = 0;
     } else {
       let maxTaskId = 0;
 
-      project.sections.forEach(section => {
-        const localMaxId = Math.max(...section.tasks.map((task) => task.id))
-        if (localMaxId > maxTaskId ) {
+      project.sections.forEach((section) => {
+        const localMaxId = Math.max(...section.tasks.map((task) => task.id));
+        if (localMaxId > maxTaskId) {
           maxTaskId = localMaxId;
         }
       });
@@ -504,30 +485,54 @@ export class ElectronService {
 
   // app settings
   private saveAppSettings() {
-    this.fs.writeFile('settings.cfg', JSON.stringify(this.appSettings), (err) => {
-      if (err) {
-        console.log(err);
-        return;
+    this.fs.writeFile(
+      "settings.cfg",
+      JSON.stringify(this.appSettings),
+      (err) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
       }
-    });
+    );
   }
 
   private loadAppSettings() {
-    this.fs.readFile('settings.cfg', "utf-8", (err, data) => {
+    this.fs.readFile("settings.cfg", "utf-8", (err, data) => {
       if (err) {
         this.appSettings = new AppSettings();
         this.themeService.setActiveThemeById(1);
         this.saveAppSettings();
         return;
       } else {
-        this.appSettings = JSON.parse(data)
-        this.themeService.setActiveThemeById(this.appSettings.themeId)
-        
+        this.appSettings = JSON.parse(data);
+        this.themeService.setActiveThemeById(this.appSettings.themeId);
       }
     });
   }
 
-  updateTheme(themeId: number){
+  private saveProjectToDisk(content: string): void {
+    this.fs.writeFile(this.filePath, content, (err) => {
+      if (err) {
+        this.notificationService.showActionConfirmationFail(
+          "An error ocurred updating the file" + err.message
+        );
+        console.log(err);
+        return;
+      }
+
+      // this.notificationService.showActionConfirmationSuccess(
+      //   "Project has been saved."
+      // );
+
+      this.ipcRenderer.send("close-project-enable", true);
+      this.dataChangeDetected = false;
+      this.setPageTitle(false);
+    });
+
+  }
+
+  updateTheme(themeId: number): void {
     this.themeService.setActiveThemeById(themeId);
     this.appSettings.themeId = themeId;
     this.saveAppSettings();
