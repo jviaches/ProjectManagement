@@ -6,13 +6,8 @@
         <p></p>
         <p>Are you sure ?</p>
     </mat-dialog-content>
-
     <mat-dialog-actions>
-        <button class="mat-raised-button" (click)="yes()">
-            Yes
-        </button>
-        <button class="mat-raised-button" (click)="no()">
-            No
-        </button>
+      <button mat-button mat-dialog-close (click)="yes()">Yes</button>
+      <button mat-button mat-dialog-close (click)="no()">No</button>
     </mat-dialog-actions>
 </div>

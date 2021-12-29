@@ -18,6 +18,8 @@ import { AboutComponent } from "../../../about/about.component";
 import { TaskViewComponent } from "../../../task/task-view/task-view.component";
 import { ThemeService } from "../theme.service";
 
+import { AppConfig } from "../../../../environments/environment";
+
 @Injectable({
   providedIn: "root",
 })
@@ -34,7 +36,7 @@ export class ElectronService {
   fs: typeof fs;
   dialog: typeof dialog;
 
-  appSettings: AppSettings;
+  appSettings: AppSettings = new AppSettings();
   project: BehaviorSubject<Project> = new BehaviorSubject(null);
   systemUpdateMessage: BehaviorSubject<ProgramUpdate> = new BehaviorSubject(
     null
@@ -247,6 +249,7 @@ export class ElectronService {
       .subscribe((response) => {
         if (response === "yes") {
           this.resetProject();
+          this.ipcRenderer.send("refresh-focus", true);
         }
       });
   }
@@ -501,6 +504,7 @@ export class ElectronService {
     this.fs.readFile("settings.cfg", "utf-8", (err, data) => {
       if (err) {
         this.appSettings = new AppSettings();
+        this.appSettings.version = AppConfig.version;
         this.themeService.setActiveThemeById(1);
         this.saveAppSettings();
         return;

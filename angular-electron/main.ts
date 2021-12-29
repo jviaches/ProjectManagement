@@ -1,11 +1,9 @@
 import {
   app,
-  dialog,
   BrowserWindow,
   Menu,
   screen,
   ipcMain,
-  MenuItem,
 } from "electron";
 import * as path from "path";
 import * as url from "url";
@@ -14,7 +12,8 @@ import { autoUpdater } from "electron-updater";
 //const { autoUpdater } = require('electron-updater');
 
 let win: BrowserWindow = null;
-const args = process.argv.slice(1), serve = args.some((val) => val === "--serve");
+const args = process.argv.slice(1),
+  serve = args.some((val) => val === "--serve");
 function createWindow(): BrowserWindow {
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
@@ -34,7 +33,7 @@ function createWindow(): BrowserWindow {
     icon: "./src/assets/icons/favicon.ico",
   });
 
-  var menu = Menu.buildFromTemplate([
+  const menu = Menu.buildFromTemplate([
     {
       label: "File",
       submenu: [
@@ -121,62 +120,63 @@ function createWindow(): BrowserWindow {
     );
   }
 
+  win.on('show', () => {
+    setTimeout(() => {
+      win.focus();
+    }, 450);
+  });
+
   // Emitted when the window is closed.
-  win.on("close", e => {
-    if (win) {      
+  win.on("close", (e) => {
+    if (win) {
       e.preventDefault();
       win.webContents.send("exit", null);
     }
-
   });
 
   win.once("ready-to-show", () => {
     setInterval(() => {
-      autoUpdater.checkForUpdates().catch( ()=> {
-
-      });
-    }, 10009*60*60*24) // once a day
+      autoUpdater.checkForUpdates().catch(() => {});
+    }, 10009 * 60 * 60 * 24); // once a day
   });
 
-  ipcMain.on('restart_app', () => {
+  ipcMain.on("restart_app", () => {
     app.removeAllListeners("window-all-closed");
     app.removeAllListeners("exit");
     app.removeAllListeners("close");
-    
+
     autoUpdater.quitAndInstall();
     app.relaunch();
     app.exit(0);
   });
 
-
-  autoUpdater.on('checking-for-update', () => {
+  autoUpdater.on("checking-for-update", () => {
     //Start checking for new version
     //Here you can remind users that they are looking for a new version
     //win.webContents.send("checking-for-update", "");
   });
 
-  autoUpdater.on('update-available', (info) => {
+  autoUpdater.on("update-available", (info) => {
     //New version detected
     //Remind users that a new version has been found
     //win.webContents.send("update-available", "");
   });
 
-  autoUpdater.on('update-not-available', (info) => {
+  autoUpdater.on("update-not-available", (info) => {
     //No new version detected
     //Remind the user that the current version is the latest version and does not need to be updated
     //win.webContents.send('update-not-available', "");
   });
 
-  autoUpdater.on('error', (err) => {
+  autoUpdater.on("error", (err) => {
     //Automatic upgrade encountered an error
     //Execute the original upgrade logic
     //win.webContents.send("update-error", "");
   });
 
-  autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
+  autoUpdater.on("update-downloaded", (event, releaseNotes, releaseName) => {
     win.webContents.send("update-downloaded", releaseNotes, releaseName);
-  })
-
+  });
 
   win.webContents.on("ipc-message", (event, input, args) => {
     if (input === "app-close") {
@@ -212,6 +212,10 @@ function createWindow(): BrowserWindow {
       //   JSON.stringify(args)
       // );
     }
+
+    if (input === "refresh-focus") {
+      win.focus();
+    }
   });
 
   return win;
@@ -231,7 +235,6 @@ try {
 
   // Quit when all windows are closed.
   app.on("window-all-closed", () => {
-
     app.removeAllListeners();
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q

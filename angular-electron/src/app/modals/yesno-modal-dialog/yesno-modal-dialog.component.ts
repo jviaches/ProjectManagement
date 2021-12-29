@@ -18,11 +18,11 @@ export class ModalYesNoDialogComponent {
     this.additionalMessage = data.message;
   }
 
-  yes() {
+  yes(): void {
     this.dialogRef.close('yes');
   }
 
-  no() {
+  no(): void {
     this.dialogRef.close('no');
   }
 
