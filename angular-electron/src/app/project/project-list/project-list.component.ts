@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { ElectronService } from "../../core/services";
+import { NotificationService } from "../../core/services/notification.service";
 
 @Component({
   selector: "app-project-list",
@@ -8,19 +9,27 @@ import { ElectronService } from "../../core/services";
 })
 export class ProjectListComponent {
   constructor(
-    private electronService: ElectronService
+    private electronService: ElectronService,
+    private notificationService: NotificationService
   ) {}
 
-
   loadProject(): void {
-    this.electronService.loadProject().then((value) => {
-      this.electronService.ipcRenderer.send("close-project-enable", true);
-      this.electronService.redirectTo("/project", false);
-    });
+    this.electronService
+      .loadProject()
+      .then(() => {
+        this.electronService.ipcRenderer.send("close-project-enable", true);
+        this.electronService.redirectTo("/project", false);
+      })
+      .catch(() => {
+        this.notificationService.showModalMessage(
+          "Error",
+          "Unable to load file!"
+        );
+      });
   }
 
   newProject(): void {
-    this.electronService.newProject().then((value) => {
+    this.electronService.newProject().then(() => {
       this.electronService.ipcRenderer.send("close-project-enable", true);
       this.electronService.redirectTo("/project", false);
     });

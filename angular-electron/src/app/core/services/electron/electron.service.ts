@@ -122,14 +122,17 @@ export class ElectronService {
 
       this.ipcRenderer.on("open-project", (event, arg) => {
         this.ngZone.run(() => {
-          this.loadProject().then((value) => {
-            if (value === null) {
-              this.resetProject();
-            } else {
+          this.loadProject()
+            .then(() => {
               this.ipcRenderer.send("close-project-enable", true);
               this.redirectTo("/project", false);
-            }
-          });
+            })
+            .catch(() => {
+              this.notificationService.showModalMessage(
+                "Error",
+                "Unable to load file!"
+              );
+            });
         });
       });
 
@@ -294,65 +297,31 @@ export class ElectronService {
   }
 
   loadProject(): Promise<Project> {
-    return new Promise<Project>((resolve) => {
-      if (this.filePath !== "") {
-        this.notificationService
-          .showYesNoModalMessage(this.dialogContent())
-          .subscribe((response) => {
-            if (response === "no") {
-              resolve(this.project.value);
-            } else {
-              const file = this.dialog.showOpenDialogSync(null, {
-                properties: ["openFile"],
-                filters: [{ name: "Project", extensions: ["prj"] }],
-              });
+    return new Promise<Project>((resolve, reject) => {
+      const file = this.dialog.showOpenDialogSync(null, {
+        properties: ["openFile"],
+        filters: [
+          { name: "Project", extensions: ["prj"] },
+        ],
+      });
 
-              this.fs.readFile(file[0], "utf-8", (err, data) => {
-                try {
-                  const decryptedContent = this.decrypt(data);
+      if (file !== undefined) {
+        this.fs.readFile(file[0], "utf-8", (err, data) => {
+          const decryptedContent = this.decrypt(data);
 
-                  this.filePath = file[0];
-                  this.setPageTitle(false);
-                  this.setLastTaskId(JSON.parse(decryptedContent));
+          if (decryptedContent !== "null") {
+            this.filePath = file[0];
+            this.setPageTitle(false);
+            this.setLastTaskId(JSON.parse(decryptedContent));
+            this.project.next(JSON.parse(decryptedContent));
+          } else {
+            this.resetProject();
+            reject("Error");
+          }
 
-                  this.project.next(JSON.parse(decryptedContent));
-                } catch (error) {
-                  this.notificationService.showModalMessage(
-                    "Error",
-                    "Incorrect or corrupted projscope file!"
-                  );
-                  Promise.reject("Error");
-                }
-                resolve(this.project.value);
-              });
-            }
-          });
-      } else {
-        const file = this.dialog.showOpenDialogSync(null, {
-          properties: ["openFile"],
-          filters: [{ name: "Project", extensions: ["prj"] }],
+          console.log("Resolved!");
+          resolve(this.project.value);
         });
-
-        if (file !== undefined) {
-          this.fs.readFile(file[0], "utf-8", (err, data) => {
-            try {
-              const decryptedContent = this.decrypt(data);
-              this.filePath = file[0];
-              this.setPageTitle(false);
-              this.setLastTaskId(JSON.parse(decryptedContent));
-              this.project.next(JSON.parse(decryptedContent));
-            } catch (error) {
-              this.notificationService.showModalMessage(
-                "Error",
-                "Incorrect or corrupted projscope file!"
-              );
-
-              Promise.reject("Error");
-            }
-
-            resolve(this.project.value);
-          });
-        }
       }
     });
   }
@@ -480,10 +449,9 @@ export class ElectronService {
     return ciphertext;
   }
 
-  decrypt(ciphertext: string): string {
+  decrypt(ciphertext: string): string | null {
     const bytes = this.CryptoJS.AES.decrypt(ciphertext, this.encrypedSecretKey);
-    const originalText = bytes.toString(this.CryptoJS.enc.Utf8);
-    return originalText;
+    return bytes.toString(this.CryptoJS.enc.Utf8);
   }
 
   // app settings
@@ -533,7 +501,6 @@ export class ElectronService {
       this.dataChangeDetected = false;
       this.setPageTitle(false);
     });
-
   }
 
   updateTheme(themeId: number): void {
